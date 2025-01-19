@@ -28,8 +28,13 @@ SECRET_KEY = 'django-insecure-+m@u!g)6vk=qy@d42v@6ns)fv5mo)9_8-&3y(s63%8xonf92cw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'mercado-logistico.onrender.com',
+    '.onrender.com',
+    '*'  # Temporalmente para pruebas
+]
 
 # Application definition
 
