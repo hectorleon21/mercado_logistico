@@ -6,8 +6,16 @@ ALLOWED_HOSTS = [
     '.onrender.com',
 ]
 
-STATIC_ROOT = '/tmp/static'
-MEDIA_ROOT = '/tmp/media'
+# Configuración de archivos estáticos
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Configuración de archivos media
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Configuraciones de email para producción
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
