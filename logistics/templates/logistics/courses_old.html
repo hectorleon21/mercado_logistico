@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">Cursos y Capacitaciones</h1>
+
+    <!-- Filtros -->
+    <div class="mb-6">
+        <form id="searchForm" class="space-y-4">
+            <div class="flex flex-wrap gap-4">
+                <input type="text" name="q" value="{{ search_query }}" 
+                       class="border p-2 rounded" placeholder="Buscar cursos...">
+                
+                <select name="type" class="border p-2 rounded">
+                    <option value="">Todos los tipos</option>
+                    {% for code, name in course_types %}
+                    <option value="{{ code }}" {% if code == selected_type %}selected{% endif %}>
+                        {{ name }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <select name="modality" class="border p-2 rounded">
+                    <option value="">Todas las modalidades</option>
+                    {% for code, name in modalities %}
+                    <option value="{{ code }}" {% if code == selected_modality %}selected{% endif %}>
+                        {{ name }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                    Buscar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Lista de Cursos -->
+    <div id="coursesList">
+        {% include 'logistics/partials/courses_list.html' %}
+    </div>
+
+    <!-- Paginación -->
+    <div id="pagination" class="mt-6">
+        {% include 'logistics/partials/pagination_courses.html' %}
+    </div>
+</div>
+{% endblock %}

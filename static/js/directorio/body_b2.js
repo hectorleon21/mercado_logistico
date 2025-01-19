@@ -1,0 +1,1 @@
+;(function () {   var box = $('#feature-grid1 .box');   $(window).width() > 768 && heightCalc();    function heightCalc() {  setTimeout(function () {   var heights = box.map(function () {    return $(this).height();   }).get();       var maxHeight = Math.max.apply(null, heights);   box.each(function (i) {    $(this).css({'height': maxHeight});   });  }, 200);   } })();

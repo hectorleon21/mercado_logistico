@@ -1,0 +1,20 @@
+{% if page_obj.object_list %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <!-- Otras columnas que necesites -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for provider in page_obj.object_list %}
+                <tr>
+                    <td>{{ provider.name }}</td>
+                    <!-- Otras columnas -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No hay proveedores disponibles{% if search_query %} para "{{ search_query }}"{% endif %}.</p>
+{% endif %}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: 'Times New Roman', Times, serif; font-size: 12px; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px;">
+    <!-- Header naranja -->
+    <div style="background-color: #ff8600; color: white; padding: 20px; text-align: center; margin-bottom: 15px;"> <!-- Reducido margen inferior -->
+        <h1 style="margin: 0; font-family: 'Times New Roman', Times, serif;">{{ newsletter.title }}</h1>
+    </div>
+
+    {% for news in newsletter.news_items.all %}
+    <div style="margin-bottom: 15px; padding-bottom: 10px;"> <!-- Reducido margen inferior -->
+        {% if news.image_url %}
+            <img src="{{ news.image_url }}" alt="{{ news.title }}" style="max-width: 100%; height: auto; margin-bottom: 15px;">
+    {% endif %}
+        <!-- Estilo original del título -->
+        <h2 style="color: #333; 
+                   font-size: 14px; 
+                   margin-bottom: 6px; <!-- Reducido margen inferior -->
+                   font-weight: bold; 
+                   font-family: 'Times New Roman', Times, serif; 
+                   text-align: left;">
+            {{ news.title|safe }}
+        </h2>
+        <!-- Resumen extendido -->
+        <div style="font-size: 12px; color: #444; margin-bottom: 8px; font-family: 'Times New Roman', Times, serif; text-align: justify;">
+            <p>{{ news.generate_summary|safe }}</p>
+        </div>
+        <!-- Botón cuadrado naranja más ancho -->
+        <table cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 0 auto; margin-bottom: 8px;">
+            <tr>
+                <td align="center" style="background-color: #ff8600; border-radius: 5px; text-align: center; padding: 4px;">
+                    <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'news-detail' news.id %}" 
+                       target="_blank"
+                       style="display: inline-block; 
+                              text-decoration: none; 
+                              font-family: Arial, sans-serif; 
+                              font-size: 12px;        /* Reducido tamaño de fuente */
+                              font-weight: bold; 
+                              padding: 4px 12px;      /* Reducido el padding */
+                              min-width: 80px;        /* Reducido el ancho mínimo */
+                              color: white; 
+                              background-color: #ff8600; 
+                              border: 2px solid #ff8600; 
+                              border-radius: 5px; 
+                              text-align: center;">
+                        Leer más
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    {% endfor %}
+
+    <div style="margin-top: 15px; text-align: center; font-size: 12px; color: #666; padding: 20px; border-top: 1px solid #eee;">
+        <p style="margin: 5px 0; font-family: 'Times New Roman', Times, serif;">Este newsletter fue enviado a {{ subscriber_email }}</p>
+        <p style="margin: 5px 0; font-family: 'Times New Roman', Times, serif;">Si no deseas recibir más newsletters, puedes darte de baja haciendo clic <a href="#" style="color: #ff8600;">aquí</a></p>
+    </div>
+</body>
+</html>

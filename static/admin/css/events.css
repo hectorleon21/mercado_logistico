@@ -1,0 +1,22 @@
+/* static/admin/css/events.css */
+.field-preview_image img {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    margin-top: 10px;
+}
+
+.readonly {
+    color: #666;
+    font-style: italic;
+}
+
+#preview-container {
+    margin-top: 10px;
+}
+
+#image-preview {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+}

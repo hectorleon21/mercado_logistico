@@ -1,0 +1,167 @@
+<!-- E:\Desarrollo\MercadoLogisticoDev\Web\mercado_logistico\logistics\templates\logistics\includes\newsletter_modal.html -->
+<div id="newsletterModal" class="modal fade-in" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Suscríbete al Newsletter</h2>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="spinner-overlay">
+            <div class="spinner-content">
+                <div class="spinner"></div>
+                <div class="spinner-text">Registrando suscripción, espere un momento...</div>
+            </div>
+        </div>
+        <form id="newsletterForm" class="modal-body">
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div class="form-group half">
+                    <label for="apellidos">Apellidos:</label>
+                    <input type="text" id="apellidos" name="apellidos" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="empresa">Empresa:</label>
+                    <input type="text" id="empresa" name="empresa" required>
+                </div>
+                <div class="form-group half">
+                    <label for="rol">Rol:</label>
+                    <input type="text" id="rol" name="rol" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="pais">País:</label>
+                <select id="pais" name="pais" required>
+                    <option value="" disabled selected>Selecciona un país</option>
+                    <option value="México">México</option>
+                    <option value="Colombia">Colombia</option>
+                    <option value="España">España</option>
+                    <option value="Argentina">Argentina</option>
+                    <option value="Venezuela">Venezuela</option>
+                    <option value="Perú">Perú</option>
+                    <option value="Chile">Chile</option>
+                    <option value="Guatemala">Guatemala</option>
+                    <option value="Ecuador">Ecuador</option>
+                    <option value="Cuba">Cuba</option>
+                    <option value="Bolivia">Bolivia</option>
+                    <option value="República Dominicana">República Dominicana</option>
+                    <option value="Honduras">Honduras</option>
+                    <option value="El Salvador">El Salvador</option>
+                    <option value="Paraguay">Paraguay</option>
+                    <option value="Nicaragua">Nicaragua</option>
+                    <option value="Costa Rica">Costa Rica</option>
+                    <option value="Puerto Rico">Puerto Rico</option>
+                    <option value="Panamá">Panamá</option>
+                    <option value="Uruguay">Uruguay</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ciudad">Ciudad:</label>
+                <input type="text" id="ciudad" name="ciudad" required>
+            </div>
+
+            <div class="form-group">
+                <label for="sector">Sector:</label>
+                <select id="sector" name="sector" required>
+                    <option value="" disabled selected>Selecciona un sector</option>
+                    <option value="Aficiones y casinos">Aficiones y casinos</option>
+                    <option value="Agricultura y ganadería">Agricultura y ganadería</option>
+                    <option value="Agua y aguas residuales">Agua y aguas residuales</option>
+                    <option value="Alimentos">Alimentos</option>
+                    <option value="Arquitectura">Arquitectura</option>
+                    <option value="Arte y cultura">Arte y cultura</option>
+                    <option value="Asistencia y cuidados">Asistencia y cuidados</option>
+                    <option value="Banca y AFP">Banca y AFP</option>
+                    <option value="Bebidas alcohólicas">Bebidas alcohólicas</option>
+                    <option value="Bebidas sin alcohol">Bebidas sin alcohol</option>
+                    <option value="Centros comerciales y outlets">Centros comerciales y outlets</option>
+                    <option value="Combustibles fósiles">Combustibles fósiles</option>
+                    <option value="Comercio al por mayor">Comercio al por mayor</option>
+                    <option value="Comercio electrónico">Comercio electrónico</option>
+                    <option value="Comercio internacional">Comercio internacional</option>
+                    <option value="Construcción naval">Construcción naval</option>
+                    <option value="Cosmética y cuidado personal">Cosmética y cuidado personal</option>
+                    <option value="Deporte, fitness y ocio">Deporte, fitness y ocio</option>
+                    <option value="Educación y ciencia">Educación y ciencia</option>
+                    <option value="Electrónica">Electrónica</option>
+                    <option value="Energía y medio ambiente">Energía y medio ambiente</option>
+                    <option value="Equipamiento del hogar">Equipamiento del hogar</option>
+                    <option value="Estado de salud">Estado de salud</option>
+                    <option value="Ferreterías y Bricolage">Ferreterías y Bricolage</option>
+                    <option value="Finanzas, seguros y bienes inmuebles">Finanzas, seguros y bienes inmuebles</option>
+                    <option value="Gestión de residuos">Gestión de residuos</option>
+                    <option value="Hospitales, farmacias y médicos">Hospitales, farmacias y médicos</option>
+                    <option value="Industria aeroespacial">Industria aeroespacial</option>
+                    <option value="Industria de defensa">Industria de defensa</option>
+                    <option value="Industria de software">Industria de software</option>
+                    <option value="Industria farmacéutica">Industria farmacéutica</option>
+                    <option value="Ingeniería">Ingeniería</option>
+                    <option value="Ingeniería civil">Ingeniería civil</option>
+                    <option value="Juegos de azar">Juegos de azar</option>
+                    <option value="Juguetes">Juguetes</option>
+                    <option value="Mascotas">Mascotas</option>
+                    <option value="Material de oficina">Material de oficina</option>
+                    <option value="Metalurgia y electrónica">Metalurgia y electrónica</option>
+                    <option value="Minería, metales y minerales">Minería, metales y minerales</option>
+                    <option value="Ministerios y Gobierno">Ministerios y Gobierno</option>
+                    <option value="Mobiliario">Mobiliario</option>
+                    <option value="Operador Logístico">Operador Logístico</option>
+                    <option value="Papel y pasta de papel">Papel y pasta de papel</option>
+                    <option value="Parques y actividades al aire libre">Parques y actividades al aire libre</option>
+                    <option value="Pesca y acuicultura">Pesca y acuicultura</option>
+                    <option value="Plástico y caucho">Plástico y caucho</option>
+                    <option value="Producción de vehículos">Producción de vehículos</option>
+                    <option value="Productos de limpieza">Productos de limpieza</option>
+                    <option value="Productos minerales no metálicos">Productos minerales no metálicos</option>
+                    <option value="Productos químicos y materias primas">Productos químicos y materias primas</option>
+                    <option value="Publicidad y marketing">Publicidad y marketing</option>
+                    <option value="Refinerías de petróleo">Refinerías de petróleo</option>
+                    <option value="Ropa y complementos">Ropa y complementos</option>
+                    <option value="Salud e higiene">Salud e higiene</option>
+                    <option value="Sector inmobiliario">Sector inmobiliario</option>
+                    <option value="Tecnología médica">Tecnología médica</option>
+                    <option value="Tecnología medioambiental">Tecnología medioambiental</option>
+                    <option value="Tecnología y telecomunicaciones">Tecnología y telecomunicaciones</option>
+                    <option value="Turismo y hostelería">Turismo y hostelería</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="correo">Correo:</label>
+                <input type="email" id="correo" name="correo" required>
+            </div>
+
+            <div class="form-group">
+                <label for="rubros">Rubros de Interés:</label>
+                <select id="rubros" name="rubros_interes" multiple required class="select-rubros">
+                    <option value="Logística">Logística</option>
+                    <option value="Transporte">Transporte</option>
+                    <option value="Almacenamiento">Almacenamiento</option>
+                    <option value="Distribución">Distribución</option>
+                    <option value="Comercio Internacional">Comercio Internacional</option>
+                    <option value="E-commerce">E-commerce</option>
+                    <option value="Supply Chain">Supply Chain</option>
+                    <option value="Tecnología Logística">Tecnología Logística</option>
+                    <option value="consultoría">Consultoría</option>
+                    <option value="ultima milla">Última Milla</option>
+                </select>
+                <small class="help-text">Mantén presionado Ctrl (Cmd en Mac) para seleccionar múltiples opciones</small>
+            </div>
+
+            <div id="newsletterMessage" class="message" style="display: none;"></div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Suscribirse</button>
+            </div>
+        </form>
+    </div>
+</div>

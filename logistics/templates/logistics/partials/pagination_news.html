@@ -1,0 +1,29 @@
+<nav aria-label="Paginación" class="pagination" data-container-id="news">
+    <ul class="pagination justify-content-center">
+        {% if news_page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?news_page=1&events_page={{ events_page_obj.number }}">Primera</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?news_page={{ news_page_obj.previous_page_number }}&events_page={{ events_page_obj.number }}">Anterior</a>
+            </li>
+        {% endif %}
+
+        {% for num in news_page_obj.paginator.page_range %}
+            <li class="page-item {% if news_page_obj.number == num %}active{% endif %}">
+                <a class="page-link" {% if news_page_obj.number != num %}href="?news_page={{ num }}&events_page={{ events_page_obj.number }}"{% endif %}>
+                    {{ num }}
+                </a>
+            </li>
+        {% endfor %}
+
+        {% if news_page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?news_page={{ news_page_obj.next_page_number }}&events_page={{ events_page_obj.number }}">Siguiente</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?news_page={{ news_page_obj.paginator.num_pages }}&events_page={{ events_page_obj.number }}">Última</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>

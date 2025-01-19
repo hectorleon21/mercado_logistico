@@ -1,0 +1,29 @@
+document.addEventListener("DOMContentLoaded", () => {
+if($(window).width() < 768) {
+    $('h1.sw-font-size-10xl').removeClass('sw-font-size-10xl').addClass('sw-font-size-5xl');
+    $('h1.sw-font-size-9xl').removeClass('sw-font-size-9xl').addClass('sw-font-size-5xl');
+    $('h1.sw-font-size-8xl').removeClass('sw-font-size-8xl').addClass('sw-font-size-5xl');
+    $('h1.sw-font-size-7xl').removeClass('sw-font-size-7xl').addClass('sw-font-size-5xl');
+    $('h1.sw-font-size-6xl').removeClass('sw-font-size-6xl').addClass('sw-font-size-4xl');
+    $('h2.sw-font-size-10xl').removeClass('sw-font-size-10xl').addClass('sw-font-size-5xl');
+    $('h2.sw-font-size-9xl').removeClass('sw-font-size-9xl').addClass('sw-font-size-5xl');
+    $('h2.sw-font-size-8xl').removeClass('sw-font-size-8xl').addClass('sw-font-size-5xl');
+    $('h2.sw-font-size-7xl').removeClass('sw-font-size-7xl').addClass('sw-font-size-5xl');
+    $('h2.sw-font-size-6xl').removeClass('sw-font-size-6xl').addClass('sw-font-size-4xl');
+    $('div.sw-font-size-10xl').removeClass('sw-font-size-10xl').addClass('sw-font-size-5xl');
+    $('div.sw-font-size-9xl').removeClass('sw-font-size-9xl').addClass('sw-font-size-5xl');
+    $('div.sw-font-size-8xl').removeClass('sw-font-size-8xl').addClass('sw-font-size-5xl');
+    $('div.sw-font-size-7xl').removeClass('sw-font-size-7xl').addClass('sw-font-size-5xl');
+    $('div.sw-font-size-6xl').removeClass('sw-font-size-6xl').addClass('sw-font-size-4xl');
+    $('p.sw-font-size-10xl').removeClass('sw-font-size-10xl').addClass('sw-font-size-5xl');
+    $('p.sw-font-size-9xl').removeClass('sw-font-size-9xl').addClass('sw-font-size-5xl');
+    $('p.sw-font-size-8xl').removeClass('sw-font-size-8xl').addClass('sw-font-size-5xl');
+    $('p.sw-font-size-7xl').removeClass('sw-font-size-7xl').addClass('sw-font-size-5xl');
+    $('p.sw-font-size-6xl').removeClass('sw-font-size-6xl').addClass('sw-font-size-4xl');
+    $('span.sw-font-size-10xl').removeClass('sw-font-size-10xl').addClass('sw-font-size-5xl');
+    $('span.sw-font-size-9xl').removeClass('sw-font-size-9xl').addClass('sw-font-size-5xl');
+    $('span.sw-font-size-8xl').removeClass('sw-font-size-8xl').addClass('sw-font-size-5xl');
+    $('span.sw-font-size-7xl').removeClass('sw-font-size-7xl').addClass('sw-font-size-5xl');
+    $('span.sw-font-size-6xl').removeClass('sw-font-size-6xl').addClass('sw-font-size-4xl');
+}
+});

@@ -1,0 +1,14 @@
+<!-- E:\Desarrollo\MercadoLogisticoDev\Web\mercado_logistico\logistics\templates\admin\logistics\newsletter\change_list.html -->
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block object-tools-items %}
+    {% if show_generate_button %}
+    <li>
+        <a href="{% url 'admin:generate-newsletter' %}" class="btn generate-newsletter">
+            Generar Newsletter
+        </a>
+    </li>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}

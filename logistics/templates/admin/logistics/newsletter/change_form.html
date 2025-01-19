@@ -1,0 +1,16 @@
+<!-- templates/admin/logistics/newsletter/change_form.html -->
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+    {% if show_send_button %}
+    <div class="submit-row">
+        <input type="button" value="Enviar Newsletter" 
+               onclick="if(confirm('¿Estás seguro de enviar este newsletter a todos los suscriptores?')) { 
+                   window.location.href='{% url 'admin:send-newsletter' object_id %}'; 
+               }"
+               style="background-color: #ff8600; color: white;">
+    </div>
+    {% endif %}
+{% endblock %}

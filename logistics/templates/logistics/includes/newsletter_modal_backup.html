@@ -1,0 +1,65 @@
+<!-- E:\Desarrollo\MercadoLogisticoDev\Web\mercado_logistico\logistics\templates\logistics\includes\newsletter_modal.html -->
+<div id="newsletterModal" class="modal fade-in" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Suscríbete al Newsletter</h2>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="spinner-overlay">
+            <div class="spinner-content">
+                <div class="spinner"></div>
+                <div class="spinner-text">Registrando suscripción, espere un momento...</div>
+            </div>
+        </div>
+        <form id="newsletterForm" class="modal-body">
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div class="form-group half">
+                    <label for="apellidos">Apellidos:</label>
+                    <input type="text" id="apellidos" name="apellidos" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="empresa">Empresa:</label>
+                    <input type="text" id="empresa" name="empresa" required>
+                </div>
+                <div class="form-group half">
+                    <label for="rol">Rol:</label>
+                    <input type="text" id="rol" name="rol" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="correo">Correo:</label>
+                <input type="email" id="correo" name="correo" required>
+            </div>
+
+            <div class="form-group">
+                <label for="rubros">Rubros de Interés:</label>
+                <select id="rubros" name="rubros_interes" multiple required class="select-rubros">
+                    <option value="Logística">Logística</option>
+                    <option value="Transporte">Transporte</option>
+                    <option value="Almacenamiento">Almacenamiento</option>
+                    <option value="Distribución">Distribución</option>
+                    <option value="Comercio Internacional">Comercio Internacional</option>
+                    <option value="E-commerce">E-commerce</option>
+                    <option value="Supply Chain">Supply Chain</option>
+                    <option value="Tecnología Logística">Tecnología Logística</option>
+                </select>
+                <small class="help-text">Mantén presionado Ctrl (Cmd en Mac) para seleccionar múltiples opciones</small>
+            </div>
+
+            <div id="newsletterMessage" class="message" style="display: none;"></div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Suscribirse</button>
+            </div>
+        </form>
+    </div>
+</div>

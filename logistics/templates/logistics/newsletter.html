@@ -1,0 +1,346 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi, shrink-to-fit=no">
+
+        <meta name="twitter:title" content="MercadoLogistico Latam"><meta property="twitter:title" content="MercadoLogistico Latam"><meta property="og:title" content="MercadoLogistico Latam">
+        <meta name="twitter:description" content="Busca, encuentra, contrata y evalua los servicios de los proveedores de servicios de cadena de abastecimiento mas grande de Latinoamerica"><meta property="twitter:description" content="Busca, encuentra, contrata y evalua los servicios de los proveedores de servicios de cadena de abastecimiento mas grande de Latinoamerica"><meta property="og:description" content="Busca, encuentra, contrata y evalua los servicios de los proveedores de servicios de cadena de abastecimiento mas grande de Latinoamerica">
+        <meta property="og:image" content="{% static 'images/logo.png' %}"><meta name="twitter:image" content="{% static 'images/logo.png' %}"><meta name="twitter:card" content="summary_large_image">
+
+        <title>Directorio de Proveedores Logísticos</title>
+        <meta name="description" content="MercadoLogistico es la comunidad de proveedores logisticos mas grande Latinoamerica. Ayudamos a empresas de todos los tamaños a digitalizar sus procesos.">
+
+        <link rel="icon" type="image/x-icon" href="{% static 'images/logo.png' %}">
+
+        <link rel="canonical" href="https://www.mercadologistico.biz/directorio">
+        
+        <link href="{% static 'css/directorio/font.css' %}" rel="stylesheet">
+
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+        <link href="{% static 'css/all.min.css' %}" rel="stylesheet">
+
+        <link rel="stylesheet" href="{% static 'css/directorio/style_head.css' %}">
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+        <script type="text/javascript">
+            var providerListAjaxUrl = "{% url 'provider_list_ajax' %}";
+        </script>
+        <script src="{% static 'js/search.js' %}"></script>
+
+    </head>
+
+    <body>
+        <div data-spr-role="sentinel-start" data-spr-sentinel-start-for="a696084b-8a7f-417f-beea-bef965bdb464" data-spr-block-hrid="header1"></div>
+        <nav id="header1" class="header1-fixed-top navbar nav navbar-expand-lg header1-a696084b-8a7f-417f-beea-bef965bdb464 sw-background-color-000000 sw-padding-top-6xs sw-padding-bottom-5xs sw-border-top-style-none sw-border-top-width-xs sw-border-top-color-16a1c0 sw-border-bottom-style-none sw-border-bottom-width-xs sw-border-bottom-color-ffffff navbar-dark">
+            <div class="container">
+                <!-- Logo -->
+                <a class="navbar-brand" href="/"><img class="sw-width-6xs " src="https://assets.softr-files.com/applications/1f37011c-bdff-48c6-8a6b-d2f777aab051/assets/ad003983-377f-4413-ac61-dd42f06fe7b9.png" alt="Publish your designed things."></a>
+                <div class="desktop-menu text-center justify-content-end">
+                    <ul class="navbar-nav  align-items-center flex-row  empty-buttons ">
+                        <li class="nav-item "><a class="position-relative  sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            href="/" target="">Home</a>
+                            <div class="border-0 dropdown-menu" aria-labelledby="navbarDropdown-0" style="background-color: rgb(0, 0, 0);"></div>
+                        </li>
+                        <li class="nav-item "><a class="position-relative  sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            href="/newsletter" target="">Descubre</a>
+                            <div class="border-0 dropdown-menu" aria-labelledby="navbarDropdown-1" style="background-color: rgb(0, 0, 0);"></div>
+                        </li>
+                        <li class="nav-item "><a class="position-relative  sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            href="/comunidad" target="">Comunidades</a>
+                            <div class="border-0 dropdown-menu" aria-labelledby="navbarDropdown-2" style="background-color: rgb(0, 0, 0);"></div>
+                        </li>
+                        <li class="nav-item "><a class="position-relative  sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            href="/directorio" target="">Directorio</a>
+                            <div class="border-0 dropdown-menu" aria-labelledby="navbarDropdown-3" style="background-color: rgb(0, 0, 0);"></div>
+                        </li>
+                        <li class="nav-item dropdown"><a class="position-relative dropdown-toggle sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            href="" target="_blank" id="navbarDropdown-4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Empleos</a>
+                            <div class="border-0 dropdown-menu" aria-labelledby="navbarDropdown-4" style="background-color: rgb(0, 0, 0);"><a target="" class="sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent dropdown-item navigate"
+                                href="/add-jobs">Ingrese empleo</a><a target="" class="sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent dropdown-item navigate"
+                                href="/bolsatrabajo">Encuentra empleo</a></div>
+                        </li>
+                        <li class="nav-item "><a class="position-relative  sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            href="/herramientas-log-sticas" target="">Herramientas</a>
+                            <div class="border-0 dropdown-menu" aria-labelledby="navbarDropdown-5" style="background-color: rgb(0, 0, 0);"></div>
+                        </li>
+                        <li class="nav-item "><a class="position-relative  sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            href="/login" target="">Login</a>
+                            <div class="border-0 dropdown-menu" aria-labelledby="navbarDropdown-6" style="background-color: rgb(0, 0, 0);"></div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- mobile toggle -->
+                <div class="toggle-button"><span class="navbar-toggler-icon"></span></div>
+                <div class="mob-menu-content" style="background-color: rgb(0, 0, 0);">
+                    <div class="mob-menu-header">
+                        <a class="navbar-brand" href="/"><img class="sw-width-6xs " src="https://assets.softr-files.com/applications/1f37011c-bdff-48c6-8a6b-d2f777aab051/assets/ad003983-377f-4413-ac61-dd42f06fe7b9.png" alt="Publish your designed things."></a><span class="navbar-close"> <i class="fa fa-fw fa-times" aria-hidden="true" style="color: rgb(255, 255, 255);"></i></span></div>
+                    <div
+                    class="mob-menu-body">
+                        <div class="navigation-section"><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            href="/" style="background-color: rgb(0, 0, 0);">Home</a><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            href="/newsletter" style="background-color: rgb(0, 0, 0);">Descubre</a><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            href="/comunidad" style="background-color: rgb(0, 0, 0);">Comunidades</a><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            href="/directorio" style="background-color: rgb(0, 0, 0);">Directorio</a><a class="position-relative link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            data-toggle="collapse" href="#collapseExample-4" role="button" aria-expanded="false" aria-controls="collapseExample-4" style="background-color: rgb(0, 0, 0);">Empleos<span class="arrow" style="border-left: 2px solid rgb(255, 255, 255); border-top: 2px solid rgb(255, 255, 255);"></span></a>
+                            <div
+                            class="collapse" id="collapseExample-4"><a target="" class="sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent dropdown-item navigate"
+                                href="/add-jobs">Ingrese empleo</a><a target="" class="sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent dropdown-item navigate"
+                                href="/bolsatrabajo">Encuentra empleo</a></div><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                        href="/herramientas-log-sticas" style="background-color: rgb(0, 0, 0);">Herramientas</a><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                        href="/login" style="background-color: rgb(0, 0, 0);">Login</a></div>
+                <div class="buttons-section"></div>
+            </div>
+            </div>
+            </div>
+        </nav>
+        <link rel="stylesheet" href="{% static 'css/directorio/body_b1.css' %}">
+        HOLA 1
+        <script src="{% static 'js/directorio/body_b1.js' %}"></script>
+
+        <div data-spr-role="sentinel-end" data-spr-sentinel-end-for="a696084b-8a7f-417f-beea-bef965bdb464" data-spr-block-hrid="header1"></div>
+        <div data-spr-role="sentinel-start" data-spr-sentinel-start-for="2e716889-b7ec-4d2a-c0f4-9d4e7d03786c" data-spr-block-hrid="cta0"></div>
+        <section id="cta0" style="background-image: url(https://assets.softr-files.com/applications/1f37011c-bdff-48c6-8a6b-d2f777aab051/assets/d3376b32-45a5-448d-96db-8b7b607448bf.png);" data-block-version="2.0.0" data-block-id="2e716889-b7ec-4d2a-c0f4-9d4e7d03786c"
+        data-block-updated="" class="cta2-2e716889-b7ec-4d2a-c0f4-9d4e7d03786c sw-background-color-ffffff sw-padding-top-2xl sw-padding-bottom-2xl sw-border-top-style-none sw-border-top-width-xs sw-border-top-color-000000 sw-border-bottom-style-none sw-border-bottom-width-xs sw-border-bottom-color-000000   sw-background-repeat-no-repeat sw-background-size-cover sw-background-position-center sw-background-attachment-scroll ">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-12 text-center sw-background-color-none sw-border-style-none sw-border-width-xs sw-border-color-000000 sw-border-radius-none sw-box-shadow-none sw-padding-top-none sw-padding-bottom-none ">
+                        <h2 class="sw-font-size-8xl sw-text-color-ffffff sw-font-family-default sw-font-weight-bold sw-padding-top-none sw-padding-bottom-4xs sw-letter-spacing-wider sw-line-height-loose ">      Comunidad de  personas para hacer negocios     </h2>
+                        <p class="sw-font-size-3xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-padding-top-none sw-padding-bottom-3xs sw-letter-spacing-tighter sw-line-height-loose "> Todas las empresas del sector logístico, sus aliados y socios en un solo lugar. </p>
+                        <div class="d-flex justify-content-center flex-wrap"> <a id="sw-email-capture-submit-btn" data-element="button" target="" class="sw-font-size-l sw-text-color-default sw-font-family-default sw-font-weight-semibold sw-border-radius-none sw-background-color-ffa500 sw-padding-left-2xl sw-padding-right-2xl sw-padding-top-4xs sw-padding-bottom-4xs sw-border-style-none sw-border-width-xs sw-border-color-2977c9 sw-letter-spacing-normal sw-text-decoration-no-underline hover:sw-text-decoration-no-underline hover:sw-box-shadow-m sw-margin-bottom-6xs sw-display-inline-block sw-margin-left-7xs sw-margin-right-7xs"
+                            href="">        Explore       </a> </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <link rel="stylesheet" href="{% static 'css/directorio/body_b2.css' %}">
+ 
+        <link rel="stylesheet" href="{% static 'css/directorio/body_b4.css' %}">
+        <!--    HACE DESAPARECER EL DIRECTORIO EN PRIMERA CARGA 
+        <script src="{% static 'js/directorio/body_b3.js' %}"></script>
+        -->
+
+        <link rel="stylesheet" href="{% static 'css/directorio/body_b5.css' %}">
+
+        <div data-spr-role="sentinel-end" data-spr-sentinel-end-for="23af0aa1-a39a-49b6-9acb-ddede755789b" data-spr-block-hrid="feature-grid1"></div>
+        <div data-spr-role="sentinel-start" data-spr-sentinel-start-for="44351bb2-6e5c-4fcc-fd58-15fe30b29a81" data-spr-block-hrid="list0"></div>
+        <section id="list0" data-block-version="2.1.4" data-block-id="44351bb2-6e5c-4fcc-fd58-15fe30b29a81" data-block-updated="2022-06-09T01:11:44.359" class="list5-44351bb2-6e5c-4fcc-fd58-15fe30b29a81 sw-background-color-ffffff sw-padding-top-l sw-padding-bottom-2xl sw-border-top-style-none sw-border-top-width-xs sw-border-top-color-000000 sw-border-bottom-style-none sw-border-bottom-width-xs sw-border-bottom-color-000000 ">
+            <div class="container">
+                <!--  MOBILE FILTERS -->
+                <div class="row mobile-filter js-filter js-filter-right" data-multiselect="false" data-showall="false" data-mappedto="Categoría">
+                    <div class="col-md-12 p-0">
+                        <div class="text-center top-filters d-flex align-items-center justify-content-center sw-font-size-3xl sw-text-color-3b3b3b sw-font-family-default sw-font-weight-normal sw-letter-spacing-normal sw-padding-top-7xs sw-padding-bottom-6xs sw-padding-right-6xs sw-padding-left-6xs sw-margin-right-6xs sw-cursor-default">
+                            EVENTOS Y NOTICIAS
+                        </div>
+                    </div>
+                </div>
+                <!-- TOP FILTERS   -->
+                <div class="row desktop-filter position-relative">
+                    <div class="col-md-12 p-0">
+                        <div class="text-center top-filters d-flex align-items-center justify-content-center sw-font-size-3xl sw-text-color-3b3b3b sw-font-family-default sw-font-weight-normal sw-letter-spacing-normal sw-padding-top-7xs sw-padding-bottom-6xs sw-padding-right-6xs sw-padding-left-6xs sw-margin-right-6xs sw-cursor-default">
+                            EVENTOS Y NOTICIAS
+                        </div>
+                    </div>
+                </div>
+                
+                
+            </div>
+
+            <div class="container">
+
+                <!-- Sección de búsqueda para Eventos -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <form id="events-search-form" class="d-flex justify-content-center">
+                            <div class="input-group" style="max-width: 500px;">
+                                <input type="text" 
+                                       id="events-search" 
+                                       name="events_q" 
+                                       class="form-control" 
+                                       placeholder="Buscar eventos..." 
+                                       value="{{ events_search_query }}">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit">
+                                        Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Sección de Eventos -->
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="sw-font-size-3xl sw-text-color-3b3b3b sw-font-family-default sw-font-weight-normal sw-letter-spacing-normal sw-padding-top-7xs sw-padding-bottom-6xs text-center">Eventos</h2>
+                        
+                        <div id="events-list-container" class="row">
+                            {% include 'logistics/partials/events_list.html' %}
+                        </div>
+                        
+                        <div id="events-pagination-container" class="d-flex justify-content-center my-4">
+                            {% include 'logistics/partials/pagination_events.html' %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de búsqueda para Noticias -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <form id="news-search-form" class="d-flex justify-content-center">
+                            <div class="input-group" style="max-width: 500px;">
+                                <input type="text" 
+                                    id="news-search" 
+                                    name="news_q" 
+                                    class="form-control" 
+                                    placeholder="Buscar noticias..." 
+                                    value="{{ news_search_query }}">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit">
+                                        Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            
+                <!-- Sección de Noticias -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <h2 class="sw-font-size-3xl sw-text-color-3b3b3b sw-font-family-default sw-font-weight-normal sw-letter-spacing-normal sw-padding-top-7xs sw-padding-bottom-6xs text-center">Noticias</h2>
+                        
+                        <!-- Contenedor de lista de noticias -->
+                        <div id="news-list-container" class="row">
+                            {% include 'logistics/partials/news_list.html' with news_page_obj=news_page_obj %}
+                        </div>
+                        
+                        <!-- Contenedor de paginación de noticias -->
+                        <div id="news-pagination-container" class="d-flex justify-content-center my-4">
+                            {% include 'logistics/partials/pagination_news.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Script para AJAX -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Manejar búsqueda de eventos
+                    document.getElementById('events-search-form').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const searchQuery = document.getElementById('events-search').value;
+                        const url = new URL(window.location);
+                        url.searchParams.set('events_q', searchQuery);
+                        loadContent(url, '#events-list-container', '#events-pagination-container', 'events');
+                    });
+
+                    // Manejar búsqueda de noticias
+                    document.getElementById('news-search-form').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const searchQuery = document.getElementById('news-search').value;
+                        const url = new URL(window.location);
+                        url.searchParams.set('news_q', searchQuery);
+                        loadContent(url, '#news-list-container', '#news-pagination-container', 'news');
+                    });
+
+                    // Función para cargar el contenido vía AJAX
+                    function loadContent(url, container, paginationContainer, contentType) {
+                        fetch(url, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Actualizar el contenido según el tipo (eventos o noticias)
+                            if (contentType === 'events') {
+                                if (data.events_html) {
+                                    document.querySelector(container).innerHTML = data.events_html;
+                                }
+                                if (data.events_pagination_html) {
+                                    document.querySelector(paginationContainer).innerHTML = data.events_pagination_html;
+                                }
+                            } else if (contentType === 'news') {
+                                if (data.news_html) {
+                                    document.querySelector(container).innerHTML = data.news_html;
+                                }
+                                if (data.news_pagination_html) {
+                                    document.querySelector(paginationContainer).innerHTML = data.news_pagination_html;
+                                }
+                            }
+                            // Volver a agregar los event listeners a los nuevos enlaces de paginación
+                            setupPaginationListeners();
+                        })
+                        .catch(error => console.error('Error:', error));
+                    }
+
+                    // Función para configurar los event listeners de paginación
+                    function setupPaginationListeners() {
+                        // Para eventos
+                        document.querySelectorAll('#events-pagination-container .page-link').forEach(link => {
+                            link.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                const url = new URL(this.href);
+                                loadContent(url, '#events-list-container', '#events-pagination-container', 'events');
+                            });
+                        });
+
+                        // Para noticias
+                        document.querySelectorAll('#news-pagination-container .page-link').forEach(link => {
+                            link.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                const url = new URL(this.href);
+                                loadContent(url, '#news-list-container', '#news-pagination-container', 'news');
+                            });
+                        });
+                    }
+
+                    // Configurar los event listeners iniciales
+                    setupPaginationListeners();
+                });
+                </script>
+
+        </section>
+
+
+        <div data-spr-role="sentinel-end" data-spr-sentinel-end-for="44351bb2-6e5c-4fcc-fd58-15fe30b29a81" data-spr-block-hrid="list0"></div>
+        <div data-spr-role="sentinel-start" data-spr-sentinel-start-for="733d9014-dbb5-49be-aaa2-bd1e5c632569" data-spr-block-hrid="footer1"></div>
+        <footer id="footer1" class="footer1-733d9014-dbb5-49be-aaa2-bd1e5c632569 sw-background-color-000000 sw-padding-top-2xs sw-padding-bottom-none sw-border-top-style-none sw-border-top-width-xs sw-border-top-color-000000 sw-border-bottom-style-none sw-border-bottom-width-xs sw-border-bottom-color-000000 ">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-3 col-12 text-center text-md-left pb-md-2 pb-5">
+                        <a href="/"><img class="sw-width-3xs " src="https://assets.softr-files.com/applications/1f37011c-bdff-48c6-8a6b-d2f777aab051/assets/ad003983-377f-4413-ac61-dd42f06fe7b9.png" alt="Publish your designed things."></a>
+                    </div>
+                    <div class="col-md-9 col-12 pb-2">
+                        <div class="nav justify-content-center justify-content-md-end"><a target="" class="nav-link sw-font-size-xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-letter-spacing-wider " href="/about-us">Nuestra Historia</a><a target="" class="nav-link sw-font-size-xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-letter-spacing-wider "
+                            href="">El Equipo</a><a target="" class="nav-link sw-font-size-xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-letter-spacing-wider " href="/portfolio">Portfafolio</a><a target="" class="nav-link sw-font-size-xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-letter-spacing-wider "
+                            href="/newsletter">Descubrimiento </a><a target="" class="nav-link sw-font-size-xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-letter-spacing-wider " href="">Talento</a></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <hr class="sw-margin-top-3xs sw-margin-bottom-3xs sw-border-top-style-solid sw-border-top-width-xs sw-border-top-color-cccccc ">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7"><small class="sw-font-size-s sw-text-color-ffffff sw-font-family-default sw-font-weight-default sw-padding-top-none sw-padding-bottom-3xs sw-display-block">MercadologisticoLatam. All rights reserved.</small></div>
+                    <div class="col-5">
+                        <div class="text-right"><a href="https://facebook.com/mycompany" target="_blank" class="sw-text-color-ffffff sw-font-size-m sw-width-11xs sw-display-inline-block"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://twitter.com/mycompany" target="_blank" class="sw-text-color-ffffff sw-font-size-m sw-width-11xs sw-display-inline-block"><i class="fab fa-twitter"></i></a><a href="https://instagram.com/mycompany" target="_blank" class="sw-text-color-ffffff sw-font-size-m sw-width-11xs sw-display-inline-block"><i class="fab fa-instagram"></i></a></div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        
+        
+
+        <!--compiled_script for 733d9014-dbb5-49be-aaa2-bd1e5c632569-->
+        <div data-spr-role="sentinel-end" data-spr-sentinel-end-for="733d9014-dbb5-49be-aaa2-bd1e5c632569" data-spr-block-hrid="footer1"></div>
+        </div>
+    </body>
+</html>

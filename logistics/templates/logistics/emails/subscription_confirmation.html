@@ -1,0 +1,65 @@
+<!-- templates/logistics/emails/subscription_confirmation.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #ff8600;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>¡Gracias por Suscribirte!</h1>
+        </div>
+        <div class="content">
+            <p>Hola {{ nombre }},</p>
+            <p>¡Gracias por suscribirte a nuestro newsletter! Hemos registrado tu suscripción exitosamente.</p>
+            
+            <h3>Detalles de tu suscripción:</h3>
+            <ul>
+                <li>Empresa: {{ empresa }}</li>
+                <li>País: {{ pais }}</li>
+                <li>Ciudad: {{ ciudad }}</li>
+                <li>Sector: {{ sector }}</li>
+                <li>Rubros de interés:
+                    <ul>
+                        {% for rubro in rubros %}
+                            <li>{{ rubro }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+
+            <p>Recibirás nuestras actualizaciones y noticias más recientes sobre los temas de tu interés.</p>
+        </div>
+        <div class="footer">
+            <p>Este correo fue enviado a {{ correo }}. Si no te suscribiste a este newsletter, por favor ignora este mensaje.</p>
+        </div>
+    </div>
+</body>
+</html>

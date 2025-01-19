@@ -1,0 +1,63 @@
+/* Estilo para el contenedor de "Made with Softr" */
+.made-with-softr {
+    position: fixed;
+    z-index: 9999999;
+    left: 20px;
+    bottom: 20px;
+}
+
+/* Estilo para los enlaces dentro de "Made with Softr" */
+.made-with-softr a {
+    width: 125px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    box-shadow: 0 0 4px rgb(0 0 0 / 15%);
+    border-radius: 4px;
+    z-index: 9999999;
+    align-items: center;
+    padding: 6px 8px;
+    color: #1f2b3f;
+    background: #ffffff;
+    box-sizing: content-box;
+    text-decoration: none;
+    font-family: 'Inter';
+}
+
+/* Estilo para el texto "Made with" */
+.made-with-softr a .made-with {
+    margin-left: 4px;
+}
+
+/* Estilo para la imagen dentro del enlace */
+.made-with-softr a img {
+    width: 16px;
+}
+
+/* Estilo para el texto con la clase "softr-word" */
+.made-with-softr .softr-word {
+    color: #3b85db;
+    margin-left: 2px;
+}
+
+/* Estilo para el tema oscuro de "Made with Softr" */
+.made-with-softr .dark-theme {
+    color: #ffffff;
+    background: #1f2b3f;
+}
+
+/* Estilo para el texto "softr-word" en tema oscuro */
+.made-with-softr .dark-theme .softr-word {
+    color: #ffb30b;
+    margin-left: 2px;
+}
+
+/* Tamaños de fuente personalizados */
+.sw-font-size-5xl {
+    font-size: 3rem;
+}
+
+.sw-font-size-4xl {
+    font-size: 2.25rem;
+}

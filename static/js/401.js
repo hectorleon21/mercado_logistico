@@ -1,0 +1,1 @@
+window['is401Page'] = false; 

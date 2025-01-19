@@ -1,0 +1,192 @@
+/* E:\Desarrollo\MercadoLogisticoDev\Web\mercado_logistico\static\css\newsletter_modal.css */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 20px;
+}
+
+.modal.fade-in {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    transform: scale(0.7);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal.fade-in .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.modal-header h2 {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.form-group {
+    margin-bottom: 8px;
+}
+
+.form-group.half {
+    flex: 1;
+    min-width: 0; /* Permite que los inputs se ajusten correctamente */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 2px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.select-rubros {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    height: 28px; /* Altura fija para todos los inputs */
+}
+
+.select-rubros {
+    height: 80px; /* Reducido de 100px */
+}
+
+#pais, #sector {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.75rem; /* Tamaño de letra reducido */
+    height: 28px; /* Altura consistente con otros campos */
+}
+
+/* También ajustar las opciones dentro de los selectores */
+#pais option, #sector option {
+    font-size: 0.75rem;
+}
+
+.help-text {
+    display: block;
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 2px;
+}
+
+.modal-footer {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.btn {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    height: 28px;
+}
+
+.message {
+    padding: 6px;
+    margin: 6px 0;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #0056b3;  /* Azul */
+    border: 1px solid #c3e6cb;
+    font-weight: bold;  /* Negrita */
+    padding: 10px;
+    text-align: center;
+}
+
+.spinner-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    border-radius: 8px;
+}
+
+.spinner-content {
+    text-align: center;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 10px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #ff8600;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner-text {
+    color: #333;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Estilos para pantallas muy pequeñas */
+@media (max-height: 500px) {
+    .modal-content {
+        max-height: 95vh;
+        padding: 10px;
+    }
+    
+    .select-rubros {
+        height: 60px;
+    }
+}
