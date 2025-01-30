@@ -1,42 +1,55 @@
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {% for course in page_obj %}
-    <div class="border rounded-lg overflow-hidden shadow-md relative">
-        {% if course.image %}
-            <img src="{{ course.image.url }}" 
-                 alt="{{ course.name }}" 
-                 class="w-full h-48 object-cover">
-        {% else %}
-            <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
-                <span class="text-gray-400">Sin imagen</span>
-            </div>
-        {% endif %}
-        
-        <div class="p-4">
-            {% if course.is_new %}
-            <span class="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-sm">
-                Nuevo
-            </span>
-            {% endif %}
-            
-            <h2 class="text-xl font-bold mb-2">{{ course.name }}</h2>
-            <p class="text-gray-600 mb-2">{{ course.institution }}</p>
-            <p class="text-sm mb-2">
-                <span class="font-semibold">Tipo:</span> {{ course.get_course_type_display }}
-            </p>
-            <p class="text-sm mb-2">
-                <span class="font-semibold">Modalidad:</span> {{ course.get_modality_display }}
-            </p>
-            <p class="text-sm mb-2">
-                <span class="font-semibold">Inicio:</span> {{ course.start_date|date:"d/m/Y" }}
-            </p>
-            <div class="text-sm text-gray-700 mt-2">
-                {{ course.description|safe|truncatewords_html:30 }}
+<div class="container">
+    <div class="row">
+        <div class="items col-12">
+            <div class="row g-4">
+                {% for course in page_obj %}
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="course-card position-relative">
+                        {% if course.is_new %}
+                            <span class="new-badge">Nuevo</span>
+                        {% endif %}
+                        
+                        {% if course.image %}
+                            <img src="{{ course.image.url }}" alt="{{ course.name }}" class="course-image">
+                        {% else %}
+                            <div class="course-image bg-light d-flex align-items-center justify-content-center">
+                                <i class="fas fa-graduation-cap fa-2x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="course-content">
+                            <div class="course-institution">{{ course.institution }}</div>
+                            <h3 class="course-title">{{ course.name }}</h3>
+                            
+                            {% if course.description %}
+                            <div class="course-description">
+                                {{ course.description|safe }}
+                            </div>
+                            {% endif %}
+                            
+                            <div class="course-type-badge">
+                                {{ course.get_course_type_display }}
+                            </div>
+                            
+                            <div class="course-meta">
+                                <div class="info-row">
+                                    <i class="far fa-calendar-alt"></i> 
+                                    <span>Inicio: {{ course.start_date|date:"d/m/Y" }}</span>
+                                </div>
+                                <div class="info-row">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>{{ course.get_modality_display }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-4">
+                    <p>No se encontraron cursos disponibles.</p>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
-    {% empty %}
-    <div class="col-span-3 text-center py-8">
-        No se encontraron cursos que coincidan con tu búsqueda.
-    </div>
-    {% endfor %}
 </div>

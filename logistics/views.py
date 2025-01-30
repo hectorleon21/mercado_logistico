@@ -48,7 +48,7 @@ def courses(request):
         courses = courses.filter(modality=modality)
 
     # Paginación
-    paginator = Paginator(courses, 6)  # 6 cursos por página
+    paginator = Paginator(courses, 16)  # 6 cursos por página
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
@@ -71,6 +71,12 @@ def courses(request):
             'logistics/partials/pagination_courses.html',
             {'page_obj': page_obj}
         )
+
+        print("🔹 Respuesta AJAX enviada:", {
+            'courses_html': courses_html[:500],  # Limitar impresión para evitar overflow
+            'pagination_html': pagination_html[:500]
+        }) 
+
         return JsonResponse({
             'courses_html': courses_html,
             'pagination_html': pagination_html,
@@ -78,6 +84,11 @@ def courses(request):
 
     return render(request, 'logistics/courses.html', context)
 
+class CourseDetailView(DetailView):
+    model = Course
+    template_name = "logistics/course_detail.html"
+    context_object_name = "course"
+    
 class NewsDetailView(DetailView):
     model = News
     template_name = 'news/detail.html'  # Cambia este nombre según tu plantilla
@@ -313,7 +324,7 @@ def directorio(request):
         providers = providers.filter(services__name=service)
 
     # Paginación
-    paginator = Paginator(providers, 4)  # Mostrar 4 proveedores por página
+    paginator = Paginator(providers, 32)  # Mostrar 4 proveedores por página
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 

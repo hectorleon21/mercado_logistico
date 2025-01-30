@@ -25,6 +25,108 @@
 
         <link rel="stylesheet" href="{% static 'css/directorio/style_head.css' %}">
 
+        <style>
+            .course-card {
+                border-radius: 8px;
+                overflow: hidden;
+                background: white;
+                border: 1px solid #d1d7dc;
+                height: 100%;
+                transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+                /* transition: all 0.25s ease;*/ 
+                display: flex;
+                flex-direction: column;
+                padding: 8px;
+                min-height: 350px; /* Aseguramos altura mínima */
+            }
+
+            .course-card:hover {
+                /* transform: translateY(-8px); Movimiento más pronunciado */
+                transform: scale(1.04); /* En lugar de translateY, usamos scale */
+                box-shadow: 0 15px 30px rgba(0,0,0,0.15); /* Sombra más prominente al hacer hover */
+            }
+
+            .course-image {
+                width: 100%;
+                height: 120px;
+                object-fit: cover;
+                border-radius: 4px;
+            }
+
+            .course-content {
+                padding: 0.8rem;
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .course-institution {
+                font-size: 0.813rem;
+                color: #6a6f73;
+                font-weight: 500;
+                margin-bottom: 0.2rem;
+                line-height: 1.2;
+            }
+
+            .course-title {
+                font-size: 1rem;
+                font-weight: 600;
+                color: #1b1f23;
+                margin-bottom: 0.5rem;
+                line-height: 1.3;
+                min-height: 42px;
+            }
+
+            .course-type-badge {
+                font-size: 0.813rem;
+                font-weight: 500;
+                padding: 0.25rem 0.5rem;
+                border-radius: 4px;
+                background-color: #f3f4f6;
+                color: #1b1f23;
+                display: inline-block;
+                margin-top: auto; /* Empuja el badge hacia abajo */
+                min-height: 28px; /* Altura fija para alineación */
+            }
+
+            .course-info {
+                font-size: 0.75rem; /* Letra más pequeña */
+                color: #6a6f73; /* Color más suave */
+                margin-top: 0.75rem;
+            }
+
+            .info-row {
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+                line-height: 1.2;
+                margin-bottom: 0.25rem;
+            }
+
+            .info-row i {
+                width: 14px;
+                font-size: 0.75rem;
+            }
+
+            .new-badge {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                background-color: #e43538;
+                color: white;
+                padding: 0.25rem 0.6rem;
+                border-radius: 4px;
+                font-size: 0.813rem;
+                font-weight: 600;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .col-md-4 {
+                padding: 15px;
+            }
+
+            
+        </style>
+
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         
         <script type="text/javascript">
@@ -39,7 +141,7 @@
         <nav id="header1" class="header1-fixed-top navbar nav navbar-expand-lg header1-a696084b-8a7f-417f-beea-bef965bdb464 sw-background-color-000000 sw-padding-top-6xs sw-padding-bottom-5xs sw-border-top-style-none sw-border-top-width-xs sw-border-top-color-16a1c0 sw-border-bottom-style-none sw-border-bottom-width-xs sw-border-bottom-color-ffffff navbar-dark">
             <div class="container">
                 <!-- Logo -->
-                <a class="navbar-brand" href="/"><img class="sw-width-6xs " src="{% static 'images/logo.jpg' %}" alt="Publish your designed things."></a>
+                <a class="navbar-brand" href="/"><img class="sw-width-6xs " src="https://assets.softr-files.com/applications/1f37011c-bdff-48c6-8a6b-d2f777aab051/assets/ad003983-377f-4413-ac61-dd42f06fe7b9.png" alt="Publish your designed things."></a>
                 <div class="desktop-menu text-center justify-content-end">
                     <ul class="navbar-nav  align-items-center flex-row  empty-buttons ">
                         <li class="nav-item "><a class="position-relative  sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
@@ -76,22 +178,20 @@
                         <div class="navigation-section"><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
                             href="/" style="background-color: rgb(0, 0, 0);">Home</a><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
                             href="/newsletter" style="background-color: rgb(0, 0, 0);">Descubre</a><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                            href="/comunidad" style="background-color: rgb(0, 0, 0);">Comunidades</a><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
+                            href="/courses" style="background-color: rgb(0, 0, 0);">Cursos</a><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
                             href="/directorio" style="background-color: rgb(0, 0, 0);">Directorio</a><a class="position-relative link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                            data-toggle="collapse" href="#collapseExample-4" role="button" aria-expanded="false" aria-controls="collapseExample-4" style="background-color: rgb(0, 0, 0);">Empleos<span class="arrow" style="border-left: 2px solid rgb(255, 255, 255); border-top: 2px solid rgb(255, 255, 255);"></span></a>
+                            data-toggle="collapse" href="#" role="button" aria-expanded="false" aria-controls="collapseExample-4" style="background-color: rgb(0, 0, 0);">Empleos<span class="arrow" style="border-left: 2px solid rgb(255, 255, 255); border-top: 2px solid rgb(255, 255, 255);"></span></a>
                             <div
                             class="collapse" id="collapseExample-4"><a target="" class="sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent dropdown-item navigate"
                                 href="/add-jobs">Ingrese empleo</a><a target="" class="sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent dropdown-item navigate"
                                 href="/bolsatrabajo">Encuentra empleo</a></div><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                        href="/herramientas-log-sticas" style="background-color: rgb(0, 0, 0);">Herramientas</a><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                        href="/login" style="background-color: rgb(0, 0, 0);">Login</a></div>
                 <div class="buttons-section"></div>
             </div>
             </div>
             </div>
         </nav>
         <link rel="stylesheet" href="{% static 'css/directorio/body_b1.css' %}">
-        HOLA 1
+        
         <script src="{% static 'js/directorio/body_b1.js' %}"></script>
 
         <div data-spr-role="sentinel-end" data-spr-sentinel-end-for="a696084b-8a7f-417f-beea-bef965bdb464" data-spr-block-hrid="header1"></div>
@@ -101,10 +201,10 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-12 text-center sw-background-color-none sw-border-style-none sw-border-width-xs sw-border-color-000000 sw-border-radius-none sw-box-shadow-none sw-padding-top-none sw-padding-bottom-none ">
-                        <h2 class="sw-font-size-8xl sw-text-color-ffffff sw-font-family-default sw-font-weight-bold sw-padding-top-none sw-padding-bottom-4xs sw-letter-spacing-wider sw-line-height-loose ">      Comunidad de  personas para hacer negocios     </h2>
-                        <p class="sw-font-size-3xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-padding-top-none sw-padding-bottom-3xs sw-letter-spacing-tighter sw-line-height-loose "> Todas las empresas del sector logístico, sus aliados y socios en un solo lugar. </p>
+                        <h2 class="sw-font-size-8xl sw-text-color-ffffff sw-font-family-default sw-font-weight-bold sw-padding-top-none sw-padding-bottom-4xs sw-letter-spacing-wider sw-line-height-loose">Cursos y Capacitaciones</h2>
+                        <p class="sw-font-size-3xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-padding-top-none sw-padding-bottom-3xs sw-letter-spacing-tighter sw-line-height-loose">Explora nuestro catálogo de cursos especializados en logística</p>
                         <div class="d-flex justify-content-center flex-wrap"> <a id="sw-email-capture-submit-btn" data-element="button" target="" class="sw-font-size-l sw-text-color-default sw-font-family-default sw-font-weight-semibold sw-border-radius-none sw-background-color-ffa500 sw-padding-left-2xl sw-padding-right-2xl sw-padding-top-4xs sw-padding-bottom-4xs sw-border-style-none sw-border-width-xs sw-border-color-2977c9 sw-letter-spacing-normal sw-text-decoration-no-underline hover:sw-text-decoration-no-underline hover:sw-box-shadow-m sw-margin-bottom-6xs sw-display-inline-block sw-margin-left-7xs sw-margin-right-7xs"
-                            href="">        Explore       </a> </div>
+                            href="">        Explora       </a> </div>
                     </div>
                 </div>
             </div>
@@ -126,17 +226,17 @@
                 <div class="row mobile-filter js-filter js-filter-right" data-multiselect="false" data-showall="false" data-mappedto="Categoría">
                     <div class="col-md-12 m-0 p-0">
                         <div class="text-center top-filters d-flex align-items-center justify-content-center sw-font-size-3xl sw-text-color-3b3b3b sw-font-family-default sw-font-weight-normal sw-letter-spacing-normal sw-padding-top-7xs sw-padding-bottom-6xs sw-padding-right-6xs sw-padding-left-6xs sw-margin-right-6xs sw-cursor-default">
-                        Categorías </div>
+                        Cursos Logísticos </div>
                     </div>
-                    <div class="col-md-12 ml-0 p-0 top-filters d-flex align-items-center justify-content-center flex-wrap       "> <span class="filter js-filter-option sw-font-size-s sw-text-color-c7a1e8 sw-font-family-default sw-font-weight-semibold sw-background-color-ffffff hover:sw-background-color-e1dfe3 sw-border-style-solid sw-border-width-xs sw-border-color-c7a1e8 hover:sw-border-style-solid hover:sw-border-width-xs hover:sw-border-color-e1dfe3 sw-border-radius-full sw-padding-top-7xs sw-padding-bottom-7xs sw-padding-left-5xs sw-padding-right-5xs sw-margin-right-6xs sw-cursor-default"
+                    <!-- <div class="col-md-12 ml-0 p-0 top-filters d-flex align-items-center justify-content-center flex-wrap       "> <span class="filter js-filter-option sw-font-size-s sw-text-color-c7a1e8 sw-font-family-default sw-font-weight-semibold sw-background-color-ffffff hover:sw-background-color-e1dfe3 sw-border-style-solid sw-border-width-xs sw-border-color-c7a1e8 hover:sw-border-style-solid hover:sw-border-width-xs hover:sw-border-color-e1dfe3 sw-border-radius-full sw-padding-top-7xs sw-padding-bottom-7xs sw-padding-left-5xs sw-padding-right-5xs sw-margin-right-6xs sw-cursor-default"
                         data-value="Operador Logístico">         Operador Logístico        </span> <span class="filter js-filter-option sw-font-size-s sw-text-color-c7a1e8 sw-font-family-default sw-font-weight-semibold sw-background-color-ffffff hover:sw-background-color-e1dfe3 sw-border-style-solid sw-border-width-xs sw-border-color-c7a1e8 hover:sw-border-style-solid hover:sw-border-width-xs hover:sw-border-color-e1dfe3 sw-border-radius-full sw-padding-top-7xs sw-padding-bottom-7xs sw-padding-left-5xs sw-padding-right-5xs sw-margin-right-6xs sw-cursor-default"
-                        data-value="Ultima Milla">         Ultima Milla        </span> <span class="empty d-md-none"></span> </div>
+                        data-value="Ultima Milla">         Ultima Milla        </span> <span class="empty d-md-none"></span> </div> -->
                 </div>
                 <!-- TOP FILTERS   -->
                 <div class="row desktop-filter position-relative js-mobile-filter js-filter js-filter-top" data-multiselect="false" data-showall="false" data-mappedto="Categoría">
                     <div class="col-md-12 p-0">
                         <div class="text-center top-filters d-flex align-items-center justify-content-center sw-font-size-3xl sw-text-color-3b3b3b sw-font-family-default sw-font-weight-normal sw-letter-spacing-normal sw-padding-top-7xs sw-padding-bottom-6xs sw-padding-right-6xs sw-padding-left-6xs sw-margin-right-6xs sw-cursor-default">
-                            DIRECTORIO
+                            Cursos Logísticos
                         </div>
                     </div>
                     <div class="col-md-12 ml-0 p-0 top-filters d-flex align-items-center justify-content-center flex-wrap"> 
@@ -157,7 +257,7 @@
                                     name="q"
                                     autocomplete="on"
                                     value="{{ search_query }}"
-                                    placeholder="Busca por Nombre, Descripción o Servicios"
+                                    placeholder="Busca por Nombre o Descripción del Curso"
                                 >
                                 <input type="hidden" name="service" id="selected-service" value="{{ selected_service }}">
                             </div>
@@ -168,112 +268,14 @@
             </div>
 
             <!-- Contenedor principal para la carga inicial y resultados paginados -->
+            <!-- Contenedor principal donde se carga la lista de cursos -->
             <div id="provider-list-container">
-                <div class="container">
-                    <div class="row">
-                        <div class="items col-12">
-                            <div class="sw-js-list-container sw-4-column">
-                                {% for provider in page_obj %}
-                                <div data-recordid="rec0csanNgVflnGsl" class="js-list-item position-relative overflow-hidden p-0 flex-1 justify-content-center box sw-background-color-ffffff sw-margin-bottom-6xs sw-border-style-solid sw-border-width-none sw-border-color-e1dfe3 sw-border-radius-none sw-box-shadow-s hover:sw-box-shadow-l sw-cursor-default top"
-                                data-editor-status="attached">
-                                    <div class="d-flex flex-column sw-js-list-item-header">
-                                        <div class="image text-center">
-                                            <div data-type="staticImage"
-                                                style="background-image: url({{ provider.image.url }});
-                                                background-position: center;
-                                                background-size: cover;
-                                                width: 300px;
-                                                height: 200px;"
-                                                class="image d-block mr-md-3 sw-height-4xs sw-background-size-cover sw-border-style-solid sw-border-width-xs sw-border-color-f4f2f2 sw-border-radius-none">
-                                            </div>
-                                        </div>
-
-                                        <div class="text d-flex flex-column" style="padding-top: 0px; padding-left: 20px; border: 0px solid #ddd; border-radius: 5px;">
-                                            <div class="sw-js-single-item-elements w-100" data-recordid="rec0csanNgVflnGsl">
-                                                <!-- Nombre de la empresa -->
-                                                <div class="sw-pre-text-container mb-2" style="margin-top: -10; padding-top: 0;">
-                                                    <h1 data-type="heading1" class="sw-font-size-l sw-text-color-7710d2 sw-font-family-default sw-font-weight-semibold sw-text-align-left sw-letter-spacing-normal mb-2" style="margin-top: 0;">
-                                                        {{ provider.name }}
-                                                    </h1>
-                                                </div>
-                                                <!-- Descripción de la empresa -->
-                                                <div class="sw-pre-text-container mb-2">
-                                                    <div data-type="text" class="sub-title sw-font-size-s sw-text-color-757575 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">
-                                                        {{ provider.description }}
-                                                    </div>
-                                                </div>
-                                                <!-- Dirección -->
-                                                <div class="sw-pre-text-container mb-2">
-                                                    <div data-type="text" class="sub-title sw-font-size-s sw-text-color-333333 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">
-                                                        <strong>Dirección:</strong> {{ provider.address }}
-                                                    </div>
-                                                </div>
-                                                <!-- Teléfono -->
-                                                <div class="sw-pre-text-container mb-2">
-                                                    <div data-type="text" class="mb-1 sw-font-size-s sw-text-color-333333 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">
-                                                        <strong>Teléfono:</strong> {{ provider.phone_number }}
-                                                    </div>
-                                                </div>
-                                                <!-- Correo electrónico -->
-                                                <div class="sw-pre-email-container mb-2">
-                                                    <div class="sw-font-size-s sw-text-color-333333 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">
-                                                        <strong>Correo electrónico:</strong> <a href="mailto:{{ provider.email }}" target="" style="cursor: default!important; text-decoration: none;" class="prevent-link-fields sw-font-size-s sw-text-color-333333 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">{{ provider.email }}</a>
-                                                    </div>
-                                                </div>
-                                                <!-- Sitio web -->
-                                                <div class="sw-pre-url-container">
-                                                    <div class="sw-font-size-s sw-text-color-333333 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">
-                                                        <strong>Sitio web:</strong> <a href="{{ provider.website|default:'#' }}" target="_blank" style="cursor: pointer;" class="prevent-link-fields sw-font-size-s sw-text-color-333333 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">{{ provider.website|default:'' }}</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>                                                           
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <div class="col-12 text-center">
-                                <div class="sw-js-list-empty-state d-none sw-font-size-m sw-text-color-6f6f6f sw-font-family-default sw-font-weight-normal sw-line-height-normal sw-padding-top-2xl sw-padding-bottom-none">No hay resultados, prueba con otra búsqueda.</div>
-                                <div class="sw-js-list-error-state d-none">Ha ocurrido un error, por favor contáctenos si el error persiste.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% include 'logistics/partials/courses_list.html' with page_obj=page_obj %}
             </div>
-
+    
             <!-- Contenedor de paginación -->
-            <div id="pagination-container">
-                <div class="container">
-                    <div class="col-12 text-center pt-4">
-                        <nav aria-label="Paginación" class="d-flex justify-content-center">
-                            <ul class="pagination mb-0">
-                                {% if page_obj.has_previous %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Anterior">
-                                            &laquo;
-                                        </a>
-                                    </li>
-                                {% endif %}
-
-                                {% for num in page_obj.paginator.page_range %}
-                                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                                        <a class="page-link" {% if page_obj.number != num %}href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}"{% endif %}>
-                                            {{ num }}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-
-                                {% if page_obj.has_next %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Siguiente">
-                                            &raquo;
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
+            <div class="d-flex justify-content-center my-4">
+                {% include 'logistics/partials/pagination_courses.html' with page_obj=page_obj %}
             </div>
 
             <script>
