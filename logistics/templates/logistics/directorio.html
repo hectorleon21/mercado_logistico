@@ -179,7 +179,7 @@
                                     <div class="d-flex flex-column sw-js-list-item-header">
                                         <div class="image text-center">
                                             <div data-type="staticImage"
-                                                style="background-image: url({{ provider.image.url }});
+                                                style="background-image: url({{ provider.image.url|default:'/media/provider_images/no-image.jpg' }});
                                                 background-position: center;
                                                 background-size: cover;
                                                 width: 300px;
