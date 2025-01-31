@@ -9,17 +9,21 @@
                             <span class="new-badge">Nuevo</span>
                         {% endif %}
                         
-                        {% if course.image %}
-                            <img src="{{ course.image.url }}" alt="{{ course.name }}" class="course-image">
-                        {% else %}
-                            <div class="course-image bg-light d-flex align-items-center justify-content-center">
-                                <i class="fas fa-graduation-cap fa-2x text-muted"></i>
-                            </div>
-                        {% endif %}
+                        <a href="{% url 'course-detail' course.id %}">
+                            {% if course.image %}
+                                <img src="{{ course.image.url }}" alt="{{ course.name }}" class="course-image">
+                            {% else %}
+                                <div class="course-image bg-light d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-graduation-cap fa-2x text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </a>
                         
                         <div class="course-content">
                             <div class="course-institution">{{ course.institution }}</div>
-                            <h3 class="course-title">{{ course.name }}</h3>
+                            <h3 class="course-title">
+                                <a href="{% url 'course-detail' course.id %}">{{ course.name }}</a>
+                            </h3>
                             
                             {% if course.description %}
                             <div class="course-description">
