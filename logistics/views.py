@@ -1,7 +1,7 @@
 # C:\Django\cms_env\logistic_manager\logistics\views.py
 
+from django.utils.timezone import now
 from django.core.paginator import Paginator
-
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.template.loader import render_to_string
@@ -30,6 +30,9 @@ def courses(request):
     course_type = request.GET.get('type', '')
     modality = request.GET.get('modality', '')
 
+    # Obtener la fecha actual
+    today = now().date()
+
     # Query base
     courses = Course.objects.all()
 
@@ -47,8 +50,15 @@ def courses(request):
     if modality:
         courses = courses.filter(modality=modality)
 
+    # Separar cursos en futuros y pasados
+    future_courses = courses.filter(start_date__gte=today).order_by('start_date')  # Cursos futuros (ordenados del más próximo al más lejano)
+    past_courses = courses.filter(start_date__lt=today).order_by('-start_date')  # Cursos pasados (ordenados del más reciente al más antiguo)
+
+    # Concatenar listas: primero los futuros, luego los pasados
+    ordered_courses = list(future_courses) + list(past_courses)
+
     # Paginación
-    paginator = Paginator(courses, 16)  # 6 cursos por página
+    paginator = Paginator(ordered_courses, 16)  # 16 cursos por página
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 

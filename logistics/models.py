@@ -26,9 +26,11 @@ class Course(models.Model):
     
     MODALITIES = [
         ('PR', 'Presencial'),
+        ('SS', 'Semipresencial (y sincrónico)'),
+        ('SA', 'Semipresencial (y asincrónico)'),
+        ('OS', 'Online – Sincrónico'),
+        ('OA', 'Online – Asincrónico'),
         ('ON', 'Online'),
-        ('SI', 'Sincrónica'),
-        ('AS', 'Asincrónica'),
     ]
 
     name = models.CharField(max_length=255, verbose_name="Nombre del Curso")
