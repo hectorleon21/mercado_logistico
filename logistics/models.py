@@ -435,14 +435,15 @@ class Provider(models.Model):
     description = models.TextField(verbose_name="Descripción")
     services = models.ManyToManyField(Service, related_name='providers', verbose_name="Servicios")
     address = models.CharField(max_length=255, verbose_name="Dirección")
-    phone_number = models.CharField(max_length=20, verbose_name="Teléfono")
-    email = models.EmailField(verbose_name="Correo electrónico")
-    website = models.URLField(
+    phone_number = models.CharField(max_length=50, verbose_name="Teléfono")
+    # email = models.EmailField(verbose_name="Correo electrónico")
+    email = models.CharField(max_length=254, verbose_name="Correo electrónico")
+    website = models.CharField(
         max_length=255,
         blank=True,
         null=True,
         verbose_name="Sitio Web",
-        validators=[URLValidator(schemes=['http', 'https'])]
+        # validators=[URLValidator(schemes=['http', 'https'])]
     )
     image = models.ImageField(
         upload_to='provider_images/',

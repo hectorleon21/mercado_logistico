@@ -349,8 +349,24 @@ class NewsAdmin(admin.ModelAdmin):
             )
     run_scraper.short_description = "Ejecutar scraping de noticias"
 
+# Primero, crear una clase de formulario personalizada
+class ProviderAdminForm(forms.ModelForm):
+    class Meta:
+        model = Provider
+        fields = '__all__'
+
+    def clean_email(self):
+        return self.cleaned_data.get('email', '')
+
+    def clean_phone_number(self):
+        return self.cleaned_data.get('phone_number', '')
+
+    def clean_website(self):
+        return self.cleaned_data.get('website', '')
+
 @admin.register(Provider)
 class ProviderAdmin(admin.ModelAdmin):
+    form = ProviderAdminForm  # Usar el formulario personalizado
     list_display = ['name', 'phone_number', 'email', 'website', 'view_services']
     list_filter = ['services']
     search_fields = ['name', 'description', 'address', 'email']
