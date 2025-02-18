@@ -383,6 +383,9 @@ class ProviderAdmin(admin.ModelAdmin):
         ('Información de Contacto', {
             'fields': ('address', 'phone_number', 'email', 'website')
         }),
+        ('Restricciones', {  # 🔹 Nuevo campo "Solo Miembros"
+            'fields': ('only_members',)
+        }),
     )
 
     def preview_image(self, obj):

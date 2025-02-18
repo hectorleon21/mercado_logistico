@@ -19,6 +19,7 @@ from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from django.views.generic import DetailView
 
+
 def index(request):
     print("Cargando la página de inicio")  # Esto imprimirá en la consola
     return render(request, 'logistics/index.html')  # Asegúrate de que esta ruta sea correcta
@@ -193,26 +194,19 @@ def newsletter(request):
     events_search_query = request.GET.get('events_q', '')
     news_search_query = request.GET.get('news_q', '')
 
-    today = now().date()
-
-    # Obtener eventos futuros y pasados con los filtros aplicados
-    future_events = Event.objects.filter(date__gte=today).order_by('date')
-    past_events = Event.objects.filter(date__lt=today).order_by('-date')
-
-    if events_search_query:
-        future_events = future_events.filter(
-            Q(name__icontains=events_search_query) |
-            Q(description__icontains=events_search_query) |
-            Q(location__icontains=events_search_query)
-        )
-        past_events = past_events.filter(
-            Q(name__icontains=events_search_query) |
-            Q(description__icontains=events_search_query) |
-            Q(location__icontains=events_search_query)
-        )
-
-    # Obtener noticias filtradas
+    # Query base para eventos y noticias
+    events = Event.objects.order_by('-date')
     news = News.objects.filter(is_published=True).order_by('-date')
+
+    # Aplicar filtro de búsqueda si existe
+    # Aplicar filtros de búsqueda si existen
+    if events_search_query:
+        events = events.filter(
+            Q(name__icontains=events_search_query) |
+            Q(description__icontains=events_search_query) |
+            Q(location__icontains=events_search_query)
+        )
+
     if news_search_query:
         news = news.filter(
             Q(title__icontains=news_search_query) |
@@ -220,28 +214,22 @@ def newsletter(request):
         )
 
     # Paginación para eventos
-    events_per_page = 4
-    future_events_paginator = Paginator(future_events, events_per_page)
-    past_events_paginator = Paginator(past_events, events_per_page)
-
+    events_paginator = Paginator(events, 4)  # 4 eventos por página
     events_page_number = request.GET.get('events_page', 1)
-    future_events_page_obj = future_events_paginator.get_page(events_page_number)
-    past_events_page_obj = past_events_paginator.get_page(events_page_number)
-
-    # Unimos los eventos paginados en la plantilla
-    events_page_obj = list(future_events_page_obj) + list(past_events_page_obj)
+    events_page_obj = events_paginator.get_page(events_page_number)
 
     # Paginación para noticias
-    news_paginator = Paginator(news, 6)  # 6 noticias por página
+    news_paginator = Paginator(news, 6)  # 4 noticias por página
     news_page_number = request.GET.get('news_page', 1)
     news_page_obj = news_paginator.get_page(news_page_number)
 
+    # Preparar contexto para las plantillas
     context = {
         'events_page_obj': events_page_obj,
         'news_page_obj': news_page_obj,
         'events_search_query': events_search_query,
         'news_search_query': news_search_query,
-        'total_events': future_events.count() + past_events.count(),
+        'total_events': events.count(),
         'total_news': news.count(),
     }
 
@@ -249,6 +237,7 @@ def newsletter(request):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         response_data = {}
 
+        # Si se está solicitando la paginación de eventos
         if 'events_page' in request.GET or 'events_q' in request.GET:
             response_data['events_html'] = render_to_string(
                 'logistics/partials/events_list.html',
@@ -261,6 +250,7 @@ def newsletter(request):
                 request=request
             )
 
+        # Si se está solicitando la paginación de noticias
         if 'news_page' in request.GET or 'news_q' in request.GET:
             response_data['news_html'] = render_to_string(
                 'logistics/partials/news_list.html',
@@ -275,7 +265,7 @@ def newsletter(request):
 
         return JsonResponse(response_data)
 
-    # Renderizar la página completa
+    # Renderizar página completa
     return render(request, 'logistics/newsletter.html', context)
 
 
@@ -330,8 +320,7 @@ def directorio(request):
     
     query = request.GET.get('q', '')  # Obtener el término de búsqueda
     service = request.GET.get('service', '')  # Obtener el servicio seleccionado
-    # providers = Provider.objects.all()  # Obtener todos los proveedores por defecto
-    providers = Provider.objects.filter(only_members=False)  # Ocultar proveedores solo para miembros
+    providers = Provider.objects.all()  # Obtener todos los proveedores por defecto
 
     # Filtrar por búsqueda si existe
     if query:

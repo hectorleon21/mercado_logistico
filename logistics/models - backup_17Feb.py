@@ -454,9 +454,6 @@ class Provider(models.Model):
         help_text="Tamaño recomendado: 300x200 píxeles. Máximo 2MB."
     )
 
-    # 🔹 Nuevo campo: "Solo Miembros"
-    only_members = models.BooleanField(default=False, verbose_name="Solo Miembros")
-
     def save(self, *args, **kwargs):
         if self.image:
             img = Image.open(self.image)
