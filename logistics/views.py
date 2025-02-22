@@ -189,15 +189,13 @@ def run_news_scraper(request):
     return redirect('admin:logistics_news_changelist')
 
 def newsletter(request):
-    # Obtener términos de búsqueda separados
     events_search_query = request.GET.get('events_q', '')
     news_search_query = request.GET.get('news_q', '')
-
     today = now().date()
 
     # Obtener eventos futuros y pasados con los filtros aplicados
-    future_events = Event.objects.filter(date__gte=today).order_by('date')
-    past_events = Event.objects.filter(date__lt=today).order_by('-date')
+    future_events = Event.objects.filter(date__gte=today).order_by('date')  # Ordenados por fecha ascendente (próximos primero)
+    past_events = Event.objects.filter(date__lt=today).order_by('-date')    # Ordenados por fecha descendente (más recientes primero)
 
     if events_search_query:
         future_events = future_events.filter(
@@ -211,6 +209,15 @@ def newsletter(request):
             Q(location__icontains=events_search_query)
         )
 
+    # Primero obtener las queries completas como listas
+    ordered_events = list(future_events) + list(past_events)
+    
+    # Paginación para eventos
+    events_per_page = 4
+    events_paginator = Paginator(ordered_events, events_per_page)
+    events_page_number = request.GET.get('events_page', 1)
+    events_page_obj = events_paginator.get_page(events_page_number)
+
     # Obtener noticias filtradas
     news = News.objects.filter(is_published=True).order_by('-date')
     if news_search_query:
@@ -218,18 +225,6 @@ def newsletter(request):
             Q(title__icontains=news_search_query) |
             Q(description__icontains=news_search_query)
         )
-
-    # Paginación para eventos
-    events_per_page = 4
-    future_events_paginator = Paginator(future_events, events_per_page)
-    past_events_paginator = Paginator(past_events, events_per_page)
-
-    events_page_number = request.GET.get('events_page', 1)
-    future_events_page_obj = future_events_paginator.get_page(events_page_number)
-    past_events_page_obj = past_events_paginator.get_page(events_page_number)
-
-    # Unimos los eventos paginados en la plantilla
-    events_page_obj = list(future_events_page_obj) + list(past_events_page_obj)
 
     # Paginación para noticias
     news_paginator = Paginator(news, 6)  # 6 noticias por página
@@ -241,8 +236,10 @@ def newsletter(request):
         'news_page_obj': news_page_obj,
         'events_search_query': events_search_query,
         'news_search_query': news_search_query,
-        'total_events': future_events.count() + past_events.count(),
+        'total_events': len(ordered_events),
         'total_news': news.count(),
+        'total_future_events': future_events.count(),  # Agregado para referencia
+        'total_past_events': past_events.count(),      # Agregado para referencia
     }
 
     # Manejar solicitudes AJAX
@@ -275,9 +272,7 @@ def newsletter(request):
 
         return JsonResponse(response_data)
 
-    # Renderizar la página completa
     return render(request, 'logistics/newsletter.html', context)
-
 
 
 def newsletter_ajax(request):
