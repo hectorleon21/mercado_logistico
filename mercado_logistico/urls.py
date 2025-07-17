@@ -1,11 +1,11 @@
-from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from logistics.admin import admin_site  # Importar el AdminSite personalizado
 
 # Configuración de las URLs del proyecto
 urlpatterns = [
-    path('admin/', admin.site.urls),  # Ruta para el admin de Django
+    path('admin/', admin_site.urls),  # Usar el admin_site personalizado en lugar de admin.site.urls
     path('', include('logistics.urls')),  # Incluir las URLs de la app "logistics"
 ]
 

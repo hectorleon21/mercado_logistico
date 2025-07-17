@@ -1,0 +1,253 @@
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    overflow-x: hidden;
+    background-color: #ffffff;
+}
+
+body {
+    /* fallback for devices that do not support dvh units */
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+.container {
+    max-width: 100%;
+}
+
+@media (min-width: 576px) {
+    .container {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-brand img {
+        max-width: 15rem !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 100%;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 100%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 100%;
+    }
+}
+
+p, h1, h2, h3, h4, h5, small {
+    white-space: pre-line;
+}
+
+@media screen and (max-width: 768px) {
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+}
+
+h1.sw-font-family-default,
+h2.sw-font-family-default,
+h3.sw-font-family-default {
+    font-family: "Didact Gothic";
+}
+
+h1.sw-font-weight-default,
+h2.sw-font-weight-default,
+h3.sw-font-family-default {
+    font-weight: 400;
+}
+
+h1.sw-text-color-default,
+h2.sw-text-color-default,
+h3.sw-font-family-default {
+    color: #ffffff;
+}
+
+section.sw-font-family-default,
+header.sw-font-family-default,
+nav.sw-font-family-default,
+footer.sw-font-family-default,
+div.sw-font-family-default,
+span.sw-font-family-default,
+small.sw-font-family-default,
+pre.sw-font-family-default,
+p.sw-font-family-default,
+b.sw-font-family-default,
+li.sw-font-family-default,
+ul.sw-font-family-default,
+a.sw-font-family-default,
+h4.sw-font-family-default,
+h5.sw-font-family-default,
+h6.sw-font-family-default {
+    font-family: "Didact Gothic";
+}
+
+span.sw-font-weight-default,
+li.sw-font-weight-default span,
+small.sw-font-weight-default,
+li.sw-font-weight-default small,
+pre.sw-font-weight-default,
+p.sw-font-weight-default,
+h4.sw-font-weight-default,
+h5.sw-font-weight-default,
+h6.sw-font-weight-default {
+    font-weight: 400;
+}
+
+span.sw-text-color-default,
+li.sw-text-color-default span,
+small.sw-text-color-default,
+li.sw-text-color-default small,
+pre.sw-text-color-default,
+p.sw-text-color-default,
+div.sw-text-color-default,
+h4.sw-text-color-default,
+h5.sw-text-color-default,
+h6.sw-text-color-default {
+    color: #000000;
+}
+
+input.sw-font-family-default,
+textarea.sw-font-family-default {
+    font-family: "Didact Gothic";
+}
+
+input.sw-font-weight-default,
+textarea.sw-font-weight-default {
+    font-weight: 400;
+}
+
+.sw-font-family-default::-webkit-input-placeholder,
+.sw-font-family-default::-moz-placeholder,
+.sw-font-family-default:-ms-input-placeholder,
+.sw-font-family-default:-moz-placeholder {
+    font-family: "Didact Gothic";
+}
+
+.sw-font-family-default::-webkit-input-placeholder,
+.sw-font-family-default::-moz-placeholder,
+.sw-font-family-default:-ms-input-placeholder,
+.sw-font-family-default:-moz-placeholder {
+    font-weight: 400;
+}
+
+.sw-text-color-default[data-element='button'] {
+    color: #ffffff;
+}
+
+.sw-background-color-default[data-element='button'] {
+    background-color: #1de8f7;
+}
+
+.sw-border-radius-default[data-element='button'] {
+    border-radius: .25rem;
+}
+
+/* Micromodal styles */
+.sw-modal {
+    display: none;
+}
+
+.sw-modal.is-open {
+    display: block;
+}
+
+.sw-modal .sw-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.sw-modal .sw-modal-container {
+    background-color: #FFFFFF;
+    padding: 40px 10px 10px 10px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    position: relative;
+    margin: auto;
+    border-radius: 16px;
+}
+
+.sw-modal #sw-modal-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sw-modal .sw-modal-close {
+    background: transparent;
+    border: 0;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.sw-modal-close:focus {
+    outline: none;
+}
+
+.sw-modal .sw-modal-iframe {
+    border: none;
+}
+
+.sw-modal-size-sm {
+    width: 464px;
+    height: 350px;
+    max-width: 95vw;
+    max-height: 95vh;
+}
+
+
+.sw-modal-size-md {
+    width: 755px;
+    height: 600px;
+    max-width: 95vw;
+    max-height: 95vh;
+}
+
+.sw-modal-size-lg {
+    width: 1196px;
+    height: 780px;
+    max-width: 95vw;
+    max-height: 95vh;
+}
+
+.sw-modal-size-xl {
+    width: 95vw;
+    height: 95vh;
+}
+
+.sw-modal-container > div, #sw-modal-content, #sw-modal-content iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.sw-modal-close:before {
+    content: "\2715";
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}

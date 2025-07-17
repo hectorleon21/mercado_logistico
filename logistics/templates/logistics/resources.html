@@ -1,0 +1,749 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Recursos - Mercado Logístico{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+    /* Hero Section */
+    .hero {
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+        background-color: #000;
+        margin-top: 0;
+    }
+
+    .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+    }
+
+    .slide::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .slide-content {
+        position: relative;
+        color: #fff;
+        max-width: 700px;
+        padding: 2rem 3rem 2rem 5rem;
+        z-index: 10;
+        text-align: left;
+    }
+
+    .slide-content h1 {
+        font-size: 2.8rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        line-height: 1.2;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
+
+    .slide-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        max-width: 90%;
+        color: #f0f0f0;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 0.8rem 2rem;
+        background-color: #0099cc;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        border: none;
+        font-weight: 600;
+    }
+
+    .btn:hover {
+        background-color: #0077aa;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Estilos para la marquesina de noticias */
+    .news-marquee {
+        background-color: #0099cc;
+        color: white;
+        padding: 0.5rem 0;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .news-marquee-content {
+        white-space: nowrap;
+        animation: marquee 30s linear infinite;
+        display: inline-block;
+    }
+    
+    .news-item {
+        display: inline-block;
+        padding: 0 2rem;
+        font-size: 0.9rem;
+    }
+    
+    .news-item span {
+        background-color: white;
+        color: #0099cc;
+        padding: 0.2rem 0.5rem;
+        border-radius: 3px;
+        font-weight: 600;
+        margin-right: 0.5rem;
+    }
+    
+    @keyframes marquee {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+    }
+    
+    /* Sección de Novedades */
+    #novedades {
+        padding: 4rem 5rem;
+    }
+    
+    .section-title {
+        text-align: center;
+        max-width: 100%;
+        margin: 0 auto 2rem;
+        font-size: 2rem;
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 1rem;
+        color: #333;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background-color: #0099cc;
+        border-radius: 2px;
+    }
+    
+    .recursos-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .recurso-card {
+        background-color: #fff;
+        border: 1px solid #e8eef1;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .recurso-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .recurso-imagen {
+        height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .recurso-contenido {
+        padding: 1.2rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+    }
+    
+    .recurso-titulo {
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.7rem;
+        line-height: 1.4;
+        color: #333;
+        height: 5.6em;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+    }
+    
+    .recurso-autor {
+        font-size: 0.75rem;
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    
+    .recurso-contacto {
+        display: inline-block;
+        color: #0099cc;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        padding: 0.5rem 0;
+        width: 100%;
+        border-top: 1px solid #eee;
+        text-align: center;
+        margin-top: auto;
+        transition: all 0.3s ease;
+    }
+    
+    .recurso-contacto:hover {
+        background-color: #f5f9fc;
+        color: #0077aa;
+    }
+    
+    /* Estilos para los placeholders según tipo de recurso */
+    .placeholder-libro { background-color: #a9dfbf; color: #145a32; }
+    .placeholder-excel, .placeholder-calculo { background-color: #aed6f1; color: #1b4f72; }
+    .placeholder-infografia { background-color: #f9e79f; color: #7d6608; }
+    .placeholder-articulo { background-color: #d2b4de; color: #512e5f; }
+    .placeholder-documento, .placeholder-generico { background-color: #e5e7e9; color: #566573; }
+    
+    /* Biblioteca de Conocimiento */
+    #biblioteca-conocimiento {
+        padding: 4rem 3rem;
+        background-color: #f9f9f9;
+    }
+    
+    .titulo-subtitulo-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .biblioteca-titulo {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .biblioteca-subtitulo {
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+    
+    .biblioteca-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    /* Buscador */
+    .search-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+    }
+    
+    .search-box {
+        display: flex;
+        width: 100%;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #eaeaea;
+    }
+    
+    .search-input {
+        flex: 1;
+        padding: 1rem 1.2rem;
+        border: none;
+        font-size: 0.95rem;
+        color: #333;
+    }
+    
+    .search-btn {
+        padding: 0 2rem;
+        background-color: #0099cc;
+        color: white;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .search-btn:hover {
+        background-color: #0077aa;
+    }
+    
+    /* Paginación */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin: 2rem 0;
+    }
+    
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        gap: 0.5rem;
+    }
+    
+    .page-item {
+        margin: 0;
+    }
+    
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border: 1px solid #ddd;
+        color: #0077aa;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+    }
+    
+    .page-item.disabled .page-link {
+        color: #aaa;
+        pointer-events: none;
+        background-color: #f9f9f9;
+    }
+    
+    .page-item.active .page-link {
+        background-color: #0099cc;
+        color: white;
+        border-color: #0099cc;
+    }
+    
+    /* Filtros */
+    .filtros-container {
+        display: flex;
+        justify-content: center;
+        gap: 0.8rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-filtro {
+        padding: 0.5rem 1.5rem;
+        border-radius: 20px;
+        border: 1px solid #ddd;
+        background-color: white;
+        color: #555;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .btn-filtro.active {
+        background-color: #0099cc;
+        color: white;
+        border-color: #0099cc;
+    }
+    
+    .btn-filtro:hover {
+        background-color: #f0f0f0;
+        transform: translateY(-2px);
+    }
+    
+    .btn-filtro.active:hover {
+        background-color: #0088bb;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1400px) {
+        .recursos-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        .biblioteca-grid {
+            grid-template-columns: repeat(6, 1fr);
+        }
+    }
+    
+    @media (max-width: 1200px) {
+        .recursos-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .biblioteca-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        #novedades {
+            padding: 4rem 3rem;
+        }
+        #biblioteca-conocimiento {
+            padding: 4rem 2rem;
+        }
+    }
+    
+    @media (max-width: 992px) {
+        .recursos-grid, .biblioteca-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        #novedades {
+            padding: 4rem 2rem;
+        }
+        #biblioteca-conocimiento {
+            padding: 4rem 1.5rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero { height: auto; min-height: 350px; padding: 4rem 0; }
+        .slide-content { padding: 2rem; }
+        .slide-content h1 { font-size: 2rem; }
+        .slide-content p { font-size: 1rem; }
+        .search-box { flex-direction: column; }
+        .search-input { border-right: none; border-bottom: 1px solid #e0e0e0; border-radius: 6px 6px 0 0; }
+        .search-btn { border-radius: 0 0 6px 6px; }
+        #novedades {
+            padding: 4rem 1.5rem;
+        }
+        #biblioteca-conocimiento {
+            padding: 4rem 1rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .recursos-grid, .biblioteca-grid {
+            grid-template-columns: 1fr;
+        }
+        .section-title { font-size: 1.8rem; }
+        .biblioteca-titulo { font-size: 1.8rem; }
+        .biblioteca-subtitulo { font-size: 1rem; }
+    }
+    
+    /* Utilidades */
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+    
+    .mb-5 {
+        margin-bottom: 3rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section con imagen de fondo -->
+<section id="inicio" class="hero">
+    <div class="slide active" id="recursos-hero">
+        <div class="slide-content">
+            <h1>Recursos</h1>
+            <p>Accede al conocimiento que construye la logística y la cadena de suministro. Los archivos, textos, hojas de cálculo, presentaciones, infografías y otros documentos generados por la comunidad para la comunidad.</p>
+            <a href="{% url 'index' %}#registro" class="btn">Carga tu documento</a>
+        </div>
+    </div>
+</section>
+
+<!-- Script para aplicar la imagen de fondo -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Aplicar imagen de fondo
+        const heroElement = document.getElementById('recursos-hero');
+        heroElement.style.backgroundImage = "url('{% static 'images/portada_recursos.jpg' %}')";
+    });
+</script>
+
+<div class="news-marquee">
+    <div class="news-marquee-content">
+        <div class="news-item"><span>Evento</span> LogiExpo 2024: La mayor feria de logística del año - 15-17 Mayo, Madrid</div>
+    </div>
+</div>
+
+<!-- **** SECCIÓN DE NOVEDADES **** -->
+{% if featured_resources %}
+<section id="novedades" class="section">
+    <h2 class="section-title">Novedades</h2>
+    
+    <div class="recursos-grid">
+        {% for resource in featured_resources %}
+        <div class="recurso-card">
+            {% if resource.image %}
+                <div class="recurso-imagen" style="background-image: url('{{ resource.image.url }}'); background-size: cover; background-position: center;"></div>
+            {% else %}
+                {% if resource.resource_type == 'LI' %}
+                    <div class="recurso-imagen placeholder-libro">
+                        <span>Portada de un Libro</span>
+                    </div>
+                {% elif resource.resource_type == 'DO' %}
+                    <div class="recurso-imagen placeholder-documento">
+                        <span>Portada de un Documento</span>
+                    </div>
+                {% elif resource.resource_type == 'AR' %}
+                    <div class="recurso-imagen placeholder-articulo">
+                        <span>Portada de un Artículo</span>
+                    </div>
+                {% elif resource.resource_type == 'IN' %}
+                    <div class="recurso-imagen placeholder-infografia">
+                        <span>Portada de una Infografía</span>
+                    </div>
+                {% elif resource.resource_type == 'HC' %}
+                    <div class="recurso-imagen placeholder-calculo">
+                        <span>Portada de una Hoja de Cálculo</span>
+                    </div>
+                {% endif %}
+            {% endif %}
+            <div class="recurso-contenido">
+                <h3 class="recurso-titulo">{{ resource.title }}</h3>
+                <p class="recurso-autor">Por: {{ resource.author }}</p>
+                <a href="{{ resource.file.url }}" class="recurso-contacto" download>Descargar Recurso</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- **** BIBLIOTECA DE CONOCIMIENTO **** -->
+<section id="biblioteca-conocimiento" class="section">
+    <div class="titulo-subtitulo-container">
+        <h2 class="biblioteca-titulo">Conocimiento que construye la Cadena de Suministro</h2>
+        <p class="biblioteca-subtitulo">Descarga la información que te aporta valor</p>
+    </div>
+
+    <!-- Buscador -->
+    <div class="search-container mb-5">
+        <form method="get" id="searchForm">
+            <div class="search-box">
+                <input type="text" name="q" placeholder="Busca por Título, Autor o Tipo" class="search-input" value="{{ search_query }}">
+                <button type="submit" class="search-btn">Buscar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Filtros de tipo de recurso -->
+    <div class="filtros-container">
+        <button data-type="" class="btn-filtro {% if not selected_type %}active{% endif %}">Todos</button>
+        {% for type_code, type_name in resource_types %}
+        <button data-type="{{ type_code }}" class="btn-filtro {% if selected_type == type_code %}active{% endif %}">{{ type_name }}</button>
+        {% endfor %}
+    </div>
+
+    <!-- Paginación Superior -->
+    <div id="pagination-top" class="pagination-container">
+        {% include 'logistics/partials/pagination_resources.html' %}
+    </div>
+
+    <!-- Lista de recursos -->
+    <div id="resourcesList" class="biblioteca-grid">
+        {% if page_obj %}
+            {% for resource in page_obj %}
+            <div class="recurso-card">
+                {% if resource.image %}
+                    <div class="recurso-imagen" style="background-image: url('{{ resource.image.url }}'); background-size: cover; background-position: center;"></div>
+                {% else %}
+                    {% if resource.resource_type == 'LI' %}
+                        <div class="recurso-imagen placeholder-libro">
+                            <span>Portada de un Libro</span>
+                        </div>
+                    {% elif resource.resource_type == 'DO' %}
+                        <div class="recurso-imagen placeholder-documento">
+                            <span>Portada de un Documento</span>
+                        </div>
+                    {% elif resource.resource_type == 'AR' %}
+                        <div class="recurso-imagen placeholder-articulo">
+                            <span>Portada de un Artículo</span>
+                        </div>
+                    {% elif resource.resource_type == 'IN' %}
+                        <div class="recurso-imagen placeholder-infografia">
+                            <span>Portada de una Infografía</span>
+                        </div>
+                    {% elif resource.resource_type == 'HC' %}
+                        <div class="recurso-imagen placeholder-calculo">
+                            <span>Portada de una Hoja de Cálculo</span>
+                        </div>
+                    {% endif %}
+                {% endif %}
+                <div class="recurso-contenido">
+                    <h3 class="recurso-titulo">{{ resource.title }}</h3>
+                    <p class="recurso-autor">Por: {{ resource.author }}</p>
+                    <a href="{{ resource.file.url }}" class="recurso-contacto" download>
+                        {% if resource.resource_type == 'LI' or resource.resource_type == 'AR' %}
+                            Descargar recurso
+                        {% elif resource.resource_type == 'DO' %}
+                            Descargar recurso
+                        {% elif resource.resource_type == 'IN' %}
+                            Descargar recurso
+                        {% elif resource.resource_type == 'HC' %}
+                            Descargar recurso
+                        {% else %}
+                            Descargar recurso
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 0;">
+                <p>No se encontraron recursos que coincidan con tu búsqueda.</p>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 0;">
+            <p>No hay recursos disponibles actualmente.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Paginación -->
+    <div id="pagination" class="pagination-container">
+        {% include 'logistics/partials/pagination_resources.html' %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Manejar paginación con AJAX
+        attachEventListeners();
+        
+        function attachEventListeners() {
+            document.querySelectorAll('.page-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const url = new URL(this.href);
+                    const page = url.searchParams.get('page');
+                    const q = url.searchParams.get('q');
+                    const type = url.searchParams.get('type');
+                    
+                    // Construir la URL para la solicitud AJAX
+                    let ajaxUrl = '{% url "resources" %}?page=' + page;
+                    if (q) ajaxUrl += '&q=' + q;
+                    if (type) ajaxUrl += '&type=' + type;
+                    
+                    fetch(ajaxUrl, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualizar el contenido
+                        document.getElementById('resourcesList').innerHTML = data.resources_html;
+                        
+                        // Actualizar ambas paginaciones
+                        document.getElementById('pagination').innerHTML = data.pagination_html;
+                        document.getElementById('pagination-top').innerHTML = data.pagination_html;
+                        
+                        // Volver a adjuntar listeners a los nuevos links de paginación
+                        attachEventListeners();
+                        
+                        // Desplazarse al inicio de la sección de biblioteca
+                        document.getElementById('biblioteca-conocimiento').scrollIntoView({ behavior: 'smooth' });
+                    });
+                });
+            });
+        }
+        
+        // Manejar filtros de tipo de recurso con AJAX
+        document.querySelectorAll('.filtros-container .btn-filtro').forEach(function(button) {
+            button.addEventListener('click', function() {
+                // Remover clase active de todos los botones
+                document.querySelectorAll('.filtros-container .btn-filtro').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Añadir clase active al botón clickeado
+                this.classList.add('active');
+                
+                // Obtener tipo de recurso
+                const type = this.getAttribute('data-type');
+                const q = document.querySelector('input[name="q"]').value;
+                
+                // Construir la URL para la solicitud AJAX
+                let ajaxUrl = '{% url "resources" %}?page=1';
+                if (q) ajaxUrl += '&q=' + encodeURIComponent(q);
+                if (type) ajaxUrl += '&type=' + type;
+                
+                fetch(ajaxUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Actualizar el contenido
+                    document.getElementById('resourcesList').innerHTML = data.resources_html;
+                    
+                    // Actualizar ambas paginaciones
+                    document.getElementById('pagination').innerHTML = data.pagination_html;
+                    document.getElementById('pagination-top').innerHTML = data.pagination_html;
+                    
+                    // Actualizar la URL en el navegador (para que se pueda usar el botón atrás)
+                    window.history.pushState({}, '', ajaxUrl);
+                    
+                    // Volver a adjuntar listeners a los nuevos links de paginación
+                    attachEventListeners();
+                });
+            });
+        });
+        
+        // Manejar formulario de búsqueda con AJAX
+        const searchForm = document.getElementById('searchForm');
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const q = searchForm.querySelector('input[name="q"]').value;
+            // Obtener el tipo actualmente seleccionado
+            const activeFilterBtn = document.querySelector('.filtros-container .btn-filtro.active');
+            const type = activeFilterBtn ? activeFilterBtn.getAttribute('data-type') : '';
+            
+            // Construir la URL para la solicitud AJAX
+            let ajaxUrl = '{% url "resources" %}?page=1';
+            if (q) ajaxUrl += '&q=' + encodeURIComponent(q);
+            if (type) ajaxUrl += '&type=' + type;
+            
+            fetch(ajaxUrl, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Actualizar el contenido
+                document.getElementById('resourcesList').innerHTML = data.resources_html;
+                
+                // Actualizar ambas paginaciones
+                document.getElementById('pagination').innerHTML = data.pagination_html;
+                document.getElementById('pagination-top').innerHTML = data.pagination_html;
+                
+                // Actualizar la URL en el navegador (para que se pueda usar el botón atrás)
+                window.history.pushState({}, '', ajaxUrl);
+                
+                // Volver a adjuntar listeners a los nuevos links de paginación
+                attachEventListeners();
+            });
+        });
+    });
+</script>
+{% endblock %} 

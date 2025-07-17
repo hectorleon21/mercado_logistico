@@ -1,0 +1,353 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mercado Logístico - Comunidad Profesional de Logística{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<link rel="stylesheet" href="{% static 'css/newsletter_modal.css' %}">
+<style>
+    .slide[data-bg-image] {
+        background-image: var(--bg-image);
+    }
+    
+    /* Fix for white gap between menu and hero */
+    .hero {
+        margin-top: -1px; /* Remove any potential gap */
+    }
+    
+    section#inicio {
+        padding-top: 0;
+        margin-top: 0;
+    }
+    
+    /* Estilo específico para el botón SUSCRÍBETE en la portada */
+    .btn-hero {
+        padding: 1rem 2.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        height: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="inicio" class="hero">
+    <div class="slide active" data-bg-image="{% static 'images/home1.jpg' %}" style="--bg-image: url('{% static 'images/home1.jpg' %}');">
+        <div class="slide-content">
+            <h1>La comunidad de los profesionales de la cadena de suministro, sus socios y aliados</h1>
+            <p>Conectamos profesionales, conectamos empresas, compartimos conocimiento, resaltamos lo mejor de la comunidad, desarrollamos software de productividad, potenciamos la cadena de suministro</p>
+            <a class="btn btn-hero open-newsletter-modal">SUSCRÍBETE</a>
+        </div>
+    </div>
+    <div class="slide" data-bg-image="https://images.unsplash.com/photo-1553413077-190dd305871c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" style="--bg-image: url('https://images.unsplash.com/photo-1553413077-190dd305871c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+        <div class="slide-content">
+            <h1>Directorio Profesional Exclusivo</h1>
+            <p>Accede a la red más completa de proveedores y profesionales del sector logístico</p>
+            <a href="#proveedores" class="btn">Explorar Directorio</a>
+        </div>
+    </div>
+    <div class="slide" data-bg-image="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" style="--bg-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+        <div class="slide-content">
+            <h1>Formación Exclusiva</h1>
+            <p>Accede a cursos gratuitos y contenido premium para potenciar tu carrera en logística</p>
+            <a href="#cursos" class="btn">Ver Cursos</a> 
+        </div>
+    </div>
+    <!-- Controles del carrusel -->
+    <div class="slider-nav">
+        <button id="prev-slide" aria-label="Diapositiva anterior">&lt;</button>
+        <button id="next-slide" aria-label="Diapositiva siguiente">&gt;</button>
+    </div>
+    <div class="slider-controls" id="slider-controls">
+        <!-- Los indicadores se generarán con JavaScript -->
+    </div>
+</section>
+
+<div class="news-marquee">
+    <div class="news-marquee-content">
+        <div class="news-item"><span>Evento</span> LogiExpo 2024: La mayor feria de logística del año - 15-17 Mayo, Madrid</div>
+        <div class="news-item"><span>Curso</span> Nuevo curso gratuito: Gestión de Última Milla - Inscripciones abiertas</div>
+        <div class="news-item"><span>Tendencia</span> Logística Verde - Descubre las últimas innovaciones</div>
+        <div class="news-item"><span>Workshop</span> Automatización en Almacenes - 5 Julio, Valencia</div>
+        <div class="news-item"><span>Summit</span> Supply Chain Summit - 22 Junio, Barcelona</div>
+    </div>
+</div>
+
+<!-- Sección de Nosotros -->
+<section id="nosotros" class="nosotros-section">
+    <div class="nosotros-content fade-in">
+        <h2>Nosotros</h2>
+        <p>
+            Somos un equipo de ingenieros y tecnólogos apasionados por la logística y la 
+            cadena de suministro, y por la búsqueda de eficiencias a través de la tecnología.
+        </p>
+        <p>
+            Comprendemos la importancia de la Cadena de Suministro y su impacto en el 
+            bienestar, por ello nos enfocamos en crear y entregar soluciones que ayuden a los 
+            profesionales del sector, a las empresas, sus socios y sus aliados a fortalecer sus 
+            interacciones e incrementar sus eficiencias.
+        </p>
+        <a href="#registro" class="btn btn-hero">Únete a nosotros</a>
+    </div>
+    <div class="nosotros-image fade-in">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Equipo de trabajo">
+    </div>
+</section>
+
+<section id="proveedores" class="section">
+    <h2 class="section-title">Encuentra todas las empresas del sector logístico y de la cadena de suministro, sus socios y aliados. </h2>
+    <div class="services-grid proveedores-grid">
+        <div class="service-card fade-in">
+            <h3>Transporte</h3>
+            <p>Encuentra los mejores proveedores de servicios de transporte y distribución</p>
+        </div>
+        <div class="service-card fade-in">
+            <h3>Almacenaje</h3>
+            <p>Soluciones de almacenamiento y gestión de inventario</p>
+        </div>
+        <div class="service-card fade-in">
+            <h3>Tecnología</h3>
+            <p>Software y herramientas para optimizar operaciones logísticas</p>
+        </div>
+        <div class="service-card fade-in">
+            <h3>Consultoría</h3>
+            <p>Expertos en mejora de procesos y eficiencia logística</p>
+        </div>
+    </div>
+</section>
+
+<!-- SECCIÓN MODIFICADA: Plataforma en formato tabular -->
+<section class="plataforma-section">
+    <div class="container">
+        <h2 class="section-title">La plataforma digital de la Cadena de Suministro</h2>
+        <p class="plataforma-intro">
+            Forma parte de la comunidad más grande de compradores, vendedores y colaboradores 
+            especializados de la cadena de suministro de Latinoamérica.
+        </p>
+        
+        <div class="plataforma-table">
+            <div class="plataforma-cell fade-in">
+                <h3>Acceso a comunidad logística</h3>
+                <p>La comunidad de compradores y vendedores más grande de la cadena de suministro en Latam.</p>
+            </div>
+            <div class="plataforma-cell fade-in">
+                <h3>Oportunidades comerciales</h3>
+                <p>Encuentra oportunidades comerciales adicionales y complementarias a tu core</p>
+            </div>
+            <div class="plataforma-cell fade-in">
+                <h3>Capacitación en línea</h3>
+                <p>Encuentra los mejores cursos diseñados para la cadena de abastecimiento.</p>
+            </div>
+            <div class="plataforma-cell fade-in">
+                <h3>Herramientas logísticas</h3>
+                <p>Accede a software especializado e incrementa tu productividad, genera ahorros y se más competitivo</p>
+            </div>
+            <div class="plataforma-cell fade-in">
+                <h3>Proveedores homologados</h3>
+                <p>Consigue proveedores con estándares requeridos por el mercado</p>
+            </div>
+            <div class="plataforma-cell fade-in">
+                <h3>Automatiza operaciones</h3>
+                <p>Elimina hojas de cálculo y operaciones manuales</p>
+            </div>
+            <div class="plataforma-cell fade-in">
+                <h3>Intercambios transparentes</h3>
+                <p>Realiza transacciones con seguridad y confianza</p>
+            </div>
+            <div class="plataforma-cell fade-in">
+                <h3>Newsletter</h3>
+                <p>Mantente informado de los acontecimientos, novedades, tendencias que impactan la cadena de suministro.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="cursos" class="section">
+    <h2 class="section-title">Encuentra todos los cursos de Logística y cadena de suministro en un solo lugar</h2>
+    <div class="team-grid">
+        <div class="team-member fade-in">
+            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Especializaciones y Cursos">
+            <h3>Especializaciones, Cursos cortos, Diplomados, Maestrías y más</h3>
+            <p>Formación Profesional Completa</p>
+        </div>
+        <div class="team-member fade-in">
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Modalidades de Estudio">
+            <h3>Especializaciones, Cursos cortos, Diplomados, Maestrías y más</h3>
+            <p>Modalidades Online y Presencial</p>
+        </div>
+        <div class="team-member fade-in">
+            <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Supply Chain y Especialidades">
+            <h3>Supply Chain, Forecasting, Inventarios, compras, transporte, tecnología, data analytics y más</h3>
+            <p>Certificaciones Especializadas</p>
+        </div>
+    </div>
+</section>
+
+<section id="eventos" class="section">
+    <h2 class="section-title">Mantente actualizado con la información más relevante de la Logística y la Cadena de Suministro</h2>
+    <div class="services-grid eventos-grid">
+        <div class="service-card fade-in">
+            <h3>Tendencias e innovaciones</h3>
+            <p>Las últimas tendencias en tecnología y mejores prácticas del sector</p>
+        </div>
+        <div class="service-card fade-in">
+            <h3>Noticias y actualizaciones</h3>
+            <p>Información actualizada sobre el mercado logístico y sus actores principales</p>
+        </div>
+        <div class="service-card fade-in">
+            <h3>Webinars y eventos</h3>
+            <p>Calendario de eventos presenciales y virtuales para profesionales del sector</p>
+        </div>
+        <div class="service-card fade-in">
+            <h3>Artículos especializados</h3>
+            <p>Contenido exclusivo escrito por expertos de la industria logística</p>
+        </div>
+    </div>
+</section>
+
+<section id="registro" class="section">
+    <h2 class="section-title">Únete a nuestra comunidad profesional</h2>
+    <div class="contact-form">
+        <div class="form-group">
+            <label for="nombre">Nombre completo</label>
+            <input type="text" id="nombre" placeholder="Tu nombre completo">
+        </div>
+        <div class="form-group">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" placeholder="tu@email.com">
+        </div>
+        <div class="form-group">
+            <label for="empresa">Empresa</label>
+            <input type="text" id="empresa" placeholder="Nombre de tu empresa">
+        </div>
+        <div class="form-group">
+            <label for="mensajes">Mensaje (opcional)</label>
+            <textarea id="mensajes" placeholder="¿En qué podemos ayudarte?"></textarea>
+        </div>
+        <button type="submit" class="btn">Registrarme</button>
+    </div>
+</section>
+
+<a href="https://wa.me/51123456789" class="whatsapp-btn" target="_blank">
+    <div class="pulse"></div>
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<a href="#" class="back-to-top" id="back-to-top">
+    <i class="fas fa-chevron-up"></i>
+</a>
+
+<!-- Modal para Suscripción al Newsletter -->
+{% include 'logistics/includes/newsletter_modal.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/newsletter_modal.js' %}"></script>
+<script>
+    // Carousel functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const slides = document.querySelectorAll('.slide');
+        const prevButton = document.getElementById('prev-slide');
+        const nextButton = document.getElementById('next-slide');
+        const sliderControls = document.getElementById('slider-controls');
+        let currentSlide = 0;
+        let slideInterval;
+
+        // Create indicators
+        slides.forEach((_, index) => {
+            const indicator = document.createElement('span');
+            indicator.classList.add('slider-indicator');
+            if (index === 0) indicator.classList.add('active');
+            indicator.addEventListener('click', () => {
+                goToSlide(index);
+                resetInterval();
+            });
+            sliderControls.appendChild(indicator);
+        });
+
+        // Navigation functions
+        function goToSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            sliderControls.children[currentSlide].classList.remove('active');
+            
+            currentSlide = (n + slides.length) % slides.length;
+            
+            slides[currentSlide].classList.add('active');
+            sliderControls.children[currentSlide].classList.add('active');
+        }
+
+        function nextSlide() {
+            goToSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            goToSlide(currentSlide - 1);
+        }
+
+        // Event listeners
+        prevButton.addEventListener('click', () => {
+            prevSlide();
+            resetInterval();
+        });
+        
+        nextButton.addEventListener('click', () => {
+            nextSlide();
+            resetInterval();
+        });
+
+        // Auto-slide
+        function startInterval() {
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        function resetInterval() {
+            clearInterval(slideInterval);
+            startInterval();
+        }
+
+        startInterval();
+
+        // Fade-in animation
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        function checkFade() {
+            fadeElements.forEach(elem => {
+                const rect = elem.getBoundingClientRect();
+                const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+                
+                if (rect.top <= viewHeight - 100) {
+                    elem.classList.add('visible');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', checkFade);
+        window.addEventListener('resize', checkFade);
+        checkFade(); // Check on load
+
+        // Back to top button
+        const backToTop = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            
+            if (window.scrollY > 100) {
+                backToTop.classList.add('visible');
+                header.classList.add('scrolled');
+            } else {
+                backToTop.classList.remove('visible');
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        backToTop.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+{% endblock %} 

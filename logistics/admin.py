@@ -1,34 +1,70 @@
 from django.contrib import admin
-from django.forms import forms  # Añadir esta línea
-from django import forms  # O mejor usar esta línea
-from django.shortcuts import redirect  # Añade esta línea
+from django.forms import forms
+from django import forms
+from django.shortcuts import redirect
 from django.utils.safestring import mark_safe
 from django.utils import timezone
-from django.template.loader import render_to_string  # Añade esta línea
-from django.conf import settings  # Añade esta línea
-from .models import Provider, Service, Event, News, Rubro, NewsletterSubscription, Newsletter, Course
-from django.contrib import messages
-from .scraper import NewsScraperManager
-from .forms import NewsletterForm
+from django.template.loader import render_to_string
+from django.conf import settings
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.urls import path, reverse
 from django.core.mail import send_mail
 from image_cropping import ImageCroppingMixin
 from PIL import Image
 
-@admin.register(Course)
+from .models import Provider, Service, Event, News, Rubro, NewsletterSubscription, Newsletter, Course, Article, Requirement, Proposal, Resource, Banner
+from django.contrib import messages
+from .scraper import NewsScraperManager
+from .forms import NewsletterForm
+
+
+class ProposalAdminForm(forms.ModelForm):
+    class Meta:
+        model = Proposal
+        fields = '__all__'
+        widgets = {
+            'company': forms.TextInput(attrs={'class': 'autocomplete-company'}),
+        }
+
+# Primero, definimos todas las clases de formularios
+class ProviderAdminForm(forms.ModelForm):
+    class Meta:
+        model = Provider
+        fields = '__all__'
+
+    def clean_email(self):
+        return self.cleaned_data.get('email', '')
+
+    def clean_phone_number(self):
+        return self.cleaned_data.get('phone_number', '')
+
+    def clean_website(self):
+        return self.cleaned_data.get('website', '')
+
+# Clase base para los anuncios
+class AnuncioAdminBase(admin.ModelAdmin):
+    def get_app_list(self, request):
+        """
+        Personaliza el menú de la aplicación para mostrar 'Anuncios'
+        """
+        app_list = super().get_app_list(request)
+        return app_list
+
+# Luego, definimos todas las clases de ModelAdmin (sin decoradores)
 class CourseAdmin(ImageCroppingMixin, admin.ModelAdmin):
-    list_display = ('name', 'institution', 'course_type', 'modality', 'start_date', 'is_new')
-    list_filter = ('course_type', 'modality', 'is_new')
+    list_display = ('name', 'institution', 'institution_type', 'course_type', 'modality', 'price', 'start_date', 'is_new')
+    list_filter = ('course_type', 'modality', 'institution_type', 'topic', 'is_new')
     search_fields = ('name', 'institution', 'description')
     date_hierarchy = 'start_date'
     readonly_fields = ('created_at', 'updated_at')
     
     fieldsets = (
         ('Información Principal', {
-            'fields': ('name', 'institution', 'course_type', 'modality', 'start_date')
+            'fields': ('name', 'institution_type', 'institution', 'course_type', 'modality', 'price', 'start_date')
         }),
         ('Contenido', {
-            'fields': ('description', 'image', 'cropping')
+            'fields': ('description', 'topic', 'image', 'cropping')
         }),
         ('Estado', {
             'fields': ('is_new',)
@@ -39,13 +75,12 @@ class CourseAdmin(ImageCroppingMixin, admin.ModelAdmin):
         }),
     )
 
-@admin.register(Newsletter)
 class NewsletterAdmin(admin.ModelAdmin):
     form = NewsletterForm
     list_display = ['title', 'created_date', 'sent_date', 'is_sent', 'recipients_count', 'included_news']
     list_filter = ['is_sent', 'created_date', 'sent_date']
     readonly_fields = ['created_date', 'sent_date', 'recipients_count', 'newsletter_preview']
-    fields = ['title', 'content', 'news_items', 'created_date', 'sent_date', 'recipients_count', 'newsletter_preview']  # Añade esta línea
+    fields = ['title', 'content', 'news_items', 'created_date', 'sent_date', 'recipients_count', 'newsletter_preview']
     
     def included_news(self, obj):
         return ", ".join([news.title for news in obj.news_items.all()])
@@ -69,7 +104,6 @@ class NewsletterAdmin(admin.ModelAdmin):
         }
     
     def get_urls(self):
-        from django.urls import path
         urls = super().get_urls()
         custom_urls = [
             path('generate-newsletter/', 
@@ -82,8 +116,6 @@ class NewsletterAdmin(admin.ModelAdmin):
         return custom_urls + urls
 
     def generate_newsletter(self, request):
-
-        
         # Calcular fechas
         end_date = timezone.now()
         start_date = (end_date - timezone.timedelta(days=7)).replace(hour=0, minute=0, second=0)
@@ -195,7 +227,6 @@ class NewsletterAdmin(admin.ModelAdmin):
             request, object_id, form_url, extra_context=extra_context
         )
 
-
     def send_newsletter(self, request, newsletter_id):
         try:
             newsletter = Newsletter.objects.get(pk=newsletter_id)
@@ -250,30 +281,21 @@ class NewsletterAdmin(admin.ModelAdmin):
 
         return redirect('admin:logistics_newsletter_changelist')
 
-
-@admin.register(NewsletterSubscription)
 class NewsletterSubscriptionAdmin(admin.ModelAdmin):
-    # list_display = ('nombre', 'apellidos', 'empresa', 'rol', 'correo', 'fecha_suscripcion')
-    # list_filter = ('rol', 'fecha_suscripcion')
-    # search_fields = ('nombre', 'apellidos', 'empresa', 'correo')
-    # readonly_fields = ('fecha_suscripcion',)
-    list_display = ('nombre', 'apellidos', 'empresa', 'rol', 'correo', 'pais', 'ciudad', 'sector', 'fecha_suscripcion')  # Añadir 'region'
-    list_filter = ('rol', 'fecha_suscripcion', 'pais', 'sector')  
-    search_fields = ('nombre', 'apellidos', 'empresa', 'correo', 'pais', 'ciudad', 'sector')  # Búsqueda por 'region'
-    readonly_fields = ('fecha_suscripcion',)
+    list_display = ('nombre_completo', 'rol', 'correo', 'sector', 'fecha_suscripcion', 'user')
+    list_filter = ('rol', 'fecha_suscripcion', 'sector')  
+    search_fields = ('nombre_completo', 'correo', 'rol', 'sector')
+    readonly_fields = ('fecha_suscripcion', 'user')
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        form.base_fields['pais'].widget = forms.Select(choices=NewsletterSubscription.PAISES_CHOICES)
         form.base_fields['sector'].widget = forms.Select(choices=NewsletterSubscription.SECTOR_CHOICES)
         return form
 
-@admin.register(Rubro)
 class RubroAdmin(admin.ModelAdmin):
-    list_display = ['name', 'description']  # Qué campos mostrar en la lista
-    search_fields = ['name', 'description']  # Campos que puedes buscar
+    list_display = ['name', 'description']
+    search_fields = ['name', 'description']
 
-@admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
     list_display = ('title', 'date', 'source', 'author', 'preview_image', 'is_published', 'is_scraped', 'include_in_newsletter')
     list_filter = ('source', 'is_published', 'is_scraped', 'date', 'include_in_newsletter')
@@ -296,9 +318,8 @@ class NewsAdmin(admin.ModelAdmin):
             'fields': ('is_published', 'is_scraped', 'include_in_newsletter')
         }),
     )
-    readonly_fields = ('preview_image',)  # Esto asegura que la vista previa no sea editable
+    readonly_fields = ('preview_image',)
 
-    # Agrega URLs personalizadas
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
@@ -306,7 +327,6 @@ class NewsAdmin(admin.ModelAdmin):
         ]
         return custom_urls + urls
 
-    # Vista para ejecutar el scraping desde el botón
     def run_scraper_view(self, request):
         try:
             manager = NewsScraperManager()
@@ -323,7 +343,7 @@ class NewsAdmin(admin.ModelAdmin):
                 f"Error ejecutando el scraping: {str(e)}",
                 messages.ERROR
             )
-        return redirect('admin:logistics_news_changelist')  # Redirige a la lista de noticias
+        return redirect('admin:logistics_news_changelist')
     
     def preview_image(self, obj):
         if obj.image:
@@ -349,24 +369,78 @@ class NewsAdmin(admin.ModelAdmin):
             )
     run_scraper.short_description = "Ejecutar scraping de noticias"
 
-# Primero, crear una clase de formulario personalizada
-class ProviderAdminForm(forms.ModelForm):
-    class Meta:
-        model = Provider
-        fields = '__all__'
+class ArticleAdmin(admin.ModelAdmin):
+    list_display = ('title', 'date', 'author', 'preview_image', 'is_published', 'include_in_newsletter')
+    list_filter = ('is_published', 'date', 'include_in_newsletter')
+    search_fields = ('title', 'description', 'author', 'tags')
+    date_hierarchy = 'date'
+    ordering = ('-date',)
+    
+    fieldsets = (
+        ('Información Principal', {
+            'fields': ('title', 'date', 'description')
+        }),
+        ('Autor y Etiquetas', {
+            'fields': ('author', 'tags')
+        }),
+        ('Imagen', {
+            'fields': ('image', 'preview_image'),
+            'description': 'Vista previa generada automáticamente'
+        }),
+        ('Estado', {
+            'fields': ('is_published', 'include_in_newsletter')
+        }),
+    )
+    readonly_fields = ('preview_image',)
+    
+    def preview_image(self, obj):
+        if obj.image:
+            return mark_safe(f'<img src="{obj.image.url}" width="100" height="60" style="object-fit: cover;" />')
+        return "No hay imagen"
+    preview_image.short_description = "Vista previa"
 
-    def clean_email(self):
-        return self.cleaned_data.get('email', '')
+class RequirementAdmin(AnuncioAdminBase):
+    list_display = ('title', 'company', 'phone', 'email', 'valid_until', 'is_active', 'created_at')
+    list_filter = ('is_active', 'valid_until')
+    search_fields = ('title', 'company', 'description', 'email')
+    date_hierarchy = 'created_at'
+    
+    fieldsets = (
+        ('Información de la Empresa', {
+            'fields': ('company', 'title', 'description')
+        }),
+        ('Información de Contacto', {
+            'fields': ('phone', 'email')
+        }),
+        ('Estado y Vigencia', {
+            'fields': ('valid_until', 'is_active')
+        }),
+    )
 
-    def clean_phone_number(self):
-        return self.cleaned_data.get('phone_number', '')
+class ProposalAdmin(AnuncioAdminBase):
+    form = ProposalAdminForm
+    list_display = ('title', 'company', 'phone', 'email', 'valid_until', 'is_active', 'created_at')
+    list_filter = ('is_active', 'valid_until')
+    search_fields = ('title', 'company', 'description', 'email')
+    date_hierarchy = 'created_at'
+    
+    fieldsets = (
+        ('Información de la Empresa', {
+            'fields': ('company', 'title', 'description')
+        }),
+        ('Información de Contacto', {
+            'fields': ('phone', 'email')
+        }),
+        ('Estado y Vigencia', {
+            'fields': ('valid_until', 'is_active')
+        }),
+    )
+    
+    class Media:
+        js = ('admin/js/proposal_company_autocomplete.js',)
 
-    def clean_website(self):
-        return self.cleaned_data.get('website', '')
-
-@admin.register(Provider)
 class ProviderAdmin(admin.ModelAdmin):
-    form = ProviderAdminForm  # Usar el formulario personalizado
+    form = ProviderAdminForm
     list_display = ['name', 'phone_number', 'email', 'website', 'view_services']
     list_filter = ['services']
     search_fields = ['name', 'description', 'address', 'email']
@@ -383,7 +457,7 @@ class ProviderAdmin(admin.ModelAdmin):
         ('Información de Contacto', {
             'fields': ('address', 'phone_number', 'email', 'website')
         }),
-        ('Restricciones', {  # 🔹 Nuevo campo "Solo Miembros"
+        ('Restricciones', {
             'fields': ('only_members',)
         }),
     )
@@ -398,7 +472,6 @@ class ProviderAdmin(admin.ModelAdmin):
         return ", ".join([service.name for service in obj.services.all()])
     view_services.short_description = 'Servicios'
 
-@admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ['name', 'flag_directorio', 'provider_count']
     list_filter = ['flag_directorio']
@@ -407,20 +480,19 @@ class ServiceAdmin(admin.ModelAdmin):
     def provider_count(self, obj):
         return obj.providers.count()
     provider_count.short_description = 'Número de Proveedores'
-  
-@admin.register(Event)
+
 class EventAdmin(ImageCroppingMixin, admin.ModelAdmin):
     list_display = ['name', 'date', 'location', 'preview_image_thumbnail', 'created_at']
     list_filter = ['date', 'created_at']
     search_fields = ['name', 'description', 'location']
-    readonly_fields = ['created_at', 'updated_at', 'preview_image']  # Incluye 'preview_image'
+    readonly_fields = ['created_at', 'updated_at', 'preview_image']
     
     fieldsets = (
         ('Información Principal', {
             'fields': ('name', 'date', 'location', 'description')
         }),
         ('Imagen', {
-            'fields': ('image', 'cropping', 'preview_image'),  # Incluye 'preview_image' y 'cropping' juntos
+            'fields': ('image', 'cropping', 'preview_image'),
             'description': 'Selecciona el área de la imagen que quieres mostrar.'
         }),
         ('Información del Sistema', {
@@ -434,7 +506,6 @@ class EventAdmin(ImageCroppingMixin, admin.ModelAdmin):
     date_hierarchy = 'date'
 
     def preview_image(self, obj):
-        """Genera una vista previa completa de la imagen cargada."""
         if obj.image:
             return mark_safe(f'''
                 <div class="preview-container">
@@ -443,11 +514,9 @@ class EventAdmin(ImageCroppingMixin, admin.ModelAdmin):
                 </div>
             ''')
         return "No hay imagen cargada"
-
     preview_image.short_description = 'Vista Previa Completa'
 
     def preview_image_thumbnail(self, obj):
-        """Genera una miniatura de la imagen para la lista de eventos."""
         if obj.image:
             return mark_safe(f'''
                 <img src="{obj.image.url}" 
@@ -456,12 +525,10 @@ class EventAdmin(ImageCroppingMixin, admin.ModelAdmin):
                      style="object-fit: cover; border: 1px solid #ddd;" />
             ''')
         return "Sin imagen"
-
     preview_image_thumbnail.short_description = 'Miniatura'
 
     def save_model(self, request, obj, form, change):
-        """Asegura que las fechas se actualicen correctamente."""
-        if not change:  # Si es un nuevo objeto
+        if not change:
             obj.created_at = timezone.now()
         obj.updated_at = timezone.now()
         super().save_model(request, obj, form, change)
@@ -469,9 +536,9 @@ class EventAdmin(ImageCroppingMixin, admin.ModelAdmin):
     class Media:
         css = {
             'all': [
-                'admin/css/events.css',  # CSS personalizado
+                'admin/css/events.css',
                 'cropping/css/jquery.Jcrop.min.css',
-                'admin/css/admin_custom.css',  # Archivo CSS actualizado
+                'admin/css/admin_custom.css',
             ]
         }
         js = [
@@ -480,3 +547,239 @@ class EventAdmin(ImageCroppingMixin, admin.ModelAdmin):
             'cropping/js/jquery.Jcrop.js',
             'cropping/js/cropping.js',
         ]
+
+# Ahora definimos el AdminSite personalizado
+class CustomAdminSite(admin.AdminSite):
+    site_header = "Mercado Logístico"
+    site_title = "Panel de Administración"
+    index_title = "Bienvenido al panel de administración"
+
+    def get_app_list(self, request):
+        app_list = super().get_app_list(request)
+        
+        # Buscar la aplicación 'logistics'
+        logistics_app = next((app for app in app_list if app['app_label'] == 'logistics'), None)
+        
+        if logistics_app:
+            # Crear un nuevo grupo para "Anuncios"
+            anuncios_group = {
+                'name': 'Anuncios',
+                'app_label': 'anuncios',
+                'app_url': '/admin/anuncios/',
+                'has_module_perms': True,
+                'models': []
+            }
+            
+            # Crear un nuevo grupo para "Banners"
+            banners_group = {
+                'name': 'Banners',
+                'app_label': 'banners',
+                'app_url': '/admin/banners/',
+                'has_module_perms': True,
+                'models': []
+            }
+            
+            # Mover Requerimientos y Propuestas al grupo anuncios
+            requerimientos_model = None
+            propuestas_model = None
+            
+            # Mover Banner al nuevo grupo
+            banner_model = None
+            
+            for model in logistics_app['models'][:]:
+                if model['object_name'] == 'Requirement':
+                    requerimientos_model = model
+                    logistics_app['models'].remove(model)
+                elif model['object_name'] == 'Proposal':
+                    propuestas_model = model
+                    logistics_app['models'].remove(model)
+                elif model['object_name'] == 'Banner':
+                    banner_model = model
+                    logistics_app['models'].remove(model)
+            
+            if requerimientos_model:
+                anuncios_group['models'].append(requerimientos_model)
+            if propuestas_model:
+                anuncios_group['models'].append(propuestas_model)
+            
+            # Agregar sub-modelos para cada tipo de banner
+            if banner_model:
+                # Añadir vista general de banners
+                banners_group['models'].append(banner_model)
+                
+                # Clonar el modelo base para cada tipo de banner
+                educacion_banner = banner_model.copy()
+                directorio_banner = banner_model.copy()
+                contratar_banner = banner_model.copy()
+                
+                # Personalizar para cada tipo
+                educacion_banner['name'] = 'Banner de Educación'
+                educacion_banner['admin_url'] += '?section=EDUCACION'
+                educacion_banner['add_url'] += '?section=EDUCACION'
+                
+                directorio_banner['name'] = 'Banner de Directorio'
+                directorio_banner['admin_url'] += '?section=DIRECTORIO'
+                directorio_banner['add_url'] += '?section=DIRECTORIO'
+                
+                contratar_banner['name'] = 'Banner de Contratar/Ofrecer'
+                contratar_banner['admin_url'] += '?section=CONTRATAR_OFRECER'
+                contratar_banner['add_url'] += '?section=CONTRATAR_OFRECER'
+                
+                # Agregar al grupo de banners
+                banners_group['models'].append(educacion_banner)
+                banners_group['models'].append(directorio_banner)
+                banners_group['models'].append(contratar_banner)
+            
+            # Insertar los nuevos grupos después de logistics
+            if anuncios_group['models'] or banners_group['models']:
+                logistics_index = app_list.index(logistics_app)
+                if banners_group['models']:
+                    app_list.insert(logistics_index + 1, banners_group)
+                if anuncios_group['models']:
+                    app_list.insert(logistics_index + (2 if banners_group['models'] else 1), anuncios_group)
+        
+        return app_list
+
+# Crear la instancia de AdminSite
+admin_site = CustomAdminSite(name='custom_admin')
+
+# Registrar los modelos con el admin_site
+admin_site.register(User, UserAdmin)
+admin_site.register(Group, GroupAdmin)
+admin_site.register(Course, CourseAdmin)
+admin_site.register(Newsletter, NewsletterAdmin)
+admin_site.register(NewsletterSubscription, NewsletterSubscriptionAdmin)
+admin_site.register(Rubro, RubroAdmin)
+admin_site.register(News, NewsAdmin)
+admin_site.register(Article, ArticleAdmin)
+admin_site.register(Provider, ProviderAdmin)
+admin_site.register(Service, ServiceAdmin)
+admin_site.register(Event, EventAdmin)
+admin_site.register(Requirement, RequirementAdmin)
+admin_site.register(Proposal, ProposalAdmin)
+
+class ResourceAdmin(admin.ModelAdmin):
+    list_display = ('title', 'resource_type', 'author', 'is_featured', 'created_at')
+    list_filter = ('resource_type', 'is_featured')
+    search_fields = ('title', 'author')
+    readonly_fields = ('created_at', 'updated_at')
+    fieldsets = (
+        ('Información Principal', {
+            'fields': ('title', 'resource_type', 'file', 'image')
+        }),
+        ('Información del Autor', {
+            'fields': ('author', 'author_email', 'author_phone')
+        }),
+        ('Opciones Adicionales', {
+            'fields': ('original_link', 'is_featured')
+        }),
+        ('Información del Sistema', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+admin_site.register(Resource, ResourceAdmin)
+
+class BannerAdmin(admin.ModelAdmin):
+    list_display = ('title', 'advertiser', 'is_active', 'start_date', 'end_date', 'preview_image')
+    list_filter = ('is_active', 'start_date', 'end_date')
+    search_fields = ('title', 'advertiser')
+    readonly_fields = ('created_at', 'updated_at', 'preview_image')
+    
+    def get_fieldsets(self, request, obj=None):
+        """Personalizar fieldsets según la vista"""
+        section = request.GET.get('section')
+        
+        # Campos base
+        common_fields = (
+            ('Información General', {
+                'fields': ('title', 'advertiser', 'is_active', 'section'),
+                'description': f'Banner para la sección: {section if section else "General"}'
+            }),
+            ('Imagen y Enlace', {
+                'fields': ('image', 'preview_image', 'url')
+            }),
+            ('Período de Visualización', {
+                'fields': ('start_date', 'end_date')
+            }),
+            ('Información del Sistema', {
+                'fields': ('created_at', 'updated_at'),
+                'classes': ('collapse',)
+            }),
+        )
+        
+        return common_fields
+    
+    def preview_image(self, obj):
+        if obj.image:
+            return mark_safe(f'<img src="{obj.image.url}" width="300" style="max-height: 100px; object-fit: contain;" />')
+        return "No hay imagen"
+    preview_image.short_description = "Vista previa"
+    
+    def get_queryset(self, request):
+        """Filtrar banners según la URL"""
+        qs = super().get_queryset(request)
+        section = request.GET.get('section')
+        if section:
+            return qs.filter(section=section)
+        return qs
+    
+    def get_form(self, request, obj=None, **kwargs):
+        """Pre-seleccionar la sección según la URL y ocultar el campo"""
+        form = super().get_form(request, obj, **kwargs)
+        section = request.GET.get('section')
+        
+        if section and 'section' in form.base_fields:
+            # En lugar de eliminar el campo, lo convertimos en un campo oculto
+            # y establecemos su valor inicial
+            form.base_fields['section'].widget = forms.HiddenInput()
+            form.base_fields['section'].initial = section
+            print(f"DEBUG - Campo section configurado como oculto con valor inicial {section}")
+        
+        return form
+    
+    def save_model(self, request, obj, form, change):
+        """Asegurar que se guarde la sección correcta"""
+        section = request.GET.get('section')
+        print(f"DEBUG - Guardando banner con section={section}")
+        
+        if section:
+            # Asignar explícitamente la sección desde la URL
+            obj.section = section
+            print(f"DEBUG - Asignado section={section} al objeto")
+        elif not obj.section:  # Si no hay section en la URL ni en el objeto
+            # Establecer valor por defecto para evitar que quede vacío
+            obj.section = 'EDUCACION'  # Valor por defecto
+            print(f"DEBUG - No se encontró section en URL. Usando valor por defecto EDUCACION")
+            
+        # Imprimir el valor final de section antes de guardar
+        print(f"DEBUG - Valor final de section antes de guardar: {obj.section}")
+            
+        # Guardar el objeto
+        super().save_model(request, obj, form, change)
+    
+    def changelist_view(self, request, extra_context=None):
+        """Personalizar el título según la sección"""
+        extra_context = extra_context or {}
+        section = request.GET.get('section')
+        
+        if section:
+            section_display = dict(Banner.SECTION_CHOICES).get(section, section)
+            extra_context['title'] = f'Banner de {section_display}'
+        
+        return super().changelist_view(request, extra_context)
+    
+    def add_view(self, request, form_url='', extra_context=None):
+        """Personalizar el título de agregar según la sección"""
+        extra_context = extra_context or {}
+        section = request.GET.get('section')
+        
+        if section:
+            section_display = dict(Banner.SECTION_CHOICES).get(section, section)
+            extra_context['title'] = f'Añadir Banner de {section_display}'
+        
+        return super().add_view(request, form_url, extra_context)
+
+# Registrar el modelo Banner
+admin_site.register(Banner, BannerAdmin)

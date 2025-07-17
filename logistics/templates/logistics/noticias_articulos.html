@@ -1,0 +1,497 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mercado Logístico - Noticias y Artículos{% endblock %}
+
+{% block extra_css %}
+<!-- CSS personalizado -->
+<link href="{% static 'css/noticias_articulos_new.css' %}" rel="stylesheet">
+<style>
+    /* Estilos para la sección hero, igualando al index.html */
+    .hero {
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+        background-color: #000;
+        margin-top: 60px; /* Ajuste para compensar el header fijo */
+        margin-bottom: 0;
+        padding: 0;
+        width: 100%;
+    }
+    
+    .hero .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .hero .slide.active {
+        opacity: 1;
+    }
+    
+    .hero .slide-content {
+        padding: 0 5rem;
+        max-width: 800px;
+        color: #fff;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Ajustes para posicionar el texto */
+    .hero .slide-content h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    .hero .slide-content p {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+    
+    /* Crear el overlay para mejorar la legibilidad del texto */
+    .hero .slide::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Ajuste de contenedor para reducir márgenes laterales */
+    .section .container {
+        max-width: 98%;
+        width: 98%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    
+    /* Estilos específicos para las secciones */
+    #noticias {
+        background-color: #f9f9f9;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+    
+    #eventos {
+        background-color: #fff;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+    
+    #articulos {
+        background-color: #f0f7fb;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+    
+    /* Estilos para los grids específicos */
+    .noticias-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .eventos-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+    }
+    
+    .articulos-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    /* Estilos personalizados para paginación */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        padding: 1.5rem 0;
+        border-top: 1px solid #eee;
+        margin-top: 2rem;
+    }
+    
+    .pagination {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .page-item {
+        margin: 0 4px;
+    }
+    
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    #noticias .page-link {
+        background-color: #f5f5f5;
+        color: #444;
+        border: 1px solid #ddd;
+    }
+    
+    #noticias .page-item.active .page-link {
+        background-color: #0099cc;
+        color: white;
+        border-color: #0099cc;
+    }
+    
+    #eventos .page-link {
+        background-color: #f5f5f5;
+        color: #444;
+        border: 1px solid #ddd;
+    }
+    
+    #eventos .page-item.active .page-link {
+        background-color: #5a7db2;
+        color: white;
+        border-color: #5a7db2;
+    }
+    
+    #articulos .page-link {
+        background-color: #f5f5f5;
+        color: #444;
+        border: 1px solid #ddd;
+    }
+    
+    #articulos .page-item.active .page-link {
+        background-color: #4ecdc4;
+        color: white;
+        border-color: #4ecdc4;
+    }
+    
+    @media (max-width: 1200px) {
+        .eventos-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
+    @media (max-width: 992px) {
+        .noticias-grid, .articulos-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .eventos-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .noticias-grid, .eventos-grid, .articulos-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+    }
+
+    /* Clase para el texto de descripción */
+    .text-center.mb-4 {
+        padding: 0 5px;
+    }
+</style>
+{% endblock %}
+
+{% block hero %}
+<!-- Hero Section -->
+<section id="inicio" class="hero">
+    <div class="slide active" id="tendencia-hero">
+        <div class="slide-content">
+            <h1>Tendencias Logísticas</h1>
+            <p>Mantente a la vanguardia del mundo de la logística, con la información más relevante de la Logística y la Cadena de Suministro</p>
+        </div>
+    </div>
+</section>
+
+<!-- Script para aplicar la imagen de fondo -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Aplicar imagen de fondo
+        const heroElement = document.getElementById('tendencia-hero');
+        heroElement.style.backgroundImage = "url('{% static 'images/portada_tendencia.png' %}')";
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- Sección de Noticias -->
+<section id="noticias" class="section">
+    <div class="container">
+        <h2>Noticias</h2>
+        <p class="text-center mb-4">Información relevante del sector logístico a nivel mundial</p>
+        
+        <!-- Buscador de Noticias -->
+        <div class="search-container mb-5">
+            <form id="news-search-form" class="search-box">
+                <input type="text" 
+                       id="news-search" 
+                       name="news_q" 
+                       class="search-input" 
+                       placeholder="Busca por Título o Descripción" 
+                       value="{{ news_search_query }}">
+                <button class="search-btn" type="submit">Buscar</button>
+            </form>
+        </div>
+        
+        <!-- Grid de noticias -->
+        <div id="news-list-container" class="noticias-grid">
+            {% include 'logistics/partials/news_list.html' with news_page_obj=news_page_obj %}
+        </div>
+        
+        <!-- Paginación de noticias -->
+        <div id="news-pagination-container" class="pagination-container">
+            {% include 'logistics/partials/pagination_news.html' with news_page_obj=news_page_obj news_search_query=news_search_query %}
+        </div>
+    </div>
+</section>
+
+<!-- Sección de Eventos -->
+<section id="eventos" class="section">
+    <div class="container">
+        <h2>Eventos</h2>
+        <p class="text-center mb-4">Mantente al día con los principales eventos del sector logístico</p>
+        
+        <!-- Buscador de Eventos -->
+        <div class="search-container mb-5">
+            <form id="events-search-form" class="search-box">
+                <input type="text" 
+                       id="events-search" 
+                       name="events_q" 
+                       class="search-input" 
+                       placeholder="Busca por Nombre, Ubicación o Fecha" 
+                       value="{{ events_search_query }}">
+                <button class="search-btn" type="submit">Buscar</button>
+            </form>
+        </div>
+        
+        <!-- Grid de eventos -->
+        <div class="eventos-container">
+            <div id="events-list-container" class="eventos-grid">
+                {% include 'logistics/partials/events_list.html' with events_page_obj=events_page_obj %}
+            </div>
+        </div>
+        
+        <!-- Paginación de eventos -->
+        <div id="events-pagination-container" class="pagination-container">
+            {% include 'logistics/partials/pagination_events.html' with events_page_obj=events_page_obj events_search_query=events_search_query %}
+        </div>
+    </div>
+</section>
+
+<!-- Sección de Artículos -->
+<section id="articulos" class="section">
+    <div class="container">
+        <h2>Artículos</h2>
+        <p class="text-center mb-4">Análisis y opiniones especializadas sobre la cadena de suministro</p>
+        
+        <!-- Buscador de Artículos -->
+        <div class="search-container mb-5">
+            <form id="articles-search-form" class="search-box">
+                <input type="text" 
+                       id="articles-search" 
+                       name="articles_q" 
+                       class="search-input" 
+                       placeholder="Busca por Título, Autor o Contenido" 
+                       value="{{ articles_search_query }}">
+                <button class="search-btn" type="submit">Buscar</button>
+            </form>
+        </div>
+        
+        <!-- Grid de artículos -->
+        <div id="articles-list-container" class="articulos-grid">
+            {% include 'logistics/partials/articles_list.html' with articles_page_obj=articles_page_obj %}
+        </div>
+        
+        <!-- Paginación de artículos -->
+        <div id="articles-pagination-container" class="pagination-container">
+            {% include 'logistics/partials/pagination_articles.html' with articles_page_obj=articles_page_obj articles_search_query=articles_search_query %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Configurar formulario de búsqueda de noticias
+        const newsSearchForm = document.getElementById('news-search-form');
+        newsSearchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const url = new URL(window.location);
+            url.searchParams.set('news_q', document.getElementById('news-search').value);
+            url.searchParams.delete('news_page'); // Reset to page 1
+            loadContent(url, '#news-list-container', '#news-pagination-container', 'news');
+            window.history.pushState({}, '', url);
+        });
+        
+        // Configurar formulario de búsqueda de eventos
+        const eventsSearchForm = document.getElementById('events-search-form');
+        eventsSearchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const url = new URL(window.location);
+            url.searchParams.set('events_q', document.getElementById('events-search').value);
+            url.searchParams.delete('events_page'); // Reset to page 1
+            loadContent(url, '#events-list-container', '#events-pagination-container', 'events');
+            window.history.pushState({}, '', url);
+        });
+        
+        // Configurar formulario de búsqueda de artículos
+        const articlesSearchForm = document.getElementById('articles-search-form');
+        articlesSearchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const url = new URL(window.location);
+            url.searchParams.set('articles_q', document.getElementById('articles-search').value);
+            url.searchParams.delete('articles_page'); // Reset to page 1
+            loadContent(url, '#articles-list-container', '#articles-pagination-container', 'articles');
+            window.history.pushState({}, '', url);
+        });
+        
+        // Función para cargar contenido mediante AJAX
+        function loadContent(url, contentContainer, paginationContainer, contentType) {
+            // Mostrar loader o indicador de carga
+            const container = document.querySelector(contentContainer);
+            container.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando...</span></div></div>';
+            
+            // Realizar la petición AJAX
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Actualizar el contenido
+                if (contentType === 'news' && data.news_html) {
+                    container.innerHTML = data.news_html;
+                    document.querySelector(paginationContainer).innerHTML = data.news_pagination_html;
+                } else if (contentType === 'events' && data.events_html) {
+                    container.innerHTML = data.events_html;
+                    document.querySelector(paginationContainer).innerHTML = data.events_pagination_html;
+                } else if (contentType === 'articles' && data.articles_html) {
+                    container.innerHTML = data.articles_html;
+                    document.querySelector(paginationContainer).innerHTML = data.articles_pagination_html;
+                } else {
+                    console.error('No hay contenido para mostrar en la respuesta AJAX');
+                    container.innerHTML = '<div class="alert alert-warning">No se encontraron resultados.</div>';
+                }
+                
+                // Volver a configurar eventos de paginación
+                setupPaginationListeners();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                container.innerHTML = '<div class="alert alert-danger">Error al cargar el contenido</div>';
+            });
+        }
+        
+        // Configurar los event listeners para la paginación
+        function setupPaginationListeners() {
+            console.log('Configurando listeners de paginación...');
+            
+            // Event listeners para links de paginación de noticias
+            const newsLinks = document.querySelectorAll('#news-pagination-container .page-link');
+            console.log(`Encontrados ${newsLinks.length} enlaces de paginación para noticias`);
+            
+            newsLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Click en paginación de noticias:', this.href);
+                    
+                    const url = new URL(window.location);
+                    const hrefUrl = new URL(this.href, window.location.origin);
+                    const newsPage = hrefUrl.searchParams.get('news_page');
+                    
+                    if (newsPage) {
+                        url.searchParams.set('news_page', newsPage);
+                        console.log(`Cambiando a página de noticias: ${newsPage}`);
+                    }
+                    
+                    loadContent(url, '#news-list-container', '#news-pagination-container', 'news');
+                    window.history.pushState({}, '', url);
+                    
+                    // Desplazarse al inicio de la sección de noticias
+                    document.getElementById('noticias').scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+            
+            // Event listeners para links de paginación de eventos
+            const eventsLinks = document.querySelectorAll('#events-pagination-container .page-link');
+            console.log(`Encontrados ${eventsLinks.length} enlaces de paginación para eventos`);
+            
+            eventsLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Click en paginación de eventos:', this.href);
+                    
+                    const url = new URL(window.location);
+                    const hrefUrl = new URL(this.href, window.location.origin);
+                    const eventsPage = hrefUrl.searchParams.get('events_page');
+                    
+                    if (eventsPage) {
+                        url.searchParams.set('events_page', eventsPage);
+                        console.log(`Cambiando a página de eventos: ${eventsPage}`);
+                    }
+                    
+                    loadContent(url, '#events-list-container', '#events-pagination-container', 'events');
+                    window.history.pushState({}, '', url);
+                    
+                    // Desplazarse al inicio de la sección de eventos
+                    document.getElementById('eventos').scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+            
+            // Event listeners para links de paginación de artículos
+            const articlesLinks = document.querySelectorAll('#articles-pagination-container .page-link');
+            console.log(`Encontrados ${articlesLinks.length} enlaces de paginación para artículos`);
+            
+            articlesLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Click en paginación de artículos:', this.href);
+                    
+                    const url = new URL(window.location);
+                    const hrefUrl = new URL(this.href, window.location.origin);
+                    const articlesPage = hrefUrl.searchParams.get('articles_page');
+                    
+                    if (articlesPage) {
+                        url.searchParams.set('articles_page', articlesPage);
+                        console.log(`Cambiando a página de artículos: ${articlesPage}`);
+                    }
+                    
+                    loadContent(url, '#articles-list-container', '#articles-pagination-container', 'articles');
+                    window.history.pushState({}, '', url);
+                    
+                    // Desplazarse al inicio de la sección de artículos
+                    document.getElementById('articulos').scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        }
+
+        // Configurar los event listeners iniciales
+        setupPaginationListeners();
+    });
+</script>
+{% endblock %}

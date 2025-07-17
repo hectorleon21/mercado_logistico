@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ proposal.title }} - Propuesta de {{ proposal.company }} - Mercado Logístico{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+    /* Estilos para la página de detalle */
+    .detail-container {
+        max-width: 900px;
+        margin: 3rem auto;
+        padding: 0 1.5rem;
+    }
+    
+    .detail-header {
+        margin-bottom: 3rem;
+        position: relative;
+    }
+    
+    .detail-type {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+    }
+    
+    .tipo-propuesta {
+        background-color: #e6f7ff; /* Azul claro */
+        color: #0066cc;
+    }
+    
+    .breadcrumb {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumb-item {
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .breadcrumb-item:not(:first-child)::before {
+        content: '/';
+        margin: 0 0.5rem;
+        color: #aaa;
+    }
+    
+    .breadcrumb-item a {
+        color: #0099cc;
+        text-decoration: none;
+    }
+    
+    .breadcrumb-item a:hover {
+        text-decoration: underline;
+    }
+    
+    .breadcrumb-item.active {
+        color: #666;
+    }
+    
+    .detail-title {
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+    
+    .detail-company {
+        font-size: 1.2rem;
+        color: #0099cc;
+        font-weight: 500;
+        margin-bottom: 2rem;
+    }
+    
+    .detail-meta {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .detail-meta-item {
+        display: flex;
+        align-items: center;
+        margin-right: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .detail-meta-item i {
+        color: #0099cc;
+        margin-right: 0.5rem;
+        font-size: 1.1rem;
+    }
+    
+    .detail-meta-label {
+        font-weight: 600;
+        margin-right: 0.5rem;
+        color: #555;
+    }
+    
+    .detail-meta-value {
+        color: #333;
+    }
+    
+    .detail-content {
+        margin-bottom: 3rem;
+    }
+    
+    .detail-description {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: #444;
+        margin-bottom: 2rem;
+        white-space: pre-line; /* Respeta los saltos de línea */
+    }
+    
+    .detail-section {
+        margin-bottom: 2rem;
+    }
+    
+    .detail-section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #0099cc;
+        display: inline-block;
+    }
+    
+    .detail-contact {
+        background-color: #f9f9f9;
+        padding: 2rem;
+        border-radius: 8px;
+        border: 1px solid #eee;
+    }
+    
+    .detail-contact-info {
+        margin-bottom: 1.5rem;
+    }
+    
+    .detail-contact-row {
+        display: flex;
+        margin-bottom: 0.8rem;
+        align-items: center;
+    }
+    
+    .detail-contact-label {
+        font-weight: 600;
+        width: 120px;
+        color: #555;
+    }
+    
+    .detail-contact-value {
+        flex: 1;
+    }
+    
+    .detail-contact-value a {
+        color: #0099cc;
+        text-decoration: none;
+    }
+    
+    .detail-contact-value a:hover {
+        text-decoration: underline;
+    }
+    
+    .detail-back {
+        margin-top: 3rem;
+        text-align: center;
+    }
+    
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.7rem 1.5rem;
+        background-color: #0099cc;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-back i {
+        margin-right: 0.5rem;
+    }
+    
+    .btn-back:hover {
+        background-color: #0077aa;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .detail-title {
+            font-size: 2rem;
+        }
+        .detail-meta {
+            flex-direction: column;
+        }
+        .detail-meta-item {
+            margin-bottom: 0.8rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+    <div class="detail-header">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'contratar_ofrecer' %}">Contratar/Ofrecer</a></li>
+                <li class="breadcrumb-item active">Propuesta</li>
+            </ol>
+        </nav>
+        
+        <span class="detail-type tipo-propuesta">PROPUESTA</span>
+        <h1 class="detail-title">{{ proposal.title }}</h1>
+        <div class="detail-company">{{ proposal.company }}</div>
+        
+        <div class="detail-meta">
+            <div class="detail-meta-item">
+                <i class="far fa-calendar-alt"></i>
+                <span class="detail-meta-label">Publicado:</span>
+                <span class="detail-meta-value">{{ proposal.created_at|date:"d/m/Y" }}</span>
+            </div>
+            <div class="detail-meta-item">
+                <i class="far fa-clock"></i>
+                <span class="detail-meta-label">Vigente hasta:</span>
+                <span class="detail-meta-value">{{ proposal.valid_until|date:"d/m/Y" }}</span>
+            </div>
+            <div class="detail-meta-item">
+                <i class="far fa-eye"></i>
+                <span class="detail-meta-label">Estado:</span>
+                <span class="detail-meta-value">{% if proposal.is_active %}Activo{% else %}Inactivo{% endif %}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="detail-content">
+        <div class="detail-section">
+            <h2 class="detail-section-title">Descripción</h2>
+            <div class="detail-description">
+                {{ proposal.description|safe }}
+            </div>
+        </div>
+        
+        <div class="detail-section">
+            <h2 class="detail-section-title">Contacto</h2>
+            <div class="detail-contact">
+                <div class="detail-contact-info">
+                    <div class="detail-contact-row">
+                        <div class="detail-contact-label">Empresa:</div>
+                        <div class="detail-contact-value">{{ proposal.company }}</div>
+                    </div>
+                    <div class="detail-contact-row">
+                        <div class="detail-contact-label">Teléfono:</div>
+                        <div class="detail-contact-value">
+                            <a href="tel:{{ proposal.phone }}">{{ proposal.phone }}</a>
+                        </div>
+                    </div>
+                    <div class="detail-contact-row">
+                        <div class="detail-contact-label">Correo:</div>
+                        <div class="detail-contact-value">
+                            <a href="mailto:{{ proposal.email }}">{{ proposal.email }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="detail-back">
+        <a href="{% url 'contratar_ofrecer' %}" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Volver a Requerimientos y Propuestas
+        </a>
+    </div>
+</div>
+{% endblock %} 

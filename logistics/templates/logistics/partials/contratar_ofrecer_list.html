@@ -1,0 +1,27 @@
+{% load logistics_extras %}
+
+{% if page_obj %}
+    {% for item in page_obj %}
+    <div class="oferta-card" data-tipo="{% if item.es_requerimiento %}requerimiento{% else %}propuesta{% endif %}">
+        <a href="{% if item.es_requerimiento %}{% url 'requirement-detail' item.id %}{% else %}{% url 'proposal-detail' item.id %}{% endif %}" class="oferta-card-full-link"></a>
+        {% if item.es_requerimiento %}
+            <span class="oferta-tipo tipo-requerimiento">REQUERIMIENTO</span>
+        {% else %}
+            <span class="oferta-tipo tipo-propuesta">PROPUESTA</span>
+        {% endif %}
+        <h4 class="oferta-empresa">{{ item.company }}</h4>
+        <div class="oferta-titulo">{{ item.title }}</div>
+        <p class="oferta-descripcion">{{ item.description|striptags|truncatechars:150 }}</p>
+        <div class="oferta-info">
+            <p><strong>Teléfono:</strong> {{ item.phone }}</p>
+            <p><strong>Correo:</strong> {{ item.email }}</p>
+            <p><strong>Vigencia hasta:</strong> {{ item.valid_until|date:"d/m/Y" }}</p>
+            <p class="ver-mas"><i class="fas fa-info-circle"></i> Click para ver más detalles</p>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="col-12 text-center my-5">
+        <p>No se encontraron requerimientos ni propuestas.</p>
+    </div>
+{% endif %} 

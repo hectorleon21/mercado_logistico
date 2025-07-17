@@ -14,14 +14,16 @@ from django.utils.html import strip_tags
 from django.urls import reverse
 from image_cropping import ImageRatioField
 from django.core.files.uploadedfile import InMemoryUploadedFile
-
+import time
 
 class Course(models.Model):
     COURSE_TYPES = [
         ('MA', 'Maestría'),
         ('DI', 'Diplomado'),
         ('ES', 'Especialización'),
+        ('CC', 'Curso Corto'),
         ('WE', 'Webinar'),
+        ('SE', 'Seminario'),
     ]
     
     MODALITIES = [
@@ -32,8 +34,33 @@ class Course(models.Model):
         ('OA', 'Online – Asincrónico'),
         ('ON', 'Online'),
     ]
+    
+    # Nuevo campo: Tipo de Institución
+    INSTITUTION_TYPES = [
+        ('UN', 'Universidad'),
+        ('EP', 'Escuela Posgrado'),
+        ('CC', 'Centro de Capacitación'),
+        ('IS', 'Instituto Superior'),
+    ]
+    
+    # Nuevo campo: Temática
+    TOPICS = [
+        ('DC', 'Dirección Comercial'),
+        ('GC', 'Gestión de Compras'),
+        ('LI', 'Logística Internacional'),
+        ('OL', 'Operaciones y Logística'),
+        ('PD', 'Planeamiento de la Demanda'),
+        ('SC', 'Supply Chain Management'),
+        ('TC', 'Tecnología en la Cadena de Suministro'),
+    ]
 
     name = models.CharField(max_length=255, verbose_name="Nombre del Curso")
+    # Nuevo campo de tipo de institución (antes de institution)
+    institution_type = models.CharField(
+        max_length=2,
+        choices=INSTITUTION_TYPES,
+        verbose_name="Tipo de Institución"
+    )
     institution = models.CharField(max_length=255, verbose_name="Entidad o Institución")
     course_type = models.CharField(
         max_length=2,
@@ -45,8 +72,25 @@ class Course(models.Model):
         choices=MODALITIES,
         verbose_name="Modalidad"
     )
+    # Nuevo campo de precio
+    price = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        verbose_name="Precio",
+        help_text="Precio del curso en soles",
+        null=True,
+        blank=True
+    )
     start_date = models.DateField(verbose_name="Fecha de Inicio")
     description = RichTextField(verbose_name="Descripción del Curso")
+    # Nuevo campo de temática
+    topic = models.CharField(
+        max_length=2,
+        choices=TOPICS,
+        verbose_name="Temática",
+        null=True,
+        blank=True
+    )
     is_new = models.BooleanField(default=True, verbose_name="Es Nuevo")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -94,7 +138,7 @@ class Course(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.get_course_type_display()}"
-    
+
 class News(models.Model):
     title = models.CharField(max_length=255, verbose_name="Título")
     date = models.DateField(verbose_name="Fecha")
@@ -220,6 +264,155 @@ class News(models.Model):
 
         super().save(*args, **kwargs)
 
+class Article(models.Model):
+    title = models.CharField(max_length=255, verbose_name="Título")
+    date = models.DateField(verbose_name="Fecha")
+    description = RichTextField(verbose_name="Contenido")
+    author = models.CharField(
+        max_length=255,
+        verbose_name="Autor",
+        blank=True,
+        null=True
+    )
+    image = models.ImageField(
+        upload_to='article_images/',
+        null=True,
+        blank=True,
+        verbose_name="Imagen del Artículo",
+        validators=[validate_image_size],
+        help_text="Tamaño recomendado: 800x400 píxeles. Máximo 2MB."
+    )
+    tags = models.CharField(
+        max_length=255,
+        verbose_name="Etiquetas",
+        blank=True,
+        help_text="Separe las etiquetas con comas"
+    )
+    is_published = models.BooleanField(
+        default=False,
+        verbose_name="Publicado"
+    )
+    include_in_newsletter = models.BooleanField(
+        default=False,
+        verbose_name="Incluir en Newsletter",
+        help_text="Marcar si este artículo debe ser incluido en el próximo newsletter"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Artículo"
+        verbose_name_plural = "Artículos"
+        ordering = ['-date']
+
+    def generate_summary(self, char_limit=400):
+        """
+        Genera un resumen del artículo, limitando su longitud a `char_limit`
+        y eliminando las etiquetas HTML.
+        """
+        plain_text = strip_tags(self.description)
+        return plain_text[:char_limit] + "..." if len(plain_text) > char_limit else plain_text
+    
+    def get_absolute_url(self):
+        return reverse('article-detail', args=[str(self.id)])
+    
+    def __str__(self):
+        return self.title
+    
+    def save(self, *args, **kwargs):
+        if self.image:
+            img = Image.open(self.image)
+            
+            # Convertir a RGB si es necesario
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+            
+            # Dimensiones objetivo
+            target_width = 800
+            target_height = 400
+            
+            # Obtener dimensiones originales
+            width, height = img.size
+            
+            # Calcular proporciones
+            img_ratio = width / height
+            target_ratio = target_width / target_height
+            
+            if img_ratio > target_ratio:
+                new_height = target_height
+                new_width = int(new_height * img_ratio)
+            else:
+                new_width = target_width
+                new_height = int(new_width / img_ratio)
+            
+            # Redimensionar manteniendo proporción
+            img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            
+            # Recortar al tamaño exacto desde el centro
+            left = (new_width - target_width) // 2
+            top = (new_height - target_height) // 2
+            right = left + target_width
+            bottom = top + target_height
+            
+            img = img.crop((left, top, right, bottom))
+            
+            # Guardar en memoria con calidad optimizada
+            output = BytesIO()
+            img.save(output, format='JPEG', quality=85)
+            output.seek(0)
+            
+            # Reemplazar el archivo original
+            self.image = InMemoryUploadedFile(
+                output,
+                'ImageField',
+                f"{os.path.splitext(self.image.name)[0]}.jpg",
+                'image/jpeg',
+                sys.getsizeof(output),
+                None
+            )
+
+        super().save(*args, **kwargs)
+
+class Requirement(models.Model):
+    company = models.CharField(max_length=255, verbose_name="Empresa")
+    title = models.CharField(max_length=255, verbose_name="Título del anuncio")
+    description = RichTextField(verbose_name="Detalle del anuncio")
+    phone = models.CharField(max_length=50, verbose_name="Teléfono de contacto")
+    email = models.CharField(max_length=254, verbose_name="Correo electrónico")
+    valid_until = models.DateField(verbose_name="Vigencia hasta")
+    is_active = models.BooleanField(default=True, verbose_name="Activo")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Fecha de actualización")
+
+    class Meta:
+        verbose_name = "Requerimiento"
+        verbose_name_plural = "Requerimientos"
+        ordering = ['-created_at']
+        app_label = 'logistics' 
+
+    def __str__(self):
+        return f"{self.title} - {self.company}"
+
+class Proposal(models.Model):
+    company = models.CharField(max_length=255, verbose_name="Empresa")
+    title = models.CharField(max_length=255, verbose_name="Título del anuncio")
+    description = RichTextField(verbose_name="Detalle del anuncio")
+    phone = models.CharField(max_length=50, verbose_name="Teléfono de contacto")
+    email = models.CharField(max_length=254, verbose_name="Correo electrónico")
+    valid_until = models.DateField(verbose_name="Vigencia hasta")
+    is_active = models.BooleanField(default=True, verbose_name="Activo")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Fecha de actualización")
+
+    class Meta:
+        verbose_name = "Propuesta"
+        verbose_name_plural = "Propuestas"
+        ordering = ['-created_at']
+        app_label = 'logistics' 
+
+    def __str__(self):
+        return f"{self.title} - {self.company}"
+    
 # Newsletter semanal
 class Newsletter(models.Model):
     title = models.CharField(
@@ -263,30 +456,6 @@ class Newsletter(models.Model):
         # return f"{self.title} - {self.created_date.strftime('%d/%m/%Y')}"
     
 class NewsletterSubscription(models.Model):
-    PAISES_CHOICES = [
-        ('México', 'México'),
-        ('Colombia', 'Colombia'),
-        ('España', 'España'),
-        ('Argentina', 'Argentina'),
-        ('Venezuela', 'Venezuela'),
-        ('Perú', 'Perú'),
-        ('Chile', 'Chile'),
-        ('Guatemala', 'Guatemala'),
-        ('Ecuador', 'Ecuador'),
-        ('Cuba', 'Cuba'),
-        ('Bolivia', 'Bolivia'),
-        ('República Dominicana', 'República Dominicana'),
-        ('Honduras', 'Honduras'),
-        ('El Salvador', 'El Salvador'),
-        ('Paraguay', 'Paraguay'),
-        ('Nicaragua', 'Nicaragua'),
-        ('Costa Rica', 'Costa Rica'),
-        ('Puerto Rico', 'Puerto Rico'),
-        ('Panamá', 'Panamá'),
-        ('Uruguay', 'Uruguay'),
-        ('Otro', 'Otro'),
-    ]
-
     SECTOR_CHOICES = [
     ('Aficiones y casinos', 'Aficiones y casinos'),
     ('Agricultura y ganadería', 'Agricultura y ganadería'),
@@ -350,40 +519,64 @@ class NewsletterSubscription(models.Model):
     ('Otro', 'Otro'),
     ]
 
-    nombre = models.CharField(max_length=100)
-    apellidos = models.CharField(max_length=100)
-    empresa = models.CharField(max_length=200)
-    rol = models.CharField(max_length=100)
-    correo = models.EmailField(unique=True)
-    rubros_interes = models.JSONField()  # Almacenará la lista de rubros como JSON
-    fecha_suscripcion = models.DateTimeField(auto_now_add=True)
-    pais = models.CharField(
-        max_length=100,
-        choices=PAISES_CHOICES,
-        verbose_name="País",
+    # Relación con el usuario de Django (para login)
+    user = models.OneToOneField(
+        'auth.User',
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
+        related_name='newsletter_subscription'
     )
-    ciudad = models.CharField(
-        max_length=100,
-        verbose_name="Ciudad",
-        null=True,
-        blank=True,
-    )
+    
+    # Campos básicos modificados
+    nombre_completo = models.CharField(max_length=200, verbose_name="Nombres y Apellidos")
+    rol = models.CharField(max_length=100, verbose_name="Cargo o Rol")
+    correo = models.EmailField(unique=True, verbose_name="Email")
+    
+    # Campos adicionales
     sector = models.CharField(
         max_length=100,
         choices=SECTOR_CHOICES,
         verbose_name="Sector",
-        null=True,
-        blank=True,
     )
+    
+    # Campo fecha de suscripción
+    fecha_suscripcion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de suscripción")
+    
+    # Nuevos campos (estos no se guardan directamente, solo para procesamiento)
+    password = models.CharField(max_length=128, null=True, blank=True, verbose_name="Contraseña", editable=False)
+    
+    # Campos eliminados: empresa, apellidos, pais, ciudad, rubros_interes
 
     class Meta:
         verbose_name = "Suscripción al Newsletter"
         verbose_name_plural = "Suscripciones al Newsletter"
 
     def __str__(self):
-        return f"{self.nombre} {self.apellidos} - {self.empresa}"
+        return f"{self.nombre_completo} - {self.correo}"
+        
+    def save(self, *args, **kwargs):
+        # Si es una nueva suscripción y tenemos contraseña, crear usuario
+        if not self.pk and hasattr(self, 'password') and self.password:
+            from django.contrib.auth.models import User
+            from django.db import transaction
+            
+            with transaction.atomic():
+                # Crear el usuario de Django
+                username = self.correo  # Usar el correo como nombre de usuario
+                user = User.objects.create_user(
+                    username=username,
+                    email=self.correo,
+                    password=self.password,
+                    first_name=self.nombre_completo.split()[0] if self.nombre_completo else "",
+                    last_name=" ".join(self.nombre_completo.split()[1:]) if self.nombre_completo and len(self.nombre_completo.split()) > 1 else "",
+                )
+                self.user = user
+                
+                # Eliminar la contraseña del modelo después de crear el usuario
+                self.password = None
+        
+        super().save(*args, **kwargs)
 
 class Rubro(models.Model):
     name = models.CharField(max_length=255, verbose_name="Nombre del Rubro")
@@ -579,3 +772,93 @@ class Event(models.Model):
         verbose_name = "Evento"
         verbose_name_plural = "Eventos"
         ordering = ['-date']  # Ordenar por fecha, más reciente primero
+
+class Resource(models.Model):
+    RESOURCE_TYPES = [
+        ('LI', 'Libro'),
+        ('DO', 'Documento'),
+        ('AR', 'Artículo'),
+        ('IN', 'Infografía'),
+        ('HC', 'Hoja de Cálculo'),
+    ]
+    
+    title = models.CharField(max_length=255, verbose_name="Título")
+    resource_type = models.CharField(
+        max_length=2,
+        choices=RESOURCE_TYPES,
+        verbose_name="Tipo de Recurso"
+    )
+    author = models.CharField(max_length=255, verbose_name="Autor")
+    author_email = models.EmailField(
+        verbose_name="Correo del Autor", 
+        blank=True, 
+        null=True
+    )
+    author_phone = models.CharField(
+        max_length=20, 
+        verbose_name="Teléfono móvil del Autor", 
+        blank=True, 
+        null=True
+    )
+    original_link = models.URLField(
+        verbose_name="Link original del recurso", 
+        blank=True, 
+        null=True
+    )
+    is_featured = models.BooleanField(
+        default=False, 
+        verbose_name="Mostrar en Novedades"
+    )
+    file = models.FileField(
+        upload_to='resources/', 
+        verbose_name="Archivo"
+    )
+    image = models.ImageField(
+        upload_to='resource_images/',
+        null=True,
+        blank=True,
+        verbose_name="Imagen de portada",
+        validators=[validate_image_size],
+        help_text="Tamaño recomendado: 300x300 píxeles. Máximo 2MB."
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Fecha de actualización")
+
+    def __str__(self):
+        return f"{self.title} - {self.get_resource_type_display()}"
+
+    class Meta:
+        verbose_name = "Recurso"
+        verbose_name_plural = "Recursos"
+        ordering = ['-created_at']
+
+class Banner(models.Model):
+    SECTION_CHOICES = [
+        ('EDUCACION', 'Educación'),
+        ('DIRECTORIO', 'Directorio'),
+        ('CONTRATAR_OFRECER', 'Contratar/Ofrecer'),
+    ]
+    
+    title = models.CharField(max_length=100, verbose_name="Título")
+    section = models.CharField(max_length=20, choices=SECTION_CHOICES, verbose_name="Sección")
+    advertiser = models.CharField(max_length=100, verbose_name="Anunciante", blank=True, null=True, help_text="Empresa o entidad que publica este banner")
+    image = models.ImageField(
+        upload_to='banners/', 
+        verbose_name="Imagen", 
+        validators=[validate_image_size],
+        help_text="Imagen del banner. Tamaño recomendado: 940x320px para todos los tipos de banner. Máximo 2MB."
+    )
+    url = models.URLField(verbose_name="URL de destino", blank=True, null=True)
+    is_active = models.BooleanField(default=True, verbose_name="Activo")
+    start_date = models.DateField(verbose_name="Fecha de inicio")
+    end_date = models.DateField(verbose_name="Fecha de fin")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Fecha de actualización")
+    
+    def __str__(self):
+        return f"{self.title} - {self.get_section_display()}"
+    
+    class Meta:
+        verbose_name = "Banner"
+        verbose_name_plural = "Banners"
+        ordering = ['-created_at']

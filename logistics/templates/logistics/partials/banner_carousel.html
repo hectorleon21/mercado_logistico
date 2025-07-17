@@ -1,0 +1,108 @@
+{% load static %}
+
+<div class="banner-wrapper" style="background-color: #f5f7fa; padding: 0;">
+    {% if banners %}
+    <div class="banner-container" style="margin: 0 auto; max-width: 720px; position: relative; overflow: hidden;">
+        <div class="banner-slides" style="position: relative; height: 240px; width: 100%;">
+            {% for banner in banners %}
+            <div class="banner-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: {% if forloop.first %}1{% else %}0{% endif %}; transition: opacity 0.5s ease; z-index: {% if forloop.first %}1{% else %}0{% endif %};" data-index="{{ forloop.counter0 }}">
+                {% if banner.url %}
+                <a href="{{ banner.url }}" target="_blank" rel="noopener">
+                    <img src="{{ banner.image.url }}" alt="{{ banner.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                </a>
+                {% else %}
+                <img src="{{ banner.image.url }}" alt="{{ banner.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Flechas de navegación con mayor visibilidad -->
+        <button class="prev-btn" style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); background-color: rgba(0,0,0,0.4); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 5px rgba(0,0,0,0.2);">
+            &#10094;
+        </button>
+        <button class="next-btn" style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); background-color: rgba(0,0,0,0.4); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 5px rgba(0,0,0,0.2);">
+            &#10095;
+        </button>
+        
+        <div class="dots-container" style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10;">
+            {% for banner in banners %}
+            <button class="dot {% if forloop.first %}active{% endif %}" style="width: 10px; height: 10px; border-radius: 50%; background-color: {% if forloop.first %}white{% else %}rgba(255,255,255,0.5){% endif %}; border: none; padding: 0; cursor: pointer;" data-index="{{ forloop.counter0 }}"></button>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.banner-slide');
+            const dots = document.querySelectorAll('.dot');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            
+            if (!slides.length) return;
+            
+            let currentIndex = 0;
+            let interval;
+            
+            function showSlide(index) {
+                slides.forEach(slide => {
+                    slide.style.opacity = "0";
+                    slide.style.zIndex = "0";
+                });
+                slides[index].style.opacity = "1";
+                slides[index].style.zIndex = "1";
+                
+                dots.forEach(dot => {
+                    dot.style.backgroundColor = "rgba(255,255,255,0.5)";
+                });
+                dots[index].style.backgroundColor = "white";
+                
+                currentIndex = index;
+            }
+            
+            function nextSlide() {
+                showSlide((currentIndex + 1) % slides.length);
+            }
+            
+            function prevSlide() {
+                showSlide((currentIndex - 1 + slides.length) % slides.length);
+            }
+            
+            // Iniciar carrusel automático
+            if (slides.length > 1) {
+                interval = setInterval(nextSlide, 5000);
+                
+                // Eventos para botones de navegación
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', function() {
+                        clearInterval(interval);
+                        prevSlide();
+                        interval = setInterval(nextSlide, 5000);
+                    });
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', function() {
+                        clearInterval(interval);
+                        nextSlide();
+                        interval = setInterval(nextSlide, 5000);
+                    });
+                }
+                
+                // Eventos para indicadores
+                dots.forEach((dot, index) => {
+                    dot.addEventListener('click', function() {
+                        clearInterval(interval);
+                        showSlide(index);
+                        interval = setInterval(nextSlide, 5000);
+                    });
+                });
+            }
+        });
+    </script>
+    {% else %}
+    <div style="background-color: #f8f9fa; padding: 10px; text-align: center; max-width: 940px; margin: 0 auto; height: 60px; display: flex; align-items: center; justify-content: center;">
+        <p>No hay banners disponibles para esta sección.</p>
+    </div>
+    {% endif %}
+</div> 

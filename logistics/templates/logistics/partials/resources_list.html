@@ -1,0 +1,44 @@
+{% if page_obj %}
+    {% for resource in page_obj %}
+    <div class="recurso-card">
+        {% if resource.image %}
+            <div class="recurso-imagen" style="background-image: url('{{ resource.image.url }}'); background-size: cover; background-position: center;"></div>
+        {% else %}
+            {% if resource.resource_type == 'LI' %}
+                <div class="recurso-imagen placeholder-libro">
+                    <span>Portada de un Libro</span>
+                </div>
+            {% elif resource.resource_type == 'DO' %}
+                <div class="recurso-imagen placeholder-documento">
+                    <span>Portada de un Documento</span>
+                </div>
+            {% elif resource.resource_type == 'AR' %}
+                <div class="recurso-imagen placeholder-articulo">
+                    <span>Portada de un Artículo</span>
+                </div>
+            {% elif resource.resource_type == 'IN' %}
+                <div class="recurso-imagen placeholder-infografia">
+                    <span>Portada de una Infografía</span>
+                </div>
+            {% elif resource.resource_type == 'HC' %}
+                <div class="recurso-imagen placeholder-calculo">
+                    <span>Portada de una Hoja de Cálculo</span>
+                </div>
+            {% endif %}
+        {% endif %}
+        <div class="recurso-contenido">
+            <h3 class="recurso-titulo">{{ resource.title }}</h3>
+            <p class="recurso-autor">Por: {{ resource.author }}</p>
+            <a href="{{ resource.file.url }}" class="recurso-contacto" download>Descargar Recurso</a>
+        </div>
+    </div>
+    {% empty %}
+    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 0;">
+        <p>No se encontraron recursos que coincidan con tu búsqueda.</p>
+    </div>
+    {% endfor %}
+{% else %}
+    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 0;">
+        <p>No hay recursos disponibles actualmente.</p>
+    </div>
+{% endif %} 

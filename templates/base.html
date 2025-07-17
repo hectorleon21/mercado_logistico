@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}Mercado Logístico - Comunidad Profesional de Logística{% endblock %}</title>
+    
+    <!-- Fuentes de Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Estilos base -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+    
+    <style>
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fcfcfc;
+            overflow-x: hidden;
+        }
+
+        /* Tipografía */
+        h1, h2, h3, h4, .logo-title, .logo-subtitle, .nav-link, .btn {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: #0099cc;
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #0066aa;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            font-weight: 400;
+            color: #444;
+        }
+
+        /* Header y Navegación - FONDO NEGRO */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 3rem 1rem 5rem;
+            background-color: #000000;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header.scrolled {
+            padding: 0.7rem 3rem 0.7rem 5rem;
+            background-color: #000000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .logo-img {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
+            margin-right: 0;
+            transform: scale(1.4);
+            transform-origin: left center;
+        }
+
+        .nav-links {
+            display: flex;
+            margin-left: auto;
+            align-items: center;
+            height: 100%;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: #0099cc;
+        }
+        
+        /* Estilo especial para el botón de login */
+        .login-link {
+            background-color: #0099cc;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            margin-left: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .login-link:hover {
+            background-color: #007da8;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        /* Modal de Login */
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .login-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .login-modal-content {
+            background-color: #fff;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .login-modal.show .login-modal-content {
+            transform: scale(1);
+        }
+        
+        .login-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .login-modal-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.5rem;
+        }
+        
+        .login-modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s ease;
+        }
+        
+        .login-modal-close:hover {
+            color: #333;
+        }
+        
+        .login-form-group {
+            margin-bottom: 1.2rem;
+        }
+        
+        .login-form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        
+        .login-form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        .login-form-group input:focus {
+            border-color: #0099cc;
+            outline: none;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #0099cc;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .login-btn:hover {
+            background-color: #0077aa;
+        }
+        
+        .login-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .login-footer a {
+            color: #0099cc;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .login-footer a:hover {
+            color: #0077aa;
+            text-decoration: underline;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: #1a1a1a;
+            color: #aaaaaa;
+            padding: 2.5rem 3rem 1rem 5rem;
+        }
+
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-column {
+            flex: 1 0 220px;
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .footer-company-info {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #999;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .social-icon:hover {
+            background-color: #0099cc;
+            transform: translateY(-3px);
+        }
+
+        .footer-heading {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: #0099cc;
+            border-radius: 1px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: #0099cc;
+        }
+
+        .contact-info p {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .contact-info p i {
+            margin-right: 0.5rem;
+            color: #0099cc;
+        }
+
+        .subscribe-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .subscribe-form input {
+            padding: 0.75rem;
+            border: 1px solid #333;
+            background-color: #222;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        .btn-subscribe {
+            padding: 0.75rem;
+            background-color: #0099cc;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-subscribe:hover {
+            background-color: #007da8;
+        }
+
+        .footer-bottom {
+            width: 100%;
+            border-top: 1px solid #333;
+            padding-top: 1.5rem;
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #777;
+        }
+        
+        /* Botón volver arriba */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #0099cc;
+            color: #fff;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 99;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background-color: #007da8;
+            transform: translateY(-3px);
+        }
+        
+        /* Menú móvil */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 3px;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Botón de WhatsApp flotante */
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            z-index: 99;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .whatsapp-btn:before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transform: scale(0);
+            transition: all 0.5s ease;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .whatsapp-btn:hover:before {
+            transform: scale(2);
+        }
+
+        .whatsapp-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+
+        .whatsapp-btn .pulse {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #25D366;
+            opacity: 0.5;
+            z-index: -1;
+            pointer-events: none;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            70% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+        }
+        
+        /* Estilos responsive */
+        @media (max-width: 1024px) {
+            .container, .section, .slide-content, .nosotros-section, .plataforma-section, .header, .header.scrolled, .footer {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container, .section, .slide-content, .nosotros-section, .plataforma-section, .header, .header.scrolled, .footer {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+            
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .menu-toggle.active span:nth-child(1) {
+                transform: translateY(9px) rotate(45deg);
+            }
+            
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .menu-toggle.active span:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #000000;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                opacity: 0;
+                visibility: hidden;
+                z-index: 1000;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-links.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-link {
+                margin: 0.5rem 0;
+                font-size: 1.1rem;
+            }
+            
+            .footer-column {
+                flex: 0 0 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header" id="header">
+        <nav class="nav">
+            <div class="logo">
+                <img src="{% static 'images/logo_black.jpg' %}" alt="Mercado Logístico Logo" class="logo-img">
+            </div>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-links" id="nav-links">
+                <a href="{% url 'index' %}" class="nav-link">Inicio</a>
+                <a href="{% url 'noticias_articulos' %}" class="nav-link">Noticias y Artículos</a>
+                <a href="{% url 'courses' %}" class="nav-link">Educación</a>
+                <a href="{% url 'directorio' %}" class="nav-link">Directorio</a>
+                <a href="{% url 'contratar_ofrecer' %}" class="nav-link">Contratar / Ofrecer</a>
+                <a href="{% url 'resources' %}" class="nav-link">Recursos</a>
+                <a href="/" class="nav-link">Empleo</a>
+                <a href="#" class="nav-link login-link" id="login-button">
+                    <i class="fas fa-user-circle" style="margin-right: 5px;"></i>Acceder
+                </a>
+            </div>
+        </nav>
+        <div class="menu-overlay" id="menu-overlay"></div>
+    </header>
+    
+    {% block hero %}
+    <!-- El bloque hero será reemplazado por cada página cuando sea necesario -->
+    {% endblock %}
+    
+    <div class="news-marquee">
+        <div class="news-marquee-content">
+            <div class="news-item"><span>Evento</span> LogiExpo 2024: La mayor feria de logística del año - 15-17 Mayo, Madrid</div>
+        </div>
+    </div>
+    
+    {% block content %}
+    <!-- El contenido principal será reemplazado por cada página -->
+    {% endblock %}
+    
+    <footer class="footer">
+        <div class="footer-container">
+            <!-- Columna 1: Información de la empresa -->
+            <div class="footer-column">
+                <img src="{% static 'images/logo_black.jpg' %}" alt="Mercado Logístico" class="footer-logo">
+                <p class="footer-company-info">
+                    Mercado Logístico® es una marca registrada de Mercado Logístico S.A.C. Expertos en soluciones logísticas integrales desde 2010.
+                </p>
+                <div class="footer-social">
+                    <a href="#" class="social-icon">in</a>
+                    <a href="#" class="social-icon">f</a>
+                    <a href="#" class="social-icon">ig</a>
+                    <a href="#" class="social-icon">yt</a>
+                </div>
+            </div>
+            
+            <!-- Columna 2: Enlaces principales -->
+            <div class="footer-column">
+                <h3 class="footer-heading">Enlaces rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="#inicio">Nuestros servicios</a></li>
+                    <li><a href="#nosotros">Sobre nosotros</a></li>
+                    <li><a href="#eventos">Casos de éxito</a></li>
+                    <li><a href="#noticias">Blog logístico</a></li>
+                    <li><a href="index.html#registro">Contacto</a></li>
+                    <li><a href="#proveedores">Portal de proveedores</a></li>
+                </ul>
+            </div>
+            
+            <!-- Columna 3: Servicios -->
+            <div class="footer-column">
+                <h3 class="footer-heading">Nuestros Proveedores</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Logística de distribución</a></li>
+                    <li><a href="#">Gestión de almacenes</a></li>
+                    <li><a href="#">Transporte internacional</a></li>
+                    <li><a href="#">Software logístico</a></li>
+                    <li><a href="#">Consultoría SCM</a></li>
+                    <li><a href="#cursos">Formación especializada</a></li>
+                </ul>
+            </div>
+            
+            <!-- Columna 4: Contacto y suscripción -->
+            <div class="footer-column">
+                <h3 class="footer-heading">Contacto</h3>
+                <div class="contact-info">
+                    <p><i class="icon-location">📍</i> Av. Principal 1234, Lima, Perú</p>
+                    <p><i class="icon-phone">📞</i> +51 1 234 5678</p>
+                    <p><i class="icon-email">✉️</i> info@mercadologistico.com</p>
+                </div>
+                
+                <div class="subscribe-form">
+                    <input type="email" class="form-control" placeholder="Correo electrónico">
+                    <button class="btn-subscribe">Suscríbete</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Bottom -->
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>© 2025 Mercado Logístico S.A.C. Todos los derechos reservados | <a href="#" style="color: #aaaaaa;">Política de privacidad</a> | <a href="#" style="color: #aaaaaa;">Términos y condiciones</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botón volver arriba -->
+    <a href="#" class="back-to-top" id="back-to-top" aria-label="Volver arriba">&#8593;</a>
+    
+    <!-- Botón de WhatsApp flotante -->
+    <a href="https://wa.me/51976461977?text=Hola,%20estoy%20interesado%20en%20los%20servicios%20de%20Mercado%20Logístico" class="whatsapp-btn" target="_blank" rel="noopener noreferrer" aria-label="Contáctanos por WhatsApp">
+        <div class="pulse"></div>
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16.004 0h-.008C7.174 0 0 7.176 0 16c0 3.5 1.128 6.744 3.046 9.376l-1.994 5.94 6.15-1.966C9.732 31.032 12.75 32 16.004 32 24.826 32 32 24.822 32 16S24.826 0 16.004 0zm-4.972 8.58c.22-.56.454-.54.674-.56.156-.2.343-.36.494-.036s.584.062.89.308c.312.246 1.082.997 1.082.997s.312.328.156.668c-.156.34-.468.997-.468.997s-.062.11-.234.172c-.17.062-.266.124-.172.246.094.12.468.73.998 1.183 1.082.93 1.706 1.342 2.112 1.5.406.16.656.14.89-.1.234-.236.984-1.118.984-1.118s.25-.34.656-.17c.406.17 2.574 1.22 2.574 1.22s.25.094.312.172c.062.076.156.48.016.87-.14.392-.89 2.438-.89 2.438s-.22.36-.734.554c-.516.198-1.14.162-1.14.162s-1.75-.58-3.584-1.578c-1.42-.772-2.39-1.75-3.256-2.698-.43-.468-.812-.966-1.14-1.468-.328-.504-.696-1.234-.696-1.234s-.546-1.04-.312-1.87c.234-.828.734-1.188.734-1.188z" fill-rule="nonzero"/>
+        </svg>
+    </a>
+
+    <!-- Modal de Login -->
+    <div class="login-modal" id="login-modal">
+        <div class="login-modal-content">
+            <div class="login-modal-header">
+                <h3>Iniciar Sesión</h3>
+                <button type="button" class="login-modal-close" id="login-modal-close">&times;</button>
+            </div>
+            <form id="login-form">
+                {% csrf_token %}
+                <div class="login-form-group">
+                    <label for="login-email">Correo electrónico:</label>
+                    <input type="email" id="login-email" name="email" required>
+                </div>
+                <div class="login-form-group">
+                    <label for="login-password">Contraseña:</label>
+                    <input type="password" id="login-password" name="password" required>
+                </div>
+                <div id="login-error" class="error-message" style="color: #ff3333; margin-bottom: 1rem; display: none;"></div>
+                <button type="submit" class="login-btn">Ingresar</button>
+                <div class="login-footer">
+                    <p>¿No tienes una cuenta? <a href="#" id="register-link">Regístrate aquí</a></p>
+                    <p><a href="#" id="forgot-password-link">¿Olvidaste tu contraseña?</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts comunes -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    
+    <script>
+        // Funcionalidad del menú móvil
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navLinks = document.getElementById('nav-links');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const backToTop = document.getElementById('back-to-top');
+            
+            // Funcionalidad del menú móvil
+            if (mobileMenu && navLinks && menuOverlay) {
+                mobileMenu.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    navLinks.classList.toggle('active');
+                    menuOverlay.classList.toggle('active');
+                    document.body.classList.toggle('menu-open');
+                });
+                
+                menuOverlay.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                    navLinks.classList.remove('active');
+                    menuOverlay.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                });
+            }
+            
+            // Funcionalidad del botón volver arriba
+            if (backToTop) {
+                window.addEventListener('scroll', function() {
+                    if (window.pageYOffset > 300) {
+                        backToTop.classList.add('visible');
+                    } else {
+                        backToTop.classList.remove('visible');
+                    }
+                });
+                
+                backToTop.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            // Header con efecto al hacer scroll
+            const header = document.getElementById('header');
+            if (header) {
+                window.addEventListener('scroll', function() {
+                    if (window.pageYOffset > 50) {
+                        header.classList.add('scrolled');
+                    } else {
+                        header.classList.remove('scrolled');
+                    }
+                });
+            }
+            
+            // Funcionalidad del modal de login
+            const loginButton = document.getElementById('login-button');
+            const loginModal = document.getElementById('login-modal');
+            const loginModalClose = document.getElementById('login-modal-close');
+            const loginForm = document.getElementById('login-form');
+            const loginError = document.getElementById('login-error');
+            
+            if (loginButton && loginModal && loginModalClose && loginForm) {
+                // Verificar el estado de autenticación al cargar la página
+                checkAuthStatus();
+                
+                loginButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    loginModal.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                });
+                
+                loginModalClose.addEventListener('click', function() {
+                    loginModal.classList.remove('show');
+                    document.body.style.overflow = '';
+                });
+                
+                // Cerrar modal al hacer clic fuera del contenido
+                loginModal.addEventListener('click', function(e) {
+                    if (e.target === loginModal) {
+                        loginModal.classList.remove('show');
+                        document.body.style.overflow = '';
+                    }
+                });
+                
+                // Manejar el envío del formulario de login
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('login-email').value;
+                    const password = document.getElementById('login-password').value;
+                    
+                    // Ocultar mensaje de error previo
+                    loginError.style.display = 'none';
+                    
+                    // Obtener el token CSRF
+                    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                    
+                    // Enviar solicitud de inicio de sesión
+                    fetch('/api/login/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Inicio de sesión exitoso
+                            loginModal.classList.remove('show');
+                            document.body.style.overflow = '';
+                            
+                            // Actualizar la interfaz para mostrar el usuario logueado
+                            updateUIForLoggedInUser(data.user);
+                            
+                            // Opcional: recargar la página
+                            // window.location.reload();
+                        } else {
+                            // Mostrar mensaje de error
+                            loginError.textContent = data.error;
+                            loginError.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        loginError.textContent = 'Ocurrió un error. Por favor, intenta nuevamente.';
+                        loginError.style.display = 'block';
+                    });
+                });
+            }
+            
+            // Función para verificar el estado de autenticación
+            function checkAuthStatus() {
+                fetch('/api/check-auth/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.authenticated) {
+                        updateUIForLoggedInUser(data.user);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al verificar autenticación:', error);
+                });
+            }
+            
+            // Función para actualizar la interfaz cuando el usuario está logueado
+            function updateUIForLoggedInUser(user) {
+                // Cambiar el texto y estilo del botón de login
+                if (loginButton) {
+                    loginButton.innerHTML = `<i class="fas fa-user-circle" style="margin-right: 5px;"></i>${user.name.split(' ')[0]}`;
+                    
+                    // Cambiar el comportamiento del botón para mostrar un menú dropdown
+                    loginButton.removeEventListener('click', onLoginButtonClick);
+                    loginButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        // Aquí podrías mostrar un menú desplegable con opciones de usuario
+                        // Por ahora, implementamos un cierre de sesión simple
+                        if (confirm('¿Deseas cerrar sesión?')) {
+                            logout();
+                        }
+                    });
+                }
+                
+                // Aquí podrías mostrar elementos adicionales para usuarios logueados
+                // Por ejemplo, mostrar enlaces a áreas privadas
+            }
+            
+            // Función para cerrar sesión
+            function logout() {
+                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                fetch('/api/logout/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Reiniciar la interfaz
+                        if (loginButton) {
+                            loginButton.innerHTML = `<i class="fas fa-user-circle" style="margin-right: 5px;"></i>Acceder`;
+                            
+                            // Restaurar el comportamiento original del botón
+                            loginButton.removeEventListener('click', null);
+                            loginButton.addEventListener('click', onLoginButtonClick);
+                        }
+                        
+                        // Opcional: recargar la página
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cerrar sesión:', error);
+                });
+            }
+            
+            // Guardar la función de clic original para poder restaurarla
+            function onLoginButtonClick(e) {
+                e.preventDefault();
+                loginModal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

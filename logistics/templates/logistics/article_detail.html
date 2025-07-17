@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ article.title }} - Mercado Logístico{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        height: 400px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        margin-top: 60px;
+    }
+    
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.3));
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 10;
+        color: #fff;
+        padding: 2rem;
+        max-width: 800px;
+    }
+    
+    .article-date {
+        display: flex;
+        align-items: center;
+        color: #666;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+    
+    .article-date i {
+        margin-right: 0.5rem;
+        color: #4ecdc4;
+    }
+    
+    .article-author {
+        margin-left: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .article-author i {
+        margin-right: 0.5rem;
+        color: #4ecdc4;
+    }
+    
+    .article-content {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        padding: 2.5rem;
+        margin-top: 2rem;
+        position: relative;
+        z-index: 20;
+    }
+    
+    .article-content h1 {
+        color: #000;
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.3;
+    }
+    
+    .article-description {
+        color: #555;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        text-align: justify;
+    }
+    
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        background-color: #4ecdc4;
+        color: #fff;
+        padding: 0.7rem 1.5rem;
+        border-radius: 5px;
+        margin-top: 2rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+    
+    .btn-back:hover {
+        background-color: #3dbdb4;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+    }
+    
+    .btn-back i {
+        margin-right: 0.5rem;
+    }
+    
+    .article-hero-bg {
+        background-image: url('');
+    }
+</style>
+{% endblock %}
+
+{% block hero %}
+<!-- Hero Section con imagen del artículo -->
+<section class="hero" style="background-image: url('{% if article.image %}{{ article.image.url }}{% else %}{% static 'images/article-placeholder.svg' %}{% endif %}');">
+    <div class="hero-content">
+        <h1>{{ article.title }}</h1>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <!-- Hero Image -->
+            {% if article.image %}
+                <img src="{{ article.image.url }}" alt="{{ article.title }}" class="img-fluid mb-4 rounded" style="width: 100%; height: 400px; object-fit: cover;">
+            {% else %}
+                <img src="{% static 'images/article-placeholder.svg' %}" alt="{{ article.title }}" class="img-fluid mb-4 rounded" style="width: 100%; height: 400px; object-fit: cover;">
+            {% endif %}
+            
+            <div class="article-content">
+                <h1>{{ article.title }}</h1>
+                
+                <div class="article-date">
+                    <i class="icon-calendar">📅</i> {{ article.date|date:"d/m/Y" }}
+                    {% if article.author %}
+                    <span class="article-author">
+                        <i class="icon-user">👤</i> {{ article.author }}
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <div class="article-description">
+                    {{ article.description|safe }}
+                </div>
+                
+                <a href="{% url 'noticias_articulos' %}#articulos" class="btn-back">
+                    <i class="icon-back">⬅️</i> Volver a Artículos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

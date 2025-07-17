@@ -1,434 +1,791 @@
+{% extends 'base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="es">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi, shrink-to-fit=no">
+{% block title %}Mercado Logístico - Directorio de Proveedores{% endblock %}
 
-        <meta name="twitter:title" content="MercadoLogistico Latam"><meta property="twitter:title" content="MercadoLogistico Latam"><meta property="og:title" content="MercadoLogistico Latam">
-        <meta name="twitter:description" content="Busca, encuentra, contrata y evalua los servicios de los proveedores de servicios de cadena de abastecimiento mas grande de Latinoamerica"><meta property="twitter:description" content="Busca, encuentra, contrata y evalua los servicios de los proveedores de servicios de cadena de abastecimiento mas grande de Latinoamerica"><meta property="og:description" content="Busca, encuentra, contrata y evalua los servicios de los proveedores de servicios de cadena de abastecimiento mas grande de Latinoamerica">
-        <meta property="og:image" content="{% static 'images/logo.png' %}"><meta name="twitter:image" content="{% static 'images/logo.png' %}"><meta name="twitter:card" content="summary_large_image">
+{% block extra_css %}
+<style>
+/* Estilos para la sección hero */
+.hero {
+    height: 100vh; /* Restaurado al 100vh como en la maqueta original */
+    position: relative;
+    overflow: hidden;
+    background-color: #000;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    width: 100%;
+}
 
-        <title>Directorio de Proveedores Logísticos</title>
-        <meta name="description" content="MercadoLogistico es la comunidad de proveedores logisticos mas grande Latinoamerica. Ayudamos a empresas de todos los tamaños a digitalizar sus procesos.">
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
 
-        <link rel="icon" type="image/x-icon" href="{% static 'images/logo.png' %}">
+.slide.active {
+    opacity: 1;
+}
 
-        <link rel="canonical" href="https://www.mercadologistico.biz/directorio">
-        
-        <link href="{% static 'css/directorio/font.css' %}" rel="stylesheet">
+.slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%);
+}
 
-        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-        <link href="{% static 'css/all.min.css' %}" rel="stylesheet">
+.slide-content {
+    padding: 0 5rem;
+    max-width: 800px;
+    color: #fff;
+    position: relative;
+    z-index: 1;
+}
 
-        <link rel="stylesheet" href="{% static 'css/directorio/style_head.css' %}">
+/* Ajustes para posicionar el texto */
+.slide-content h1 {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        
-        <script type="text/javascript">
-            var providerListAjaxUrl = "{% url 'provider_list_ajax' %}";
-        </script>
-        <script src="{% static 'js/search.js' %}"></script>
+.slide-content p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
 
-        <style>
-            /* Agrega un borde suave al botón de menú (hamburguesa) */
-            .toggle-button .navbar-toggler-icon {
-              border: 0.5px solid #F1F1F1 !important;
-              /* border-radius: 4px; /* Opcional: redondea las esquinas */
-              padding: 4px;       /* Opcional: espacio interno para que se note el borde */
-            }
-          </style>
+/* Estilo para el botón principal */
+.hero .btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    background-color: #0099cc;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    border: none;
+}
 
-          <!-- Matomo -->
-            <script>
-                var _paq = window._paq = window._paq || [];
-                /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-                _paq.push(['trackPageView']);
-                _paq.push(['enableLinkTracking']);
-                (function() {
-                var u="//analytics.mercadologistico.io/";
-                _paq.push(['setTrackerUrl', u+'matomo.php']);
-                _paq.push(['setSiteId', '1']);
-                var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-                g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-                })();
-            </script>
-            <!-- End Matomo Code -->
-  
+.hero .btn:hover {
+    background-color: #0077aa;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
 
-    </head>
+/* Marquee de noticias */
+.news-marquee {
+    background-color: #0099cc;
+    padding: 0.8rem 0;
+    overflow: hidden;
+    position: relative;
+}
 
-    <body>
-        <div data-spr-role="sentinel-start" data-spr-sentinel-start-for="a696084b-8a7f-417f-beea-bef965bdb464" data-spr-block-hrid="header1"></div>
-        <nav id="header1" class="header1-fixed-top navbar nav navbar-expand-lg header1-a696084b-8a7f-417f-beea-bef965bdb464 sw-background-color-000000 sw-padding-top-6xs sw-padding-bottom-5xs sw-border-top-style-none sw-border-top-width-xs sw-border-top-color-16a1c0 sw-border-bottom-style-none sw-border-bottom-width-xs sw-border-bottom-color-ffffff navbar-dark">
-            <div class="container">
-                <!-- Logo -->
-                <a class="navbar-brand" href="/"><img class="sw-width-6xs " src="{% static 'images/logo_black.jpg' %}" alt="Publish your designed things."></a>
-                <div class="desktop-menu text-center justify-content-end">
-                    <ul class="navbar-nav  align-items-center flex-row  empty-buttons ">
-                        <li class="nav-item "><a class="position-relative  sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                            href="/" target="">Inicio</a>
-                            <div class="border-0 dropdown-menu" aria-labelledby="navbarDropdown-0" style="background-color: rgb(0, 0, 0);"></div>
-                        </li>
-                        <li class="nav-item "><a class="position-relative  sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                            href="/newsletter" target="">Descubre</a>
-                            <div class="border-0 dropdown-menu" aria-labelledby="navbarDropdown-1" style="background-color: rgb(0, 0, 0);"></div>
-                        </li>
-                        <li class="nav-item "><a class="position-relative  sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                            href="/courses" target="">Cursos</a>
-                            <div class="border-0 dropdown-menu" aria-labelledby="navbarDropdown-2" style="background-color: rgb(0, 0, 0);"></div>
-                        </li>
-                        <li class="nav-item "><a class="position-relative  sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                            href="/directorio" target="">Directorio</a>
-                            <div class="border-0 dropdown-menu" aria-labelledby="navbarDropdown-3" style="background-color: rgb(0, 0, 0);"></div>
-                        </li>
-                        <li class="nav-item dropdown"><a class="position-relative dropdown-toggle sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                            href="#" target="_blank" id="navbarDropdown-4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Empleos</a>
-                            <div class="border-0 dropdown-menu" aria-labelledby="navbarDropdown-4" style="background-color: rgb(0, 0, 0);"><a target="" class="sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent dropdown-item navigate"
-                                href="/add-jobs">Ingrese empleo</a><a target="" class="sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent dropdown-item navigate"
-                                href="/bolsatrabajo">Empleo</a></div>
-                        </li>
-                    </ul>
-                </div>
-                <!-- mobile toggle -->
-                <div class="toggle-button"><span class="navbar-toggler-icon"></span></div>
-                <div class="mob-menu-content" style="background-color: rgb(0, 0, 0);">
-                    <div class="mob-menu-header">
-                        <a class="navbar-brand" href="/"><img class="sw-width-6xs " src="https://assets.softr-files.com/applications/1f37011c-bdff-48c6-8a6b-d2f777aab051/assets/ad003983-377f-4413-ac61-dd42f06fe7b9.png" alt="Publish your designed things."></a><span class="navbar-close"> <i class="fa fa-fw fa-times" aria-hidden="true" style="color: rgb(255, 255, 255);"></i></span></div>
-                    <div
-                    class="mob-menu-body">
-                        <div class="navigation-section"><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                            href="/" style="background-color: rgb(0, 0, 0);">Inicio</a><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                            href="/newsletter" style="background-color: rgb(0, 0, 0);">Descubre</a><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                            href="/courses" style="background-color: rgb(0, 0, 0);">Cursos</a><a class="link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                            href="/directorio" style="background-color: rgb(0, 0, 0);">Directorio</a><a class="position-relative link collapsed d-block sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent"
-                            data-toggle="collapse" href="#" role="button" aria-expanded="false" aria-controls="collapseExample-4" style="background-color: rgb(0, 0, 0);">Empleos<span class="arrow" style="border-left: 2px solid rgb(255, 255, 255); border-top: 2px solid rgb(255, 255, 255);"></span></a>
-                            <div
-                            class="collapse" id="collapseExample-4"><a target="" class="sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent dropdown-item navigate"
-                                href="/#">Ingrese empleo</a><a target="" class="sw-font-size-l sw-text-color-ffffff sw-font-family-didact_gothic sw-font-weight-normal sw-letter-spacing-wider sw-display-block sw-padding-top-6xs sw-padding-bottom-6xs sw-padding-left-6xs sw-padding-right-xs hover:sw-text-decoration-no-underline active:sw-background-color-transparent dropdown-item navigate"
-                                href="/#">Encuentra empleo</a></div></div>
-                <div class="buttons-section"></div>
-            </div>
-            </div>
-            </div>
-        </nav>
-        <link rel="stylesheet" href="{% static 'css/directorio/body_b1.css' %}">
-        HOLA 1
-        <script src="{% static 'js/directorio/body_b1.js' %}"></script>
+.news-marquee-content {
+    display: flex;
+    animation: marquee 25s linear infinite;
+    white-space: nowrap;
+}
 
-        <div data-spr-role="sentinel-end" data-spr-sentinel-end-for="a696084b-8a7f-417f-beea-bef965bdb464" data-spr-block-hrid="header1"></div>
-        <div data-spr-role="sentinel-start" data-spr-sentinel-start-for="2e716889-b7ec-4d2a-c0f4-9d4e7d03786c" data-spr-block-hrid="cta0"></div>
-        <section id="cta0" style="background-image: url(https://assets.softr-files.com/applications/1f37011c-bdff-48c6-8a6b-d2f777aab051/assets/d3376b32-45a5-448d-96db-8b7b607448bf.png);" data-block-version="2.0.0" data-block-id="2e716889-b7ec-4d2a-c0f4-9d4e7d03786c"
-        data-block-updated="" class="cta2-2e716889-b7ec-4d2a-c0f4-9d4e7d03786c sw-background-color-ffffff sw-padding-top-2xl sw-padding-bottom-2xl sw-border-top-style-none sw-border-top-width-xs sw-border-top-color-000000 sw-border-bottom-style-none sw-border-bottom-width-xs sw-border-bottom-color-000000   sw-background-repeat-no-repeat sw-background-size-cover sw-background-position-center sw-background-attachment-scroll ">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-12 text-center sw-background-color-none sw-border-style-none sw-border-width-xs sw-border-color-000000 sw-border-radius-none sw-box-shadow-none sw-padding-top-none sw-padding-bottom-none ">
-                        <h2 class="sw-font-size-8xl sw-text-color-ffffff sw-font-family-default sw-font-weight-bold sw-padding-top-none sw-padding-bottom-4xs sw-letter-spacing-wider sw-line-height-loose ">      Comunidad de  personas para hacer negocios     </h2>
-                        <p class="sw-font-size-3xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-padding-top-none sw-padding-bottom-3xs sw-letter-spacing-tighter sw-line-height-loose "> Todas las empresas del sector logístico, sus aliados y socios en un solo lugar. </p>
-                        <div class="d-flex justify-content-center flex-wrap"> <a id="sw-email-capture-submit-btn" data-element="button" target="" class="sw-font-size-l sw-text-color-default sw-font-family-default sw-font-weight-semibold sw-border-radius-none sw-background-color-ffa500 sw-padding-left-2xl sw-padding-right-2xl sw-padding-top-4xs sw-padding-bottom-4xs sw-border-style-none sw-border-width-xs sw-border-color-2977c9 sw-letter-spacing-normal sw-text-decoration-no-underline hover:sw-text-decoration-no-underline hover:sw-box-shadow-m sw-margin-bottom-6xs sw-display-inline-block sw-margin-left-7xs sw-margin-right-7xs"
-                            href="">        Explore       </a> </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <link rel="stylesheet" href="{% static 'css/directorio/body_b2.css' %}">
- 
-        <link rel="stylesheet" href="{% static 'css/directorio/body_b4.css' %}">
-        <!--    HACE DESAPARECER EL DIRECTORIO EN PRIMERA CARGA 
-        <script src="{% static 'js/directorio/body_b3.js' %}"></script>
-        -->
+.news-item {
+    color: white;
+    font-size: 0.9rem;
+    padding: 0 2rem;
+}
 
-        <link rel="stylesheet" href="{% static 'css/directorio/body_b5.css' %}">
+.news-item span {
+    background-color: white;
+    color: #0099cc;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    margin-right: 0.5rem;
+}
 
-        <div data-spr-role="sentinel-end" data-spr-sentinel-end-for="23af0aa1-a39a-49b6-9acb-ddede755789b" data-spr-block-hrid="feature-grid1"></div>
-        <div data-spr-role="sentinel-start" data-spr-sentinel-start-for="44351bb2-6e5c-4fcc-fd58-15fe30b29a81" data-spr-block-hrid="list0"></div>
-        <section id="list0" data-block-version="2.1.4" data-block-id="44351bb2-6e5c-4fcc-fd58-15fe30b29a81" data-block-updated="2022-06-09T01:11:44.359" class="list5-44351bb2-6e5c-4fcc-fd58-15fe30b29a81 sw-background-color-ffffff sw-padding-top-l sw-padding-bottom-2xl sw-border-top-style-none sw-border-top-width-xs sw-border-top-color-000000 sw-border-bottom-style-none sw-border-bottom-width-xs sw-border-bottom-color-000000 ">
-            <div class="container">
-                <!--  MOBILE FILTERS -->
-                <div class="row mobile-filter js-filter js-filter-right" data-multiselect="false" data-showall="false" data-mappedto="Categoría">
-                    <div class="col-md-12 m-0 p-0">
-                        <div class="text-center top-filters d-flex align-items-center justify-content-center sw-font-size-3xl sw-text-color-3b3b3b sw-font-family-default sw-font-weight-normal sw-letter-spacing-normal sw-padding-top-7xs sw-padding-bottom-6xs sw-padding-right-6xs sw-padding-left-6xs sw-margin-right-6xs sw-cursor-default">
-                        Categorías </div>
-                    </div>
-                    <div class="col-md-12 ml-0 p-0 top-filters d-flex align-items-center justify-content-center flex-wrap       "> <span class="filter js-filter-option sw-font-size-s sw-text-color-c7a1e8 sw-font-family-default sw-font-weight-semibold sw-background-color-ffffff hover:sw-background-color-e1dfe3 sw-border-style-solid sw-border-width-xs sw-border-color-c7a1e8 hover:sw-border-style-solid hover:sw-border-width-xs hover:sw-border-color-e1dfe3 sw-border-radius-full sw-padding-top-7xs sw-padding-bottom-7xs sw-padding-left-5xs sw-padding-right-5xs sw-margin-right-6xs sw-cursor-default"
-                        data-value="Operador Logístico">         Operador Logístico        </span> <span class="filter js-filter-option sw-font-size-s sw-text-color-c7a1e8 sw-font-family-default sw-font-weight-semibold sw-background-color-ffffff hover:sw-background-color-e1dfe3 sw-border-style-solid sw-border-width-xs sw-border-color-c7a1e8 hover:sw-border-style-solid hover:sw-border-width-xs hover:sw-border-color-e1dfe3 sw-border-radius-full sw-padding-top-7xs sw-padding-bottom-7xs sw-padding-left-5xs sw-padding-right-5xs sw-margin-right-6xs sw-cursor-default"
-                        data-value="Ultima Milla">         Ultima Milla        </span> <span class="empty d-md-none"></span> </div>
-                </div>
-                <!-- TOP FILTERS   -->
-                <div class="row desktop-filter position-relative js-mobile-filter js-filter js-filter-top" data-multiselect="false" data-showall="false" data-mappedto="Categoría">
-                    <div class="col-md-12 p-0">
-                        <div class="text-center top-filters d-flex align-items-center justify-content-center sw-font-size-3xl sw-text-color-3b3b3b sw-font-family-default sw-font-weight-normal sw-letter-spacing-normal sw-padding-top-7xs sw-padding-bottom-6xs sw-padding-right-6xs sw-padding-left-6xs sw-margin-right-6xs sw-cursor-default">
-                            DIRECTORIO
-                        </div>
-                    </div>
-                    <div class="col-md-12 ml-0 p-0 top-filters d-flex align-items-center justify-content-center flex-wrap"> 
-                        {% for service in flagged_services %}
-                        <span class="filter js-filter-option service-tag sw-font-size-s sw-text-color-c7a1e8 sw-font-family-default sw-font-weight-semibold sw-background-color-ffffff hover:sw-background-color-e1dfe3 sw-border-style-solid sw-border-width-xs sw-border-color-c7a1e8 hover:sw-border-style-solid hover:sw-border-width-xs hover:sw-border-color-e1dfe3 sw-border-radius-full sw-padding-top-7xs sw-padding-bottom-7xs sw-padding-left-5xs sw-padding-right-5xs sw-margin-right-6xs sw-cursor-pointer"
-                            data-service="{{ service.name }}">{{ service.name }}</span>
-                        {% endfor %}
-                    </div>
-                </div>
-                
-                <form id="search-form" method="get" action="{% url 'provider_list' %}">
-                    <div class="row">
-                        <div class="search-parent w-100 col-md-12 d-flex align-items-center">
-                            <div class="has-search search position-relative w-100">
-                                <input 
-                                    id="search-input"
-                                    class="sw-js-list-search-input sw-font-size-s sw-text-color-000000 sw-font-family-default sw-border-radius-m sw-padding-top-5xs sw-padding-bottom-5xs sw-margin-top-5xs sw-margin-bottom-4xs sw-border-style-solid sw-border-width-xs sw-border-color-e1dfe3 sw-background-color-ffffff sw-box-shadow-none sw-display-inline-block sw-padding-left-m sw-outline-none sw-width-full sw-placeholder-color-000000"
-                                    name="q"
-                                    autocomplete="on"
-                                    value="{{ search_query }}"
-                                    placeholder="Busca por Nombre, Descripción o Servicios"
-                                >
-                                <input type="hidden" name="service" id="selected-service" value="{{ selected_service }}">
-                            </div>
-                            <button type="button" id="search-button" class="btn btn-primary">Buscar</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
 
-            <!-- Contenedor principal para la carga inicial y resultados paginados -->
-            <div id="provider-list-container">
-                <div class="container">
-                    <div class="row">
-                        <div class="items col-12">
-                            <div class="sw-js-list-container sw-4-column">
-                                {% for provider in page_obj %}
-                                <div data-recordid="rec0csanNgVflnGsl" class="js-list-item position-relative overflow-hidden p-0 flex-1 justify-content-center box sw-background-color-ffffff sw-margin-bottom-6xs sw-border-style-solid sw-border-width-none sw-border-color-e1dfe3 sw-border-radius-none sw-box-shadow-s hover:sw-box-shadow-l sw-cursor-default top"
-                                data-editor-status="attached">
-                                    <div class="d-flex flex-column sw-js-list-item-header">
-                                        <div class="image text-center">
-                                            <div data-type="staticImage"
-                                                style="background-image: url({{ provider.image.url|default:'/media/provider_images/no-image.jpg' }});
-                                                background-position: center;
-                                                background-size: cover;
-                                                width: 300px;
-                                                height: 200px;"
-                                                class="image d-block mr-md-3 sw-height-4xs sw-background-size-cover sw-border-style-solid sw-border-width-xs sw-border-color-f4f2f2 sw-border-radius-none">
-                                            </div>
-                                        </div>
+/* Sección de categorías */
+.categorias-section {
+    padding: 1.5rem 0;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eaeaea;
+}
 
-                                        <div class="text d-flex flex-column" style="padding-top: 0px; padding-left: 20px; border: 0px solid #ddd; border-radius: 5px;">
-                                            <div class="sw-js-single-item-elements w-100" data-recordid="rec0csanNgVflnGsl">
-                                                <!-- Nombre de la empresa -->
-                                                <div class="sw-pre-text-container mb-2" style="margin-top: -10; padding-top: 0;">
-                                                    <h1 data-type="heading1" class="sw-font-size-l sw-text-color-7710d2 sw-font-family-default sw-font-weight-semibold sw-text-align-left sw-letter-spacing-normal mb-2" style="margin-top: 0;">
-                                                        {{ provider.name }}
-                                                    </h1>
-                                                </div>
-                                                <!-- Descripción de la empresa -->
-                                                <div class="sw-pre-text-container mb-2">
-                                                    <div data-type="text" class="sub-title sw-font-size-s sw-text-color-757575 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">
-                                                        {{ provider.description }}
-                                                    </div>
-                                                </div>
-                                                <!-- Dirección -->
-                                                <div class="sw-pre-text-container mb-2">
-                                                    <div data-type="text" class="sub-title sw-font-size-s sw-text-color-333333 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">
-                                                        <strong>Dirección:</strong> {{ provider.address }}
-                                                    </div>
-                                                </div>
-                                                <!-- Teléfono -->
-                                                <div class="sw-pre-text-container mb-2">
-                                                    <div data-type="text" class="mb-1 sw-font-size-s sw-text-color-333333 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">
-                                                        <strong>Teléfono:</strong> {{ provider.phone_number }}
-                                                    </div>
-                                                </div>
-                                                <!-- Correo electrónico -->
-                                                <div class="sw-pre-email-container mb-2">
-                                                    <div class="sw-font-size-s sw-text-color-333333 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">
-                                                        <strong>Correo electrónico:</strong> <a href="mailto:{{ provider.email }}" target="" style="cursor: default!important; text-decoration: none;" class="prevent-link-fields sw-font-size-s sw-text-color-333333 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">{{ provider.email }}</a>
-                                                    </div>
-                                                </div>
-                                                <!-- Sitio web -->
-                                                <div class="sw-pre-url-container">
-                                                    <div class="sw-font-size-s sw-text-color-333333 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">
-                                                        <strong>Sitio web:</strong> <a href="{{ provider.website|default:'#' }}" target="_blank" style="cursor: pointer;" class="prevent-link-fields sw-font-size-s sw-text-color-333333 sw-font-family-default sw-font-weight-normal sw-text-align-left sw-letter-spacing-normal">{{ provider.website|default:'' }}</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>                                                           
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <div class="col-12 text-center">
-                                <div class="sw-js-list-empty-state d-none sw-font-size-m sw-text-color-6f6f6f sw-font-family-default sw-font-weight-normal sw-line-height-normal sw-padding-top-2xl sw-padding-bottom-none">No hay resultados, prueba con otra búsqueda.</div>
-                                <div class="sw-js-list-error-state d-none">Ha ocurrido un error, por favor contáctenos si el error persiste.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+.categorias-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
 
-            <!-- Contenedor de paginación -->
-            <div id="pagination-container">
-                <div class="container">
-                    <div class="col-12 text-center pt-4">
-                        <nav aria-label="Paginación" class="d-flex justify-content-center">
-                            <ul class="pagination mb-0">
-                                {% if page_obj.has_previous %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Anterior">
-                                            &laquo;
-                                        </a>
-                                    </li>
-                                {% endif %}
+.categorias-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+}
 
-                                {% for num in page_obj.paginator.page_range %}
-                                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                                        <a class="page-link" {% if page_obj.number != num %}href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}"{% endif %}>
-                                            {{ num }}
-                                        </a>
-                                    </li>
-                                {% endfor %}
+.categoria-tag {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    color: #333;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
 
-                                {% if page_obj.has_next %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Siguiente">
-                                            &raquo;
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
+.categoria-tag:hover {
+    background-color: #0099cc;
+    color: white;
+    border-color: #0099cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Función para cargar proveedores que será utilizada por todas las funcionalidades
-                    function loadProviders(params = {}) {
-                        const url = new URL(window.location.href);
-                        
-                        // Añadir parámetros a la URL
-                        Object.keys(params).forEach(key => {
-                            if (params[key]) {
-                                url.searchParams.set(key, params[key]);
-                            } else {
-                                url.searchParams.delete(key);
-                            }
-                        });
-                
-                        console.log('Fetching URL:', url.toString());
-                
-                        // Realizar solicitud AJAX
-                        fetch(url, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                        .then(response => {
-                            console.log('Response status:', response.status);
-                            return response.json();
-                        })
-                        .then(data => {
-                            document.getElementById('provider-list-container').innerHTML = data.providers_list_html;
-                            document.getElementById('pagination-container').innerHTML = data.pagination_html;
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                    }
-                
-                    // Event listener para los tags de servicio
-                    document.querySelectorAll('.service-tag').forEach(tag => {
-                        tag.addEventListener('click', function() {
-                            // Remover clase activa de todos los tags
-                            document.querySelectorAll('.service-tag').forEach(t => {
-                                t.classList.remove('active');
-                                t.classList.remove('sw-background-color-e1dfe3');
-                            });
-                
-                            // Añadir clase activa al tag seleccionado
-                            this.classList.add('active');
-                            this.classList.add('sw-background-color-e1dfe3');
-                
-                            const serviceName = this.getAttribute('data-service');
-                            document.getElementById('selected-service').value = serviceName;
-                            
-                            // Cargar proveedores filtrados
-                            loadProviders({
-                                service: serviceName,
-                                page: 1
-                            });
-                        });
-                    });
-                
-                    // Event listener para el botón de búsqueda
-                    document.getElementById('search-button').addEventListener('click', function() {
-                        const searchQuery = document.getElementById('search-input').value;
-                        const selectedService = document.getElementById('selected-service').value;
-                        
-                        loadProviders({
-                            q: searchQuery,
-                            service: selectedService,
-                            page: 1
-                        });
-                    });
-                
-                    // Event listener para paginación
-                    document.getElementById('pagination-container').addEventListener('click', function(e) {
-                        const pageLink = e.target.closest('.page-link');
-                        if (pageLink) {
-                            e.preventDefault();
-                            
-                            const pageUrl = new URL(pageLink.getAttribute('href'), window.location.href);
-                            const page = pageUrl.searchParams.get('page');
-                            const searchQuery = document.getElementById('search-input').value;
-                            const selectedService = document.getElementById('selected-service').value;
-                
-                            loadProviders({
-                                q: searchQuery,
-                                service: selectedService,
-                                page: page
-                            });
-                        }
-                    });
-                });
-                </script>
+.toggle-categorias-btn {
+    display: none;
+    margin: 1rem auto;
+    padding: 0.6rem 1.5rem;
+    background-color: #0099cc;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-        </section>
+.toggle-categorias-btn:hover {
+    background-color: #0077aa;
+}
 
+.categoria-hidden {
+    display: none;
+}
 
-        <div data-spr-role="sentinel-end" data-spr-sentinel-end-for="44351bb2-6e5c-4fcc-fd58-15fe30b29a81" data-spr-block-hrid="list0"></div>
-        <div data-spr-role="sentinel-start" data-spr-sentinel-start-for="733d9014-dbb5-49be-aaa2-bd1e5c632569" data-spr-block-hrid="footer1"></div>
-        <footer id="footer1" class="footer1-733d9014-dbb5-49be-aaa2-bd1e5c632569 sw-background-color-000000 sw-padding-top-2xs sw-padding-bottom-none sw-border-top-style-none sw-border-top-width-xs sw-border-top-color-000000 sw-border-bottom-style-none sw-border-bottom-width-xs sw-border-bottom-color-000000 ">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-3 col-12 text-center text-md-left pb-md-2 pb-5">
-                        <a href="/"><img class="sw-width-3xs " src="{% static 'images/logo_black.jpg' %}" alt="Logo."></a>
-                    </div>
-                    <div class="col-md-9 col-12 pb-2">
-                        <div class="nav justify-content-center justify-content-md-end"><a target="" class="nav-link sw-font-size-xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-letter-spacing-wider " href="/about-us">Nuestra Historia</a><a target="" class="nav-link sw-font-size-xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-letter-spacing-wider "
-                            href="">El Equipo</a><a target="" class="nav-link sw-font-size-xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-letter-spacing-wider " href="/portfolio">Portfafolio</a><a target="" class="nav-link sw-font-size-xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-letter-spacing-wider "
-                            href="/newsletter">Descubrimiento </a><a target="" class="nav-link sw-font-size-xl sw-text-color-ffffff sw-font-family-default sw-font-weight-semibold sw-letter-spacing-wider " href="">Talento</a></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <hr class="sw-margin-top-3xs sw-margin-bottom-3xs sw-border-top-style-solid sw-border-top-width-xs sw-border-top-color-cccccc ">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-7"><small class="sw-font-size-s sw-text-color-ffffff sw-font-family-default sw-font-weight-default sw-padding-top-none sw-padding-bottom-3xs sw-display-block">MercadologisticoLatam. All rights reserved.</small></div>
-                    <div class="col-5">
-                        <div class="text-right"><a href="https://facebook.com/mycompany" target="_blank" class="sw-text-color-ffffff sw-font-size-m sw-width-11xs sw-display-inline-block"><i class="fab fa-facebook-f"></i></a>
-                            <a href="https://twitter.com/mycompany" target="_blank" class="sw-text-color-ffffff sw-font-size-m sw-width-11xs sw-display-inline-block"><i class="fab fa-twitter"></i></a><a href="https://instagram.com/mycompany" target="_blank" class="sw-text-color-ffffff sw-font-size-m sw-width-11xs sw-display-inline-block"><i class="fab fa-instagram"></i></a></div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        
-        
+/* Buscador */
+.search-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
 
-        <!--compiled_script for 733d9014-dbb5-49be-aaa2-bd1e5c632569-->
-        <div data-spr-role="sentinel-end" data-spr-sentinel-end-for="733d9014-dbb5-49be-aaa2-bd1e5c632569" data-spr-block-hrid="footer1"></div>
+.search-box {
+    display: flex;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #eaeaea;
+}
+
+.search-input {
+    flex: 1;
+    padding: 1rem 1.2rem;
+    border: none;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.search-btn {
+    padding: 0 2rem;
+    background-color: #0099cc;
+    color: white;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background-color: #0077aa;
+}
+
+/* Directorio - Grid de tarjetas */
+.eventos-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    box-sizing: border-box;
+}
+
+.eventos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* Asegura que todas las columnas tengan el mismo ancho */
+    gap: 1.5rem; /* Ligeramente mayor para dar más aire entre tarjetas */
+    margin-bottom: 3rem;
+    padding: 0 0.5rem; /* Asegura un pequeño margen en los bordes */
+}
+
+.evento-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #eaeaea;
+    height: 100%;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    width: 100%; /* Asegura que todas las tarjetas tengan el mismo ancho */
+}
+
+.evento-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+.evento-img {
+    position: relative;
+    height: 160px;
+    overflow: hidden;
+    background-color: #f5f7fa;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.evento-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.evento-card:hover .evento-img img {
+    transform: scale(1.05);
+}
+
+.evento-content {
+    padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    border-top: 4px solid #0099cc;
+    background: linear-gradient(to bottom, #fafbfd, #ffffff);
+}
+
+.evento-content h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    color: #0066aa;
+    line-height: 1.3;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.evento-content h3::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 2px;
+    background-color: #0099cc;
+}
+
+.evento-details {
+    margin-top: auto;
+    font-size: 0.85rem;
+    color: #555;
+    line-height: 1.4;
+}
+
+.evento-details p {
+    margin-bottom: 0.8rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.evento-date, .evento-location {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.6rem;
+}
+
+.evento-date i, .evento-location i {
+    margin-right: 0.5rem;
+    color: #0099cc;
+    min-width: 16px;
+    text-align: center;
+    margin-top: 3px;
+}
+
+/* Paginación */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    padding: 1rem 5px;
+    clear: both;
+    width: 100%;
+    border-top: 1px solid #eee;
+    position: relative;
+    z-index: 5;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+
+.page-item {
+    margin: 0 3px;
+    border-right: none;
+}
+
+.page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    color: #555;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+    font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    padding: 0;
+    min-width: 40px;
+}
+
+.page-link:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+/* Estilos para elementos disabled en paginación */
+.pagination .page-item.disabled .page-link {
+    background-color: #f9f9f9;
+    color: #aaa;
+    border-color: #ddd;
+    pointer-events: none;
+    box-shadow: none;
+}
+
+/* Mejorar visibilidad de los botones de paginación */
+.pagination .page-link {
+    font-weight: 700;
+    color: #555;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08);
+}
+
+/* Mejorar contraste para los botones activos */
+.page-item.active .page-link {
+    background-color: #0099cc;
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(0, 153, 204, 0.3);
+    border-color: #0099cc;
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .eventos-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 992px) {
+    .eventos-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .categorias-row {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .eventos-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    
+    .toggle-categorias-btn {
+        display: block;
+    }
+    
+    .categorias-row:not(:first-child) {
+        display: none;
+    }
+    
+    .categorias-row.show {
+        display: flex;
+    }
+    
+    .slide-content h1 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Utilidades */
+.text-center {
+    text-align: center;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-5 {
+    margin-bottom: 3rem;
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    color: #777;
+}
+
+.categoria-tag.active {
+    background-color: #0099cc;
+    color: white;
+    border-color: #0099cc;
+}
+
+/* Estilos para sección */
+.section {
+    padding: 3rem 0; /* Ajustado para ser más compacto */
+}
+
+.section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Ocultar marquesinas que puedan venir del template base */
+.event-ticker {
+    display: none !important;
+}
+
+/* Sección de Directorio */
+#directorio {
+    background-color: #f9fbfd;
+    position: relative;
+    padding: 3.5rem 0;
+}
+
+#directorio::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/static/images/bg-pattern-light.png');
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+#directorio h2 {
+    text-align: center;
+    position: relative;
+    margin-bottom: 1.8rem;
+    color: #0055a5;
+    padding-bottom: 1rem;
+}
+
+#directorio h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #0099cc;
+}
+</style>
+{% endblock %}
+
+{% block hero %}
+<!-- Hero Section -->
+<section id="inicio" class="hero">
+    <div class="slide active" id="directorio-hero">
+        <div class="slide-content">
+            <h1>Aliados Estratégicos</h1>
+            <p>Encuentra todas las empresas del sector logístico y de la cadena de suministro, sus socios y aliados.
+             Proveedores 100% ubicables con datos fiables logran una mayor exposición en los profesionales de la Cadena de Suministro.</p>
+             <a href="#registro" class="btn">Súmate al directorio</a>
         </div>
-    </body>
-</html>
+    </div>
+</section>
+
+<!-- Script para aplicar la imagen de fondo -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Aplicar imagen de fondo
+        const heroElement = document.getElementById('directorio-hero');
+        heroElement.style.backgroundImage = "url('{% static 'images/portada_directorio.jpg' %}')";
+    });
+</script>
+
+<!-- Título y subtítulo -->
+<div class="titulo-subtitulo-container">
+{% endblock %}
+
+{% block content %}
+<!-- Carrusel de Banners para Directorio (entre la marquesina y el contenido principal) -->
+<div class="banner-section" style="background-color: #f5f7fa; padding: 10px 0; margin: 10px auto 20px; max-width: 100%;">
+    {% include 'logistics/partials/banner_carousel.html' with banners=banners %}
+</div>
+
+<!-- Nueva sección de filtros de categorías -->
+<section id="categorias-filtro" class="categorias-section">
+    <div class="categorias-container">
+        <!-- Categorías filtradas por servicios -->
+        <div class="categorias-row">
+            {% for service in topics %}
+                <a href="#" class="categoria-tag service-tag" data-service="{{ service.name }}">{{ service.name }}</a>
+            {% endfor %}
+        </div>
+
+        <!-- Botón Ver más/menos categorías para móvil -->
+        <button id="toggle-categorias" class="toggle-categorias-btn">Ver más categorías <i class="fas fa-chevron-down"></i></button>
+    </div>
+</section>
+
+<!-- Sección de Directorio -->
+<section id="directorio" class="section">
+    <h2>Directorio de socios y aliados de la Cadena de Suministro</h2>
+    <p class="text-center mb-4">Encuentra las empresas que ofrecen la mejor calidad del mercado.</p>
+    
+    <!-- Buscador -->
+    <div class="search-container mb-5">
+        <form id="directory-search-form" method="get" action="{% url 'provider_list' %}">
+            <div class="search-box">
+                <input type="text" 
+                       id="directory-search-input" 
+                       name="q" 
+                       placeholder="Busca por Nombre, Descripción o Servicios" 
+                       class="search-input"
+                       value="{{ search_query }}">
+                <input type="hidden" name="service" id="selected-service" value="{{ selected_service }}">
+                <button id="directory-search-button" type="button" class="search-btn">Buscar</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Grid de tarjetas para el directorio -->
+    <div id="directory-container">
+        <div class="eventos-container">
+            <div id="directory-list-container">
+                {% include 'logistics/partials/directory_list.html' with page_obj=page_obj %}
+            </div>
+            
+            <!-- Paginación -->
+            <div id="directory-pagination-container" class="pagination-container">
+                {% include 'logistics/partials/pagination_directory.html' with page_obj=page_obj search_query=search_query selected_service=selected_service %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Manejar búsqueda AJAX
+        const searchForm = document.getElementById('directory-search-form');
+        const searchInput = document.getElementById('directory-search-input');
+        const searchButton = document.getElementById('directory-search-button');
+        const selectedServiceInput = document.getElementById('selected-service');
+        
+        // Función para cargar contenido mediante AJAX
+        function loadContent(url) {
+            // Mostrar loader o indicador de carga
+            const listContainer = document.getElementById('directory-list-container');
+            listContainer.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando...</span></div></div>';
+            
+            // Realizar la petición AJAX
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Actualizar el contenido
+                if (data.directory_html) {
+                    listContainer.innerHTML = data.directory_html;
+                    document.getElementById('directory-pagination-container').innerHTML = data.pagination_html;
+                    
+                    // Volver a configurar eventos de paginación
+                    setupPaginationListeners();
+                } else {
+                    console.error('No hay contenido para mostrar en la respuesta AJAX');
+                    listContainer.innerHTML = '<div class="alert alert-warning">No se encontraron resultados.</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                listContainer.innerHTML = '<div class="alert alert-danger">Error al cargar el contenido</div>';
+            });
+        }
+        
+        // Configurar los event listeners para la paginación
+        function setupPaginationListeners() {
+            const paginationLinks = document.querySelectorAll('#directory-pagination-container .page-link');
+            
+            paginationLinks.forEach(link => {
+                if (link.getAttribute('href')) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        const url = new URL(this.href, window.location.origin);
+                        loadContent(url);
+                        
+                        // Actualizar la URL en el navegador para reflejar el cambio
+                        window.history.pushState({}, '', url);
+                        
+                        // Desplazarse al inicio de la sección
+                        document.getElementById('directorio').scrollIntoView({ behavior: 'smooth' });
+                    });
+                }
+            });
+        }
+        
+        // Manejar el envío del formulario de búsqueda
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const url = new URL(window.location);
+            url.searchParams.set('q', searchInput.value);
+            url.searchParams.set('service', selectedServiceInput.value);
+            url.searchParams.set('page', 1); // Volver a la primera página con nueva búsqueda
+            
+            loadContent(url);
+            window.history.pushState({}, '', url);
+        });
+        
+        // Botón de búsqueda
+        searchButton.addEventListener('click', function() {
+            const url = new URL(window.location);
+            url.searchParams.set('q', searchInput.value);
+            url.searchParams.set('service', selectedServiceInput.value);
+            url.searchParams.set('page', 1); // Volver a la primera página con nueva búsqueda
+            
+            loadContent(url);
+            window.history.pushState({}, '', url);
+        });
+        
+        // Búsqueda al presionar Enter
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                
+                const url = new URL(window.location);
+                url.searchParams.set('q', searchInput.value);
+                url.searchParams.set('service', selectedServiceInput.value);
+                url.searchParams.set('page', 1); // Volver a la primera página con nueva búsqueda
+                
+                loadContent(url);
+                window.history.pushState({}, '', url);
+            }
+        });
+        
+        // Etiquetas de categoría
+        const categoryTags = document.querySelectorAll('.categoria-tag');
+        categoryTags.forEach(tag => {
+            tag.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const service = this.getAttribute('data-service');
+                
+                // Actualizar el servicio seleccionado
+                selectedServiceInput.value = service;
+                
+                // Actualizar clase de etiquetas activas
+                document.querySelectorAll('.categoria-tag').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Cargar contenido con el nuevo filtro
+                const url = new URL(window.location);
+                url.searchParams.set('service', service);
+                url.searchParams.set('page', 1); // Volver a la primera página con nuevo filtro
+                
+                loadContent(url);
+                window.history.pushState({}, '', url);
+            });
+        });
+        
+        // Para marcar la categoría seleccionada
+        const selectedService = "{{ selected_service }}";
+        if (selectedService) {
+            document.querySelectorAll(`.categoria-tag[data-service="${selectedService}"]`).forEach(tag => {
+                tag.classList.add('active');
+            });
+        }
+        
+        // Botón para mostrar/ocultar categorías en móvil
+        const toggleCategoriasBtn = document.getElementById('toggle-categorias');
+        if (toggleCategoriasBtn) {
+            toggleCategoriasBtn.addEventListener('click', function() {
+                const categoriasRows = document.querySelectorAll('.categorias-row:not(:first-child)');
+                categoriasRows.forEach(row => {
+                    row.classList.toggle('show');
+                });
+                
+                if (this.innerHTML.includes('Ver más')) {
+                    this.innerHTML = 'Ver menos categorías <i class="fas fa-chevron-up"></i>';
+                } else {
+                    this.innerHTML = 'Ver más categorías <i class="fas fa-chevron-down"></i>';
+                }
+            });
+        }
+        
+        // Configurar los event listeners iniciales
+        setupPaginationListeners();
+    });
+</script>
+{% endblock %} 

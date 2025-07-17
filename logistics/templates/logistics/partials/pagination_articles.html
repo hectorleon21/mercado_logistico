@@ -1,0 +1,50 @@
+<!-- Debug: total_pages={{ articles_page_obj.paginator.num_pages }}, current_page={{ articles_page_obj.number }} -->
+<ul class="pagination">
+    {% if articles_page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?{% if articles_search_query %}articles_q={{ articles_search_query }}&{% endif %}articles_page=1">&laquo;</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?{% if articles_search_query %}articles_q={{ articles_search_query }}&{% endif %}articles_page={{ articles_page_obj.previous_page_number }}">&lsaquo;</a>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">&laquo;</span>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">&lsaquo;</span>
+        </li>
+    {% endif %}
+
+    {% for i in articles_page_obj.paginator.page_range %}
+        {% if articles_page_obj.number == i %}
+            <li class="page-item active">
+                <a class="page-link">{{ i }}</a>
+            </li>
+        {% elif i > articles_page_obj.number|add:"-3" and i < articles_page_obj.number|add:"3" %}
+            <li class="page-item">
+                <a class="page-link" href="?{% if articles_search_query %}articles_q={{ articles_search_query }}&{% endif %}articles_page={{ i }}">{{ i }}</a>
+            </li>
+        {% endif %}
+    {% empty %}
+        <li class="page-item active">
+            <a class="page-link">1</a>
+        </li>
+    {% endfor %}
+
+    {% if articles_page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?{% if articles_search_query %}articles_q={{ articles_search_query }}&{% endif %}articles_page={{ articles_page_obj.next_page_number }}">&rsaquo;</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?{% if articles_search_query %}articles_q={{ articles_search_query }}&{% endif %}articles_page={{ articles_page_obj.paginator.num_pages }}">&raquo;</a>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">&rsaquo;</span>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">&raquo;</span>
+        </li>
+    {% endif %}
+</ul> 

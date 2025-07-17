@@ -76,6 +76,7 @@
 
 .form-group input[type="text"],
 .form-group input[type="email"],
+.form-group input[type="password"],
 .select-rubros {
     width: 100%;
     padding: 4px 6px;
@@ -117,7 +118,9 @@
     gap: 8px;
 }
 
-.btn {
+/* Cambiar el selector para que solo afecte a los botones del modal */
+.modal-footer .btn, 
+#newsletterModal .btn {
     padding: 4px 10px;
     border-radius: 4px;
     font-size: 0.85rem;

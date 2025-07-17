@@ -1,0 +1,32 @@
+{% load static %}
+<!-- Total de artículos: {{ articles_page_obj|length }} -->
+{% for article in articles_page_obj %}
+    <div class="articulo-card">
+        <div class="articulo-img">
+            {% if article.image %}
+                <img src="{{ article.image.url }}" alt="{{ article.title }}">
+            {% else %}
+                <img src="{% static 'images/article-placeholder.svg' %}" alt="{{ article.title }}">
+            {% endif %}
+        </div>
+        <div class="articulo-content">
+            <h3>{{ article.title }}</h3>
+            <div class="articulo-date">
+                <i class="icon-calendar">📅</i> {{ article.date|date:"d/m/Y" }}
+                {% if article.author %}
+                <span class="articulo-author">
+                    <i class="icon-user">👤</i> {{ article.author }}
+                </span>
+                {% endif %}
+            </div>
+            <div class="articulo-description">
+                {{ article.description|safe|truncatewords_html:20 }}
+            </div>
+            <a href="{% url 'article-detail' article.id %}" class="btn btn-sm">Leer más</a>
+        </div>
+    </div>
+{% empty %}
+    <div class="text-center" style="grid-column: 1 / -1; padding: 2rem;">
+        <p>No se encontraron artículos con los criterios especificados.</p>
+    </div>
+{% endfor %} 

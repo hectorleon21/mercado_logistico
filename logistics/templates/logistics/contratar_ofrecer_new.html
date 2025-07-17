@@ -1,0 +1,586 @@
+{% extends "base.html" %}
+{% load static %}
+{% load logistics_extras %}
+
+{% block title %}Contratar/Ofrecer Servicios Logísticos - Mercado Logístico{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Estilos para la página Contratar y Ofrecer */
+
+    /* Hero Section */
+    .hero {
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+        background-color: #000;
+        margin-top: 60px; /* Ajuste para compensar el header fijo */
+    }
+
+    .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 1;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+    }
+
+    .slide::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%);
+    }
+
+    .slide-content {
+        position: relative;
+        color: #fff;
+        max-width: 700px;
+        padding: 2rem 3rem 2rem 5rem;
+        z-index: 10;
+        text-align: left;
+        margin-left: 0;
+    }
+
+    .slide-content h1 {
+        font-size: 2.8rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        line-height: 1.2;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
+
+    .slide-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        max-width: 90%;
+        color: #f0f0f0;
+    }
+
+    /* Botones */
+    .btn {
+        display: inline-block;
+        padding: 0.8rem 2rem;
+        background-color: #0099cc;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 12px rgba(0, 153, 204, 0.3);
+    }
+
+    .btn:hover {
+        background-color: #0077aa;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 153, 204, 0.4);
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .hero-buttons .btn {
+        padding: 0.8rem 1.8rem;
+        font-size: 0.95rem;
+    }
+
+    .btn-primary {
+        background-color: #0099cc;
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #0077aa;
+    }
+
+    .btn-secondary {
+        background-color: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+    .btn-secondary:hover {
+        background-color: white;
+        color: #333;
+    }
+
+    /* Sección */
+    .section {
+        padding: 4rem 3rem 4rem 5rem;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        text-align: center;
+        max-width: 100%;
+        margin: 0 auto 2.5rem;
+        font-size: 2rem;
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 1.5rem;
+        color: #333;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background-color: #0099cc;
+        border-radius: 2px;
+    }
+
+    /* Filtros */
+    .filtros-container {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-filtro {
+        padding: 0.5rem 1.5rem;
+        border: 1px solid #ddd;
+        background-color: #fff;
+        color: #555;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    .btn-filtro:hover {
+        background-color: #f0f0f0;
+        border-color: #ccc;
+    }
+
+    .btn-filtro.active {
+        background-color: #0099cc;
+        color: white;
+        border-color: #0099cc;
+    }
+
+    /* Grid de Ofertas/Requerimientos */
+    .ofertas-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* 4 columnas por defecto */
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    /* Estilo de Tarjeta */
+    .oferta-card {
+        background-color: #fff;
+        border: 1px solid #e8eef1;
+        border-radius: 8px;
+        padding: 1.2rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .oferta-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Tipo de Oferta (Etiqueta) */
+    .oferta-tipo {
+        display: inline-block;
+        align-self: flex-start;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .tipo-requerimiento {
+        background-color: #ffeae6; /* Naranja claro */
+        color: #cc3300;
+    }
+
+    .tipo-propuesta {
+        background-color: #e6f7ff; /* Azul claro */
+        color: #0066cc;
+    }
+
+    /* Contenido de la Tarjeta */
+    .oferta-empresa {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.3rem;
+    }
+
+    .oferta-titulo {
+        background-color: #e0f2f7; /* Verde claro como en la imagen */
+        padding: 0.4rem 0.8rem;
+        margin: 0.5rem 0;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #005a8c;
+        border-radius: 4px;
+    }
+
+    .oferta-descripcion {
+        font-size: 0.85rem; /* Tamaño de fuente reducido */
+        color: #555;
+        line-height: 1.5;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+        flex-grow: 1; /* Para empujar la info al final */
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .oferta-info {
+        border-top: 1px solid #e8eef1;
+        padding-top: 0.8rem;
+        margin-top: auto; /* Asegura que esté al final */
+    }
+
+    .oferta-info p {
+        font-size: 0.8rem;
+        color: #666;
+        margin-bottom: 0.3rem;
+        line-height: 1.4;
+    }
+
+    .oferta-info p strong {
+        font-weight: 600;
+        color: #444;
+    }
+
+    /* Paginación */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        gap: 0.5rem;
+    }
+
+    .page-item {
+        margin: 0;
+    }
+
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border: 1px solid #ddd;
+        color: #0077aa;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+    }
+
+    .page-item.disabled .page-link {
+        color: #aaa;
+        pointer-events: none;
+        background-color: #f9f9f9;
+    }
+
+    .page-item.active .page-link {
+        background-color: #0099cc;
+        color: white;
+        border-color: #0099cc;
+    }
+
+    .page-link:hover {
+        background-color: #f0f8ff;
+        border-color: #0099cc;
+    }
+
+    .page-item.active .page-link:hover {
+        background-color: #0077aa;
+        border-color: #0077aa;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .ofertas-grid {
+            grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+        }
+        .slide-content h1 { font-size: 2.5rem; }
+    }
+
+    @media (max-width: 992px) {
+        .ofertas-grid {
+            grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+        }
+        .slide-content h1 { font-size: 2.2rem; }
+        .slide-content p { font-size: 1.1rem; }
+    }
+
+    @media (max-width: 768px) {
+        .container, .section, .slide-content {
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+        .slide-content {
+            text-align: center;
+            margin: 0 auto;
+        }
+        .hero-buttons { flex-direction: column; gap: 0.8rem; align-items: center; }
+        .hero-buttons .btn { width: 80%; max-width: 300px; }
+    }
+
+    @media (max-width: 576px) {
+        .ofertas-grid {
+            grid-template-columns: 1fr; /* 1 columna */
+        }
+        .slide-content h1 { font-size: 2rem; }
+        .slide-content p { font-size: 1rem; }
+        .filtros-container { gap: 0.5rem; }
+        .btn-filtro { padding: 0.4rem 1rem; font-size: 0.9rem; }
+        .oferta-card { padding: 1rem; }
+        .oferta-empresa { font-size: 0.9rem; }
+        .oferta-descripcion, .oferta-info p { font-size: 0.8rem; }
+    }
+
+    /* Utilidades */
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="inicio" class="hero">
+    <div class="slide active" style="background-image: url('{% static "images/contratar_ofrecer.jpg" %}')">
+        <div class="slide-content">
+            <h1>Gestión Colaborativa</h1>
+            <p>Accede a los requerimientos de clientes y a las ofertas de proveedores, socios y aliados de la cadena de suministro.</p>
+            <div class="hero-buttons">
+                <a href="{% url 'index' %}#registro" class="btn btn-primary">Publicar Requerimiento</a>
+                <a href="{% url 'index' %}#registro" class="btn btn-secondary">Publicar Propuesta</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="ofertas-requerimientos" class="section">
+    <h2 class="section-title">Requerimientos y Propuestas Recientes</h2>
+    
+    <!-- Formulario de búsqueda -->
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <form id="search-form" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Buscar por título, empresa o descripción..." aria-label="Search">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Filtros -->
+    <div class="filtros-container mb-4">
+        <button class="btn-filtro active" data-filter="todos">Todos</button>
+        <button class="btn-filtro" data-filter="requerimiento">Requerimientos</button>
+        <button class="btn-filtro" data-filter="propuesta">Propuestas</button>
+    </div>
+
+    <div class="ofertas-grid">
+        {% if requirements or proposals %}
+            <!-- Requerimientos -->
+            {% for requirement in requirements %}
+            <div class="oferta-card" data-tipo="requerimiento">
+                <span class="oferta-tipo tipo-requerimiento">REQUERIMIENTO</span>
+                <h4 class="oferta-empresa">{{ requirement.company }}</h4>
+                <div class="oferta-titulo">{{ requirement.title }}</div>
+                <p class="oferta-descripcion">{{ requirement.description|safe|truncatechars:120 }}</p>
+                <div class="oferta-info">
+                    <p><strong>Teléfono:</strong> {{ requirement.phone }}</p>
+                    <p><strong>Correo:</strong> {{ requirement.email }}</p>
+                    <p><strong>Vigencia hasta:</strong> {{ requirement.valid_until|date:"d/m/Y" }}</p>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Propuestas -->
+            {% for proposal in proposals %}
+            <div class="oferta-card" data-tipo="propuesta">
+                <span class="oferta-tipo tipo-propuesta">PROPUESTA</span>
+                <h4 class="oferta-empresa">{{ proposal.company }}</h4>
+                <div class="oferta-titulo">{{ proposal.title }}</div>
+                <p class="oferta-descripcion">{{ proposal.description|safe|truncatechars:120 }}</p>
+                <div class="oferta-info">
+                    <p><strong>Teléfono:</strong> {{ proposal.phone }}</p>
+                    <p><strong>Correo:</strong> {{ proposal.email }}</p>
+                    <p><strong>Vigencia hasta:</strong> {{ proposal.valid_until|date:"d/m/Y" }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center my-5">
+                <p>No se encontraron requerimientos ni propuestas.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Paginación -->
+    {% if requirements or proposals %}
+    <div class="pagination-container">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-angle-double-left"></i></span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-angle-left"></i></span>
+                </li>
+            {% endif %}
+            
+            {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-angle-right"></i></span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-angle-double-right"></i></span>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Filtros
+        const filtrosBtns = document.querySelectorAll('.btn-filtro');
+        const ofertasItems = document.querySelectorAll('.oferta-card');
+        
+        filtrosBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remover clase active de todos los botones
+                filtrosBtns.forEach(b => b.classList.remove('active'));
+                
+                // Añadir clase active al botón clickeado
+                this.classList.add('active');
+                
+                // Obtener filtro seleccionado
+                const filtro = this.getAttribute('data-filter');
+                
+                // Mostrar/ocultar elementos según filtro
+                ofertasItems.forEach(item => {
+                    if (filtro === 'todos') {
+                        item.style.display = 'block';
+                    } else {
+                        if (item.getAttribute('data-tipo') === filtro) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+        
+        // Formulario de búsqueda
+        const searchForm = document.getElementById('search-form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Obtener término de búsqueda
+                const searchTerm = this.querySelector('input[name="q"]').value.toLowerCase();
+                
+                // Realizar búsqueda en elementos visibles
+                ofertasItems.forEach(item => {
+                    const visible = item.style.display !== 'none';
+                    
+                    if (visible) {
+                        const titulo = item.querySelector('.oferta-titulo').textContent.toLowerCase();
+                        const empresa = item.querySelector('.oferta-empresa').textContent.toLowerCase();
+                        const descripcion = item.querySelector('.oferta-descripcion').textContent.toLowerCase();
+                        
+                        if (titulo.includes(searchTerm) || empresa.includes(searchTerm) || descripcion.includes(searchTerm)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        }
+    });
+</script>
+{% endblock %} 

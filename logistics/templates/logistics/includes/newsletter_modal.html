@@ -12,65 +12,25 @@
             </div>
         </div>
         <form id="newsletterForm" class="modal-body">
-            <div class="form-row">
-                <div class="form-group half">
-                    <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" required>
-                </div>
-                <div class="form-group half">
-                    <label for="apellidos">Apellidos:</label>
-                    <input type="text" id="apellidos" name="apellidos" required>
-                </div>
+            <div class="form-group">
+                <label for="newsletter_nombre_completo">Nombres y Apellidos:</label>
+                <input type="text" id="newsletter_nombre_completo" name="nombre_completo" required>
             </div>
 
-            <div class="form-row">
-                <div class="form-group half">
-                    <label for="empresa">Empresa:</label>
-                    <input type="text" id="empresa" name="empresa" required>
-                </div>
-                <div class="form-group half">
-                    <label for="rol">Rol:</label>
-                    <input type="text" id="rol" name="rol" required>
-                </div>
+            <div class="form-group">
+                <label for="newsletter_rol">Cargo o Rol:</label>
+                <input type="text" id="newsletter_rol" name="rol" required>
             </div>
             
             <div class="form-group">
-                <label for="pais">País:</label>
-                <select id="pais" name="pais" required>
-                    <option value="" disabled selected>Selecciona un país</option>
-                    <option value="México">México</option>
-                    <option value="Colombia">Colombia</option>
-                    <option value="España">España</option>
-                    <option value="Argentina">Argentina</option>
-                    <option value="Venezuela">Venezuela</option>
-                    <option value="Perú">Perú</option>
-                    <option value="Chile">Chile</option>
-                    <option value="Guatemala">Guatemala</option>
-                    <option value="Ecuador">Ecuador</option>
-                    <option value="Cuba">Cuba</option>
-                    <option value="Bolivia">Bolivia</option>
-                    <option value="República Dominicana">República Dominicana</option>
-                    <option value="Honduras">Honduras</option>
-                    <option value="El Salvador">El Salvador</option>
-                    <option value="Paraguay">Paraguay</option>
-                    <option value="Nicaragua">Nicaragua</option>
-                    <option value="Costa Rica">Costa Rica</option>
-                    <option value="Puerto Rico">Puerto Rico</option>
-                    <option value="Panamá">Panamá</option>
-                    <option value="Uruguay">Uruguay</option>
-                    <option value="Otro">Otro</option>
-                </select>
+                <label for="newsletter_correo">Email:</label>
+                <input type="email" id="newsletter_correo" name="correo" required>
             </div>
-
+            
             <div class="form-group">
-                <label for="ciudad">Ciudad:</label>
-                <input type="text" id="ciudad" name="ciudad" required>
-            </div>
-
-            <div class="form-group">
-                <label for="sector">Sector:</label>
-                <select id="sector" name="sector" required>
-                    <option value="" disabled selected>Selecciona un sector</option>
+                <label for="newsletter_sector">Sector:</label>
+                <select id="newsletter_sector" name="sector" required>
+                    <option value="">Selecciona un sector</option>
                     <option value="Aficiones y casinos">Aficiones y casinos</option>
                     <option value="Agricultura y ganadería">Agricultura y ganadería</option>
                     <option value="Agua y aguas residuales">Agua y aguas residuales</option>
@@ -133,27 +93,16 @@
                     <option value="Otro">Otro</option>
                 </select>
             </div>
-            
-            <div class="form-group">
-                <label for="correo">Correo:</label>
-                <input type="email" id="correo" name="correo" required>
-            </div>
 
             <div class="form-group">
-                <label for="rubros">Rubros de Interés:</label>
-                <select id="rubros" name="rubros_interes" multiple required class="select-rubros">
-                    <option value="Logística">Logística</option>
-                    <option value="Transporte">Transporte</option>
-                    <option value="Almacenamiento">Almacenamiento</option>
-                    <option value="Distribución">Distribución</option>
-                    <option value="Comercio Internacional">Comercio Internacional</option>
-                    <option value="E-commerce">E-commerce</option>
-                    <option value="Supply Chain">Supply Chain</option>
-                    <option value="Tecnología Logística">Tecnología Logística</option>
-                    <option value="consultoría">Consultoría</option>
-                    <option value="ultima milla">Última Milla</option>
-                </select>
-                <small class="help-text">Mantén presionado Ctrl (Cmd en Mac) para seleccionar múltiples opciones</small>
+                <label for="newsletter_password">Contraseña:</label>
+                <input type="password" id="newsletter_password" name="password" required>
+                <small class="help-text">Mínimo 8 caracteres, incluyendo letras y números</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="newsletter_password_confirm">Confirmar Contraseña:</label>
+                <input type="password" id="newsletter_password_confirm" name="password_confirm" required>
             </div>
 
             <div id="newsletterMessage" class="message" style="display: none;"></div>
@@ -165,3 +114,217 @@
         </form>
     </div>
 </div>
+
+<!-- Script completamente reescrito para manejar el formulario -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Nuevo script del newsletter cargado");
+    
+    // Referencias a elementos del DOM
+    const modal = document.getElementById('newsletterModal');
+    const form = document.getElementById('newsletterForm');
+    const messageDiv = document.getElementById('newsletterMessage');
+    const spinnerOverlay = document.querySelector('.spinner-overlay');
+    const openButtons = document.querySelectorAll('.open-newsletter-modal');
+    const closeButtons = document.querySelectorAll('.close-modal');
+    
+    // Elementos del formulario
+    const nombreInput = document.getElementById('newsletter_nombre_completo');
+    const rolInput = document.getElementById('newsletter_rol');
+    const correoInput = document.getElementById('newsletter_correo');
+    const sectorSelect = document.getElementById('newsletter_sector');
+    const passwordInput = document.getElementById('newsletter_password');
+    const confirmPasswordInput = document.getElementById('newsletter_password_confirm');
+    
+    // Funciones básicas
+    function openModal() {
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('fade-in'), 10);
+    }
+    
+    function closeModal() {
+        modal.classList.remove('fade-in');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            form.reset();
+            messageDiv.style.display = 'none';
+        }, 300);
+    }
+    
+    function showSpinner() { spinnerOverlay.style.display = 'flex'; }
+    function hideSpinner() { spinnerOverlay.style.display = 'none'; }
+    
+    function showError(message) {
+        messageDiv.textContent = message;
+        messageDiv.className = "message error";
+        messageDiv.style.display = "block";
+    }
+    
+    // Asignar eventos
+    openButtons.forEach(btn => btn.addEventListener('click', openModal));
+    closeButtons.forEach(btn => btn.addEventListener('click', closeModal));
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    
+    // Validar contraseñas antes del submit
+    confirmPasswordInput.addEventListener('input', function() {
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            confirmPasswordInput.setCustomValidity("Las contraseñas no coinciden");
+        } else {
+            confirmPasswordInput.setCustomValidity("");
+        }
+    });
+    
+    passwordInput.addEventListener('input', function() {
+        if (confirmPasswordInput.value && passwordInput.value !== confirmPasswordInput.value) {
+            confirmPasswordInput.setCustomValidity("Las contraseñas no coinciden");
+        } else {
+            confirmPasswordInput.setCustomValidity("");
+        }
+    });
+    
+    // Manejar envío del formulario
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log("Formulario enviado - versión nueva");
+        
+        // Validación previa al envío
+        if (!nombreInput.value.trim()) {
+            showError("Por favor, ingresa tu nombre completo");
+            return;
+        }
+        
+        if (!rolInput.value.trim()) {
+            showError("Por favor, ingresa tu cargo o rol");
+            return;
+        }
+        
+        if (!correoInput.value.trim()) {
+            showError("Por favor, ingresa tu correo electrónico");
+            return;
+        }
+        
+        if (!sectorSelect.value) {
+            showError("Por favor, selecciona tu sector");
+            return;
+        }
+        
+        if (!passwordInput.value) {
+            showError("Por favor, ingresa una contraseña");
+            return;
+        }
+        
+        if (passwordInput.value.length < 8) {
+            showError("La contraseña debe tener al menos 8 caracteres");
+            return;
+        }
+        
+        if (!confirmPasswordInput.value) {
+            showError("Por favor, confirma tu contraseña");
+            return;
+        }
+        
+        // Validación específica para contraseñas que no coinciden
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            console.log("Contraseñas no coinciden:", passwordInput.value, confirmPasswordInput.value);
+            showError("Las contraseñas no coinciden");
+            return;
+        }
+        
+        // Recopilar datos del formulario
+        const formData = {
+            nombre_completo: nombreInput.value.trim(),
+            rol: rolInput.value.trim(),
+            correo: correoInput.value.trim(),
+            sector: sectorSelect.value,
+            password: passwordInput.value,
+            password_confirm: confirmPasswordInput.value
+        };
+        
+        // Log de datos (ocultando contraseñas)
+        console.log("Datos a enviar:", {
+            ...formData, 
+            password: '***', 
+            password_confirm: '***'
+        });
+        
+        // Mostrar spinner y enviar datos
+        showSpinner();
+        
+        // Función para obtener el token CSRF
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        // Enviar datos
+        fetch('/api/newsletter-subscription/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json().then(data => ({ status: response.status, data })))
+        .then(({status, data}) => {
+            hideSpinner();
+            
+            if (status === 201) {
+                messageDiv.textContent = `¡Gracias por suscribirte! Te hemos enviado un correo de confirmación. Ya puedes acceder con tu correo y contraseña.`;
+                messageDiv.className = 'message success';
+                setTimeout(closeModal, 7000);
+            } else {
+                if (data.error && data.error.includes('ya está suscrito')) {
+                    messageDiv.textContent = 'Este correo ya está suscrito al newsletter.';
+                } else if (data.detalles) {
+                    // Mensajes específicos para ciertos errores
+                    if (data.detalles.correo && data.detalles.correo[0].includes('already exists')) {
+                        messageDiv.textContent = 'Este correo electrónico ya está registrado en el newsletter.';
+                    } else {
+                        // Para otros errores, mostrar los mensajes del backend
+                        let errorMsg = '';
+                        for (const [field, error] of Object.entries(data.detalles)) {
+                            // Traducir nombres de campos
+                            let fieldName = field;
+                            switch(field) {
+                                case 'nombre_completo': fieldName = 'Nombres y Apellidos'; break;
+                                case 'rol': fieldName = 'Cargo o Rol'; break;
+                                case 'correo': fieldName = 'Email'; break;
+                                case 'sector': fieldName = 'Sector'; break;
+                                case 'password': fieldName = 'Contraseña'; break;
+                                case 'password_confirm': fieldName = 'Confirmar Contraseña'; break;
+                            }
+                            // Si es un array, tomar solo el primer mensaje
+                            const errorMessage = Array.isArray(error) ? error[0] : error;
+                            errorMsg += `${fieldName}: ${errorMessage}. `;
+                        }
+                        messageDiv.textContent = errorMsg || 'Por favor, corrige los errores en el formulario.';
+                    }
+                } else {
+                    messageDiv.textContent = data.error || 'Ocurrió un error. Por favor, intenta nuevamente.';
+                }
+                messageDiv.className = 'message error';
+            }
+            
+            messageDiv.style.display = 'block';
+        })
+        .catch(error => {
+            hideSpinner();
+            console.error('Error:', error);
+            messageDiv.textContent = 'Ocurrió un error. Por favor, intenta nuevamente.';
+            messageDiv.className = 'message error';
+            messageDiv.style.display = 'block';
+        });
+    });
+});
+</script>

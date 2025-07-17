@@ -1,0 +1,50 @@
+{% load static %}
+<div class="eventos-grid">
+    {% for provider in page_obj %}
+    <a href="{% url 'provider-detail' provider.pk %}" style="text-decoration:none;color:inherit;">
+    <div class="evento-card">
+        <div class="evento-img">
+            {% if provider.image %}
+                <img src="{{ provider.image.url }}" alt="{{ provider.name }}">
+            {% else %}
+                <img src="{% static 'images/provider-default.jpg' %}" alt="Imagen por defecto">
+            {% endif %}
+        </div>
+        <div class="evento-content">
+            <h3>{{ provider.name }}</h3>
+            <div class="evento-details">
+                <p>{{ provider.description|truncatechars:100 }}</p>
+                {% if provider.address %}
+                <div class="evento-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ provider.address|truncatechars:35 }}</span>
+                </div>
+                {% endif %}
+                {% if provider.phone_number %}
+                <div class="evento-date">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>{{ provider.phone_number }}</span>
+                </div>
+                {% endif %}
+                {% if provider.email %}
+                <div class="evento-location">
+                    <i class="fas fa-envelope"></i>
+                    <span>{{ provider.email|truncatechars:25 }}</span>
+                </div>
+                {% endif %}
+                {% if provider.website %}
+                <div class="evento-location">
+                    <i class="fas fa-globe"></i>
+                    <span>{{ provider.website|truncatechars:25 }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    </a>
+    {% empty %}
+    <div class="no-results">
+        <p>No se encontraron proveedores que coincidan con tu búsqueda.</p>
+    </div>
+    {% endfor %}
+</div> 

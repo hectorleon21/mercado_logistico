@@ -29,6 +29,31 @@
             font-size: 12px;
             color: #666;
         }
+        .data-item {
+            margin-bottom: 5px;
+        }
+        .data-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 140px;
+        }
+        .data-value {
+            display: inline-block;
+        }
+        ul.rubros-list {
+            margin-top: 5px;
+            padding-left: 25px;
+        }
+        ul.rubros-list li {
+            margin-bottom: 3px;
+        }
+        .login-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4ff;
+            border-left: 4px solid #0099cc;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -37,23 +62,33 @@
             <h1>¡Gracias por Suscribirte!</h1>
         </div>
         <div class="content">
-            <p>Hola {{ nombre }},</p>
+            <p>Hola {{ first_name }},</p>
             <p>¡Gracias por suscribirte a nuestro newsletter! Hemos registrado tu suscripción exitosamente.</p>
             
             <h3>Detalles de tu suscripción:</h3>
-            <ul>
-                <li>Empresa: {{ empresa }}</li>
-                <li>País: {{ pais }}</li>
-                <li>Ciudad: {{ ciudad }}</li>
-                <li>Sector: {{ sector }}</li>
-                <li>Rubros de interés:
-                    <ul>
-                        {% for rubro in rubros %}
-                            <li>{{ rubro }}</li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            </ul>
+            <div class="data-item">
+                <span class="data-label">Nombre completo:</span>
+                <span class="data-value">{{ nombre_completo }}</span>
+            </div>
+            <div class="data-item">
+                <span class="data-label">Cargo o Rol:</span>
+                <span class="data-value">{{ rol }}</span>
+            </div>
+            <div class="data-item">
+                <span class="data-label">Sector:</span>
+                <span class="data-value">{{ sector }}</span>
+            </div>
+
+            <div class="login-info">
+                <h3>Acceso a contenido exclusivo</h3>
+                <p>Como miembro de nuestra comunidad, ahora puedes acceder a contenido exclusivo en nuestro sitio web.</p>
+                <p><strong>Datos de acceso:</strong></p>
+                <ul>
+                    <li><strong>Usuario:</strong> {{ correo }}</li>
+                    <li><strong>Contraseña:</strong> La que estableciste durante el registro</li>
+                </ul>
+                <p>Para iniciar sesión, visita <a href="http://mercadologistico.com/login/">mercadologistico.com/login</a></p>
+            </div>
 
             <p>Recibirás nuestras actualizaciones y noticias más recientes sobre los temas de tu interés.</p>
         </div>

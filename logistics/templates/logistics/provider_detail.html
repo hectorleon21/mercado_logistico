@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ provider.name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .provider-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+            padding: 2rem 2.5rem;
+            margin-top: 2rem;
+        }
+        .provider-logo {
+            max-width: 180px;
+            max-height: 120px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #f8f9fa;
+            padding: 0.5rem;
+        }
+        .provider-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .provider-meta {
+            color: #6c757d;
+            font-size: 1.05rem;
+            margin-bottom: 1.2rem;
+        }
+        .provider-section-title {
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.7rem;
+            font-size: 1.1rem;
+        }
+        .provider-badge {
+            background: #e9f7fc;
+            color: #0099cc;
+            font-weight: 600;
+            border-radius: 4px;
+            padding: 0.3rem 0.7rem;
+            font-size: 0.95rem;
+            margin-right: 0.5rem;
+        }
+        .provider-contact i {
+            color: #0099cc;
+            margin-right: 0.5rem;
+        }
+        .provider-contact {
+            margin-bottom: 0.5rem;
+        }
+        .provider-services {
+            margin-bottom: 1rem;
+        }
+        .provider-description {
+            text-align: justify;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4 mb-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="provider-card">
+                    <div class="d-flex align-items-center mb-3">
+                        {% if provider.image %}
+                            <img src="{{ provider.image.url }}" alt="Logo {{ provider.name }}" class="provider-logo me-4">
+                        {% endif %}
+                        <div>
+                            <div class="provider-title">{{ provider.name }}</div>
+                            <div class="provider-meta">{{ provider.address }}</div>
+                        </div>
+                    </div>
+
+                    <div class="provider-section-title">Descripción</div>
+                    <div class="provider-description">{{ provider.description }}</div>
+
+                    <div class="provider-section-title">Servicios</div>
+                    <div class="provider-services">
+                        {% for service in provider.services.all %}
+                            <span class="provider-badge">{{ service.name }}</span>
+                        {% empty %}
+                            <span class="text-muted">No hay servicios registrados.</span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="provider-section-title">Contacto</div>
+                    <div class="provider-contact"><i class="fas fa-phone"></i>{{ provider.phone_number }}</div>
+                    <div class="provider-contact"><i class="fas fa-envelope"></i>{{ provider.email }}</div>
+                    {% if provider.website %}
+                        <div class="provider-contact"><i class="fas fa-globe"></i><a href="{{ provider.website }}" target="_blank">{{ provider.website }}</a></div>
+                    {% endif %}
+
+                    <div class="provider-section-title">Solo miembros</div>
+                    <div class="mb-2">
+                        {% if provider.only_members %}
+                            <span class="badge bg-warning text-dark">Solo miembros</span>
+                        {% else %}
+                            <span class="badge bg-success">Disponible para todos</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{% url 'directorio' %}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Volver al Directorio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

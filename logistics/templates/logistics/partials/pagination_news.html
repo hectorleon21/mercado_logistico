@@ -1,29 +1,50 @@
-<nav aria-label="Paginación" class="pagination" data-container-id="news">
-    <ul class="pagination justify-content-center">
-        {% if news_page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?news_page=1&events_page={{ events_page_obj.number }}">Primera</a>
+<!-- Debug: total_pages={{ news_page_obj.paginator.num_pages }}, current_page={{ news_page_obj.number }} -->
+<ul class="pagination">
+    {% if news_page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?{% if news_search_query %}news_q={{ news_search_query }}&{% endif %}news_page=1">&laquo;</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?{% if news_search_query %}news_q={{ news_search_query }}&{% endif %}news_page={{ news_page_obj.previous_page_number }}">&lsaquo;</a>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">&laquo;</span>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">&lsaquo;</span>
+        </li>
+    {% endif %}
+
+    {% for i in news_page_obj.paginator.page_range %}
+        {% if news_page_obj.number == i %}
+            <li class="page-item active">
+                <a class="page-link">{{ i }}</a>
             </li>
+        {% elif i > news_page_obj.number|add:"-3" and i < news_page_obj.number|add:"3" %}
             <li class="page-item">
-                <a class="page-link" href="?news_page={{ news_page_obj.previous_page_number }}&events_page={{ events_page_obj.number }}">Anterior</a>
+                <a class="page-link" href="?{% if news_search_query %}news_q={{ news_search_query }}&{% endif %}news_page={{ i }}">{{ i }}</a>
             </li>
         {% endif %}
+    {% empty %}
+        <li class="page-item active">
+            <a class="page-link">1</a>
+        </li>
+    {% endfor %}
 
-        {% for num in news_page_obj.paginator.page_range %}
-            <li class="page-item {% if news_page_obj.number == num %}active{% endif %}">
-                <a class="page-link" {% if news_page_obj.number != num %}href="?news_page={{ num }}&events_page={{ events_page_obj.number }}"{% endif %}>
-                    {{ num }}
-                </a>
-            </li>
-        {% endfor %}
-
-        {% if news_page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?news_page={{ news_page_obj.next_page_number }}&events_page={{ events_page_obj.number }}">Siguiente</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?news_page={{ news_page_obj.paginator.num_pages }}&events_page={{ events_page_obj.number }}">Última</a>
-            </li>
-        {% endif %}
-    </ul>
-</nav>
+    {% if news_page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?{% if news_search_query %}news_q={{ news_search_query }}&{% endif %}news_page={{ news_page_obj.next_page_number }}">&rsaquo;</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?{% if news_search_query %}news_q={{ news_search_query }}&{% endif %}news_page={{ news_page_obj.paginator.num_pages }}">&raquo;</a>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">&rsaquo;</span>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">&raquo;</span>
+        </li>
+    {% endif %}
+</ul>

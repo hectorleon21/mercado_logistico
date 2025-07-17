@@ -1,54 +1,32 @@
-<style>
-    .event-location {
-        font-size: 12px !important;
-        margin-bottom: 0 !important;
-    }
-    
-    .event-description {
-        font-size: 12px !important;
-        line-height: 1.1 !important;
-        margin-top: 2px !important;
-    }
-</style>
-
+{% load static %}
+<!-- Total de eventos: {{ events_page_obj|length }} -->
 {% for event in events_page_obj %}
-<div class="col-md-3 mb-3">
-    <div class="card h-100 border-0 shadow-sm">
+<div class="evento-card">
+    <div class="evento-img">
         {% if event.image %}
-        <a href="{% url 'event-detail' event.pk %}">
-            <div class="ratio ratio-4x3">
-                {% load easy_thumbnails_tags %}
-                <img src="{% thumbnail event.image 400x300 box=event.cropping crop detail %}"
-                    alt="{{ event.name }}" 
-                    class="card-img-top object-fit-cover"
-                    loading="lazy">
-            </div>
-        </a>
+            <img src="{{ event.image.url }}" alt="{{ event.name }}">
+        {% else %}
+            <img src="{% static 'images/event-placeholder.svg' %}" alt="{{ event.name }}">
         {% endif %}
-        
-        <div class="card-body p-3">
-            <a href="{% url 'event-detail' event.pk %}" class="text-dark text-decoration-none">
-                <h6 class="card-title mb-2" style="text-align: justify;">{{ event.name }}</h6>
-            </a>
-            <div class="text-muted" style="margin-bottom: 2px !important;">
-                <div style="font-size: 12px !important;">
-                    <i class="fas fa-calendar-alt me-1"></i>
-                    {{ event.date|date:"d/m/Y" }}
-                </div>
-                <div style="font-size: 12px !important;">
-                    <i class="fas fa-map-marker-alt me-1"></i>
-                    {{ event.location }}
-                </div>
+    </div>
+    <div class="evento-content">
+        <h3>{{ event.name }}</h3>
+        <div class="evento-details">
+            <div class="evento-date">
+                <i class="icon-calendar">📅</i> {{ event.date|date:"d/m/Y" }}
             </div>
-            
-            <div class="text-muted" style="font-size: 12px !important; line-height: 1.1 !important; margin-top: 2px !important; text-align: justify;">
-                {{ event.description|safe|truncatewords:15 }}
+            <div class="evento-location">
+                <i class="icon-location">📍</i> {{ event.location }}
             </div>
+            <div class="evento-description">
+                {{ event.description|safe|truncatewords_html:12 }}
+            </div>
+            <a href="{% url 'event-detail' event.id %}" class="btn btn-sm">Ver detalles</a>
         </div>
     </div>
 </div>
 {% empty %}
-<div class="col-12">
-    <p class="text-center">No hay eventos disponibles.</p>
+<div class="text-center" style="grid-column: 1 / -1; padding: 2rem;">
+    <p>No se encontraron eventos con los criterios especificados.</p>
 </div>
 {% endfor %}

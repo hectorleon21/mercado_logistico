@@ -1,59 +1,52 @@
-<div class="container">
-    <div class="row">
-        <div class="items col-12">
-            <div class="row g-4">
                 {% for course in page_obj %}
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="course-card position-relative">
-                        {% if course.is_new %}
-                            <span class="new-badge">Nuevo</span>
+                <div class="curso-card">
+                    <div class="curso-img">
+                        {% if course.image %}
+                            <img src="{{ course.image.url }}" alt="{{ course.name }}">
+                        {% else %}
+                            <img src="/static/images/course-default.jpg" alt="Imagen por defecto">
                         {% endif %}
                         
-                        <a href="{% url 'course-detail' course.id %}">
-                            {% if course.image %}
-                                <img src="{{ course.image.url }}" alt="{{ course.name }}" class="course-image">
-                            {% else %}
-                                <div class="course-image bg-light d-flex align-items-center justify-content-center">
-                                    <i class="fas fa-graduation-cap fa-2x text-muted"></i>
-                                </div>
-                            {% endif %}
-                        </a>
+                        {% if course.modality == 'PR' %}
+                            <div class="curso-badge presencial">Presencial</div>
+                        {% elif course.modality == 'OS' or course.modality == 'OA' or course.modality == 'ON' %}
+                            <div class="curso-badge virtual">Virtual</div>
+                        {% elif course.modality == 'SS' or course.modality == 'SA' %}
+                            <div class="curso-badge hibrida">Híbrida</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="curso-content">
+                        <div class="curso-tipo">{{ course.get_course_type_display }}</div>
+                        <h3><a href="{% url 'course-detail' course.id %}">{{ course.name }}</a></h3>
                         
-                        <div class="course-content">
-                            <div class="course-institution">{{ course.institution }}</div>
-                            <h3 class="course-title">
-                                <a href="{% url 'course-detail' course.id %}">{{ course.name }}</a>
-                            </h3>
-                            
-                            {% if course.description %}
-                            <div class="course-description">
-                                {{ course.description|safe }}
+                        <div class="curso-info">
+                            <div class="curso-institucion">
+                                <i class="fas fa-university"></i> {{ course.institution }}
                             </div>
-                            {% endif %}
-                            
-                            <div class="course-type-badge">
-                                {{ course.get_course_type_display }}
+                            <div class="curso-duracion">
+                                <i class="far fa-calendar-alt"></i> {{ course.start_date|date:"d/m/Y" }}
                             </div>
-                            
-                            <div class="course-meta">
-                                <div class="info-row">
-                                    <i class="far fa-calendar-alt"></i> 
-                                    <span>Inicio: {{ course.start_date|date:"d/m/Y" }}</span>
-                                </div>
-                                <div class="info-row">
-                                    <i class="fas fa-graduation-cap"></i>
-                                    <span>{{ course.get_modality_display }}</span>
-                                </div>
+                        </div>
+                        
+                        <div class="curso-description">
+                            {{ course.description|striptags|truncatechars:120|safe }}
+                        </div>
+                        
+                        <div class="curso-footer">
+                            <div class="curso-precio">
+                                {% if course.price %}
+                                    S/ {{ course.price }}
+                                {% else %}
+                                    Consultar
+                                {% endif %}
                             </div>
+                            <a href="{% url 'course-detail' course.id %}" class="curso-btn">Ver detalles</a>
                         </div>
                     </div>
                 </div>
                 {% empty %}
-                <div class="col-12 text-center py-4">
-                    <p>No se encontraron cursos disponibles.</p>
+                <div class="no-results">
+                    <p>No se encontraron cursos que coincidan con tu búsqueda.</p>
                 </div>
                 {% endfor %}
-            </div>
-        </div>
-    </div>
-</div>
