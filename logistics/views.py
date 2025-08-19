@@ -1,6 +1,7 @@
 # C:\Django\cms_env\logistic_manager\logistics\views.py
 
 from django.utils.timezone import now
+from django.utils import timezone
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
@@ -1444,3 +1445,60 @@ def check_auth(request):
         return JsonResponse({
             'authenticated': False
         })
+
+@api_view(['POST'])
+def contact_submission(request):
+    """
+    Vista para manejar el envío del formulario de contacto
+    """
+    try:
+        data = request.data
+        
+        # Validar datos requeridos
+        nombre = data.get('nombre', '').strip()
+        email = data.get('email', '').strip()
+        empresa = data.get('empresa', '').strip()
+        mensaje = data.get('mensaje', '').strip()
+        
+        # Verificar que los campos requeridos estén presentes
+        if not all([nombre, email, empresa]):
+            return Response({
+                'error': 'Los campos Nombre, Email y Empresa son requeridos'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Crear el contenido del email
+        subject = f'Nuevo contacto desde Mercado Logístico - {empresa}'
+        email_content = f"""
+Nuevo contacto recibido desde el formulario de la página web:
+
+DATOS DEL CONTACTO:
+------------------
+Nombre: {nombre}
+Email: {email}
+Empresa: {empresa}
+Mensaje: {mensaje if mensaje else 'No se proporcionó mensaje'}
+
+Fecha: {timezone.now().strftime('%d/%m/%Y %H:%M:%S')}
+        """
+        
+        # Enviar email
+        send_mail(
+            subject=subject,
+            message=email_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=['hecosleco@gmail.com'],
+            fail_silently=False,
+        )
+        
+        print(f"Email de contacto enviado exitosamente desde {email} ({empresa})")
+        
+        return Response({
+            'status': 'success',
+            'message': 'Tu mensaje ha sido enviado exitosamente. Te contactaremos pronto.'
+        }, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        print(f"Error al enviar email de contacto: {e}")
+        return Response({
+            'error': 'Error interno del servidor. Inténtalo de nuevo más tarde.'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

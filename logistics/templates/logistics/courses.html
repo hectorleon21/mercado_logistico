@@ -156,15 +156,49 @@
         flex-direction: column;
             }
 
-    .curso-tipo {
-                display: inline-block;
-                background-color: #f3f4f6;
-        padding: 0.25rem 0.75rem;
-                border-radius: 4px;
-        font-size: 0.8rem;
-                font-weight: 600;
-        color: #4b5563;
+    .curso-tipo-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         margin-bottom: 0.75rem;
+        position: relative;
+    }
+
+    .curso-tipo {
+        display: inline-block;
+        background-color: #f3f4f6;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #4b5563;
+        line-height: 1.2;
+        height: 24px;
+        display: flex;
+        align-items: center;
+    }
+
+    .badge-vigente {
+        background-color: #28a745;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        animation: pulse-vigente 2s infinite;
+        line-height: 1.2;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+    }
+
+    @keyframes pulse-vigente {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
     }
 
     .curso-content h3 {
@@ -497,6 +531,32 @@
             flex: 0 0 calc(50% - 10px);
             max-width: none; /* Eliminar max-width para pantallas pequeñas */
         }
+
+        .curso-tipo-container {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .curso-tipo, .badge-vigente {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            height: 22px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .curso-tipo-container {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .curso-tipo, .badge-vigente {
+            font-size: 0.65rem;
+            padding: 0.15rem 0.5rem;
+            height: 20px;
+        }
     }
         </style>
 {% endblock %}
@@ -735,7 +795,12 @@
                         </div>
                         
                         <div class="curso-content">
-                            <div class="curso-tipo">{{ course.get_course_type_display }}</div>
+                            <div class="curso-tipo-container">
+                                <span class="curso-tipo">{{ course.get_course_type_display }}</span>
+                                {% if course.is_new %}
+                                    <span class="badge-vigente">Vigente</span>
+                                {% endif %}
+                            </div>
                             <h3><a href="{% url 'course-detail' course.id %}">{{ course.name }}</a></h3>
                             
                             <div class="curso-info">

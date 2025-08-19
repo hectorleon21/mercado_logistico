@@ -40,4 +40,7 @@ urlpatterns = [
     path('api/login/', views.user_login, name='user_login'),
     path('api/logout/', views.user_logout, name='user_logout'),
     path('api/check-auth/', views.check_auth, name='check_auth'),
+    
+    # Ruta para formulario de contacto
+    path('api/contact/', views.contact_submission, name='contact_submission'),
 ]

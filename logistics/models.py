@@ -780,6 +780,7 @@ class Resource(models.Model):
         ('AR', 'Artículo'),
         ('IN', 'Infografía'),
         ('HC', 'Hoja de Cálculo'),
+        ('OT', 'Otros'),
     ]
     
     title = models.CharField(max_length=255, verbose_name="Título")

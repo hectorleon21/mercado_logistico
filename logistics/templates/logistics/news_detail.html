@@ -28,6 +28,18 @@
         margin-right: 0.5rem;
         color: #0099cc;
     }
+
+    .source-link {
+        color: #0099cc;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        font-weight: 500;
+    }
+
+    .source-link:hover {
+        color: #0077aa;
+        text-decoration: underline;
+    }
     
     .news-content {
         background-color: #fff;
@@ -96,7 +108,14 @@
                     <i class="icon-calendar">📅</i> {{ news.date|date:"d/m/Y" }}
                     {% if news.source %}
                     <span class="news-source">
-                        <i class="icon-source">📰</i> {{ news.source }}
+                        <i class="icon-source">📰</i> 
+                        {% if news.source_website %}
+                            <a href="{{ news.source_website }}" target="_blank" rel="noopener noreferrer" class="source-link">
+                                {{ news.source }}
+                            </a>
+                        {% else %}
+                            {{ news.source }}
+                        {% endif %}
                     </span>
                     {% endif %}
                 </div>
