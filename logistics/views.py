@@ -226,6 +226,7 @@ def courses(request):
         'selected_start_date': start_date,
         'course_types': course_types,
         'total_courses': total_courses,
+        'total_all_courses': total_all_courses,  # Agregar total de todos los cursos
         'topics': topics,
         'banners': active_banners,  # Agregar banners al contexto
     }
@@ -245,6 +246,7 @@ def courses(request):
             'courses_html': courses_html,
             'pagination_html': pagination_html,
             'total_courses': total_courses,
+            'total_all_courses': total_all_courses,  # Agregar total de todos los cursos
         })
 
     return render(request, 'logistics/courses.html', context)
