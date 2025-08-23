@@ -53,8 +53,8 @@ def courses(request):
     service = request.GET.get('service', '')
     institution_type = request.GET.get('institution_type', '')
     start_date = request.GET.get('start_date', '')
-    price_min = request.GET.get('price_min', 0)
-    price_max = request.GET.get('price_max', 5000)
+    price_min = request.GET.get('price_min', None)
+    price_max = request.GET.get('price_max', None)
     price_ranges = request.GET.get('price_ranges', None)
 
     # Obtener la fecha actual
@@ -125,22 +125,25 @@ def courses(request):
                 courses = courses.filter(price_filter)
                 print(f"Filtrando por múltiples rangos de precio: {ranges}")
         else:
-            # Filtrado simple por mínimo y máximo
-            price_min = float(price_min)
-            price_max = float(price_max)
-            price_filter = Q()
-            
-            # Considerar el caso de cursos con precio NULL (gratis o consultar)
-            if price_min == 0:
-                # Si el mínimo es 0, incluir cursos con precio NULL o con precio entre 0 y max
-                price_filter = Q(price__isnull=True) | Q(price__gte=price_min, price__lte=price_max)
-            else:
-                # Solo incluir cursos con precio en el rango
-                price_filter = Q(price__gte=price_min, price__lte=price_max)
+            # Filtrado simple por mínimo y máximo - solo aplicar si se especificó
+            if price_min is not None and price_max is not None:
+                price_min = float(price_min)
+                price_max = float(price_max)
+                price_filter = Q()
                 
-            courses = courses.filter(price_filter)
-            
-            print(f"Filtrando por precio: min={price_min}, max={price_max}")
+                # Considerar el caso de cursos con precio NULL (gratis o consultar)
+                if price_min == 0:
+                    # Si el mínimo es 0, incluir cursos con precio NULL o con precio entre 0 y max
+                    price_filter = Q(price__isnull=True) | Q(price__gte=price_min, price__lte=price_max)
+                else:
+                    # Solo incluir cursos con precio en el rango
+                    price_filter = Q(price__gte=price_min, price__lte=price_max)
+                    
+                courses = courses.filter(price_filter)
+                
+                print(f"Filtrando por precio: min={price_min}, max={price_max}")
+            else:
+                print("No se especificó filtro de precio, mostrando todos los cursos")
     except (ValueError, TypeError, json.JSONDecodeError) as e:
         # Si hay un error en la conversión, ignoramos el filtro de precio
         print(f"Error al filtrar por precio: {e}")
