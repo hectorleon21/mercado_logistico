@@ -124,6 +124,8 @@ def courses(request):
                 
                 courses = courses.filter(price_filter)
                 print(f"Filtrando por múltiples rangos de precio: {ranges}")
+            else:
+                print("No se especificaron rangos de precio válidos, mostrando todos los cursos")
         else:
             # Filtrado simple por mínimo y máximo - solo aplicar si se especificó
             if price_min is not None and price_max is not None:
