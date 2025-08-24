@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         institucion: '',
         fechaInicio: '',
         precioMin: 0,
-        precioMax: 5000,
+        precioMax: 100000,
         precioRanges: [],
         usePrecioMaxOnly: false
     };
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (activeFilters.precioRanges && activeFilters.precioRanges.length > 0) {
             // Si hay rangos seleccionados, enviarlos serializados
             url.searchParams.append('price_ranges', JSON.stringify(activeFilters.precioRanges));
-        } else if (activeFilters.usePrecioMaxOnly && activeFilters.precioMax < 5000) {
+        } else if (activeFilters.usePrecioMaxOnly && activeFilters.precioMax < 100000) {
             // Si se usó el slider
             url.searchParams.append('price_min', 0);
             url.searchParams.append('price_max', activeFilters.precioMax);
@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', function() {
         precioActualElemento.textContent = `S/ ${precioActual}`;
         
         // Calcular la posición del indicador
-        const porcentaje = (precioActual / 5000) * 100;
+        const porcentaje = (precioActual / 100000) * 100;
         const rangeWidth = this.offsetWidth;
         const thumbOffset = (rangeWidth * porcentaje) / 100;
         
@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modalidadSelect.value = 'todas';
         institucionSelect.value = 'todas';
         fechaInicio.value = '';
-        precioSlider.value = 5000;
+        precioSlider.value = 100000;
         
         // Desmarcar todos los checkboxes
         precioRangeChecks.forEach(check => check.checked = false);
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
             institucion: '',
             fechaInicio: '',
             precioMin: 0,
-            precioMax: 5000,
+            precioMax: 100000,
             precioRanges: [],
             usePrecioMaxOnly: false
         };
@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Actualizar el indicador del slider de precio
         const precioActualElemento = document.getElementById('precio-actual-valor');
         if (precioActualElemento) {
-            precioActualElemento.textContent = 'S/ 5000';
+            precioActualElemento.textContent = 'S/ 100000';
             precioActualElemento.style.left = 'calc(100% - 10px)';
         }
         
@@ -591,7 +591,7 @@ document.addEventListener('DOMContentLoaded', function() {
             precioActualElemento.textContent = `S/ ${precioActual}`;
             
             // Calcular la posición inicial del indicador
-            const porcentaje = (precioActual / 5000) * 100;
+            const porcentaje = (precioActual / 100000) * 100;
             precioActualElemento.style.left = `calc(${porcentaje}% - ${10}px)`;
         }
     }
