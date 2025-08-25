@@ -214,18 +214,14 @@ class News(models.Model):
         if self.image:
             img = Image.open(self.image)
             
-            # Convertir a RGB si es necesario
             if img.mode != 'RGB':
                 img = img.convert('RGB')
             
-            # Dimensiones objetivo (igual que Event)
-            target_width = 800
-            target_height = 400
+            # Dimensiones exactas para Noticias: 600x220
+            target_width = 600
+            target_height = 220
             
-            # Obtener dimensiones originales
             width, height = img.size
-            
-            # Calcular proporciones
             img_ratio = width / height
             target_ratio = target_width / target_height
             
@@ -236,10 +232,8 @@ class News(models.Model):
                 new_width = target_width
                 new_height = int(new_width / img_ratio)
             
-            # Redimensionar manteniendo proporción
             img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
             
-            # Recortar al tamaño exacto desde el centro
             left = (new_width - target_width) // 2
             top = (new_height - target_height) // 2
             right = left + target_width
@@ -247,21 +241,16 @@ class News(models.Model):
             
             img = img.crop((left, top, right, bottom))
             
-            # Guardar en memoria con calidad optimizada
             output = BytesIO()
-            img.save(output, format='JPEG', quality=85)
+            img.save(output, format='JPEG', quality=85, optimize=True)
             output.seek(0)
             
-            # Reemplazar el archivo original
             self.image = InMemoryUploadedFile(
-                output,
-                'ImageField',
+                output, 'ImageField',
                 f"{os.path.splitext(self.image.name)[0]}.jpg",
-                'image/jpeg',
-                sys.getsizeof(output),
-                None
+                'image/jpeg', sys.getsizeof(output), None
             )
-
+        
         super().save(*args, **kwargs)
 
 class Article(models.Model):
@@ -323,18 +312,14 @@ class Article(models.Model):
         if self.image:
             img = Image.open(self.image)
             
-            # Convertir a RGB si es necesario
             if img.mode != 'RGB':
                 img = img.convert('RGB')
             
-            # Dimensiones objetivo
-            target_width = 800
-            target_height = 400
+            # Dimensiones exactas para Artículos: 600x240
+            target_width = 600
+            target_height = 240
             
-            # Obtener dimensiones originales
             width, height = img.size
-            
-            # Calcular proporciones
             img_ratio = width / height
             target_ratio = target_width / target_height
             
@@ -345,10 +330,8 @@ class Article(models.Model):
                 new_width = target_width
                 new_height = int(new_width / img_ratio)
             
-            # Redimensionar manteniendo proporción
             img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
             
-            # Recortar al tamaño exacto desde el centro
             left = (new_width - target_width) // 2
             top = (new_height - target_height) // 2
             right = left + target_width
@@ -356,21 +339,16 @@ class Article(models.Model):
             
             img = img.crop((left, top, right, bottom))
             
-            # Guardar en memoria con calidad optimizada
             output = BytesIO()
-            img.save(output, format='JPEG', quality=85)
+            img.save(output, format='JPEG', quality=85, optimize=True)
             output.seek(0)
             
-            # Reemplazar el archivo original
             self.image = InMemoryUploadedFile(
-                output,
-                'ImageField',
+                output, 'ImageField',
                 f"{os.path.splitext(self.image.name)[0]}.jpg",
-                'image/jpeg',
-                sys.getsizeof(output),
-                None
+                'image/jpeg', sys.getsizeof(output), None
             )
-
+        
         super().save(*args, **kwargs)
 
 class Requirement(models.Model):
@@ -744,26 +722,45 @@ class Event(models.Model):
         if self.image:
             img = Image.open(self.image)
             
-            # Convertir a RGB si es necesario
             if img.mode != 'RGB':
                 img = img.convert('RGB')
-
-            # Guardar la imagen tal como está, sin redimensionarla ni recortarla
+            
+            # Dimensiones exactas para Eventos: 350x150
+            target_width = 350
+            target_height = 150
+            
+            width, height = img.size
+            img_ratio = width / height
+            target_ratio = target_width / target_height
+            
+            if img_ratio > target_ratio:
+                new_height = target_height
+                new_width = int(new_height * img_ratio)
+            else:
+                new_width = target_width
+                new_height = int(new_width / img_ratio)
+            
+            img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            
+            left = (new_width - target_width) // 2
+            top = (new_height - target_height) // 2
+            right = left + target_width
+            bottom = top + target_height
+            
+            img = img.crop((left, top, right, bottom))
+            
             output = BytesIO()
-            img.save(output, format='JPEG', quality=85)  # Usar la calidad adecuada
+            img.save(output, format='JPEG', quality=85, optimize=True)
             output.seek(0)
-
-            # Reemplazar la imagen cargada con la imagen procesada
+            
             self.image = InMemoryUploadedFile(
-                output,
-                'ImageField',
+                output, 'ImageField',
                 f"{os.path.splitext(self.image.name)[0]}.jpg",
-                'image/jpeg',
-                sys.getsizeof(output),
-                None
+                'image/jpeg', sys.getsizeof(output), None
             )
-
+        
         super().save(*args, **kwargs)
+        
 
     def __str__(self):
         return f"{self.name} - {self.date}"

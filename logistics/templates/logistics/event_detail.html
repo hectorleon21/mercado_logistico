@@ -1,10 +1,53 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load easy_thumbnails_tags %}
 
 {% block title %}{{ event.name }} - Mercado Logístico{% endblock %}
 
 {% block extra_css %}
 <style>
+    .event-hero {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        border-radius: 10px;
+        margin-bottom: 2rem;
+    }
+    
+    .event-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 1;
+        border-radius: 10px;
+    }
+    
+    .event-hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        max-width: 800px;
+        padding: 0 2rem;
+    }
+    
+    .event-hero-content h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1.2;
+    }
+    
     .event-meta {
         display: flex;
         align-items: center;
@@ -87,11 +130,13 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-10 mx-auto">
-            <!-- Hero Image -->
+            <!-- Hero Section con imagen del evento -->
             {% if event.image %}
-                <img src="{{ event.image.url }}" alt="{{ event.name }}" class="img-fluid mb-4 rounded" style="width: 100%; height: 400px; object-fit: cover;">
-            {% else %}
-                <img src="{% static 'images/event-placeholder.svg' %}" alt="{{ event.name }}" class="img-fluid mb-4 rounded" style="width: 100%; height: 400px; object-fit: cover;">
+            <section class="event-hero" style="background-image: url('{% thumbnail event.image 800x400 box=event.cropping crop detail %}');">
+                <div class="event-hero-content">
+                    <h1>{{ event.name }}</h1>
+                </div>
+            </section>
             {% endif %}
             
             <div class="event-content">

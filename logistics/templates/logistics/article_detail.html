@@ -6,11 +6,16 @@
 {% block extra_css %}
 <style>
     .hero {
-        height: 400px;
         background-size: cover;
         background-position: center;
+        background-repeat: no-repeat;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         position: relative;
-        margin-top: 60px;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
     }
     
     .hero::before {
@@ -18,41 +23,25 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.3));
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 1;
     }
     
     .hero-content {
         position: relative;
-        z-index: 10;
-        color: #fff;
-        padding: 2rem;
+        z-index: 2;
+        text-align: center;
         max-width: 800px;
+        padding: 0 2rem;
     }
     
-    .article-date {
-        display: flex;
-        align-items: center;
-        color: #666;
-        margin-bottom: 1.5rem;
-        font-size: 0.95rem;
-    }
-    
-    .article-date i {
-        margin-right: 0.5rem;
-        color: #4ecdc4;
-    }
-    
-    .article-author {
-        margin-left: 1.5rem;
-        display: flex;
-        align-items: center;
-    }
-    
-    .article-author i {
-        margin-right: 0.5rem;
-        color: #4ecdc4;
+    .hero-content h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1.2;
     }
     
     .article-content {
@@ -101,10 +90,6 @@
     .btn-back i {
         margin-right: 0.5rem;
     }
-    
-    .article-hero-bg {
-        background-image: url('');
-    }
 </style>
 {% endblock %}
 
@@ -121,13 +106,6 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-10 mx-auto">
-            <!-- Hero Image -->
-            {% if article.image %}
-                <img src="{{ article.image.url }}" alt="{{ article.title }}" class="img-fluid mb-4 rounded" style="width: 100%; height: 400px; object-fit: cover;">
-            {% else %}
-                <img src="{% static 'images/article-placeholder.svg' %}" alt="{{ article.title }}" class="img-fluid mb-4 rounded" style="width: 100%; height: 400px; object-fit: cover;">
-            {% endif %}
-            
             <div class="article-content">
                 <h1>{{ article.title }}</h1>
                 
