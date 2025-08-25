@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (id === 'precio-4') {
                 rango = {min: 2000, max: 3500};
             } else if (id === 'precio-5') {
-                rango = {min: 3500, max: 10000};
+                rango = {min: 3500, max: 100000};
             }
             
             if (this.checked) {
