@@ -585,7 +585,7 @@
     <div class="categorias-container">
         <!-- Categorías filtradas por servicios -->
         <div class="categorias-row">
-            {% for service in topics %}
+            {% for service in flagged_services %}
                 <a href="#" class="categoria-tag service-tag" data-service="{{ service.name }}">{{ service.name }}</a>
             {% endfor %}
         </div>

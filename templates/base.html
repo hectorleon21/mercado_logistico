@@ -787,6 +787,32 @@
         </div>
     </div>
 
+    <!-- Modal de Recuperación de Contraseña -->
+    <div class="login-modal" id="forgot-password-modal">
+        <div class="login-modal-content">
+            <div class="login-modal-header">
+                <h3>Recuperar Contraseña</h3>
+                <button type="button" class="login-modal-close" id="forgot-password-modal-close">&times;</button>
+            </div>
+            <form id="forgot-password-form">
+                {% csrf_token %}
+                <p style="margin-bottom: 1.5rem; color: #666; font-size: 0.9rem;">
+                    Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
+                </p>
+                <div class="login-form-group">
+                    <label for="forgot-password-email">Correo electrónico:</label>
+                    <input type="email" id="forgot-password-email" name="email" required>
+                </div>
+                <div id="forgot-password-error" class="error-message" style="color: #ff3333; margin-bottom: 1rem; display: none;"></div>
+                <div id="forgot-password-success" class="success-message" style="color: #28a745; margin-bottom: 1rem; display: none;"></div>
+                <button type="submit" class="login-btn" id="forgot-password-btn">Enviar Enlace</button>
+                <div class="login-footer">
+                    <p><a href="#" id="back-to-login-link">Volver al inicio de sesión</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Scripts comunes -->
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -948,15 +974,27 @@
                 if (loginButton) {
                     loginButton.innerHTML = `<i class="fas fa-user-circle" style="margin-right: 5px;"></i>${user.name.split(' ')[0]}`;
                     
-                    // Cambiar el comportamiento del botón para mostrar un menú dropdown
-                    loginButton.removeEventListener('click', onLoginButtonClick);
-                    loginButton.addEventListener('click', function(e) {
+                    // Limpiar todos los event listeners previos y agregar el nuevo comportamiento
+                    const newLoginButton = loginButton.cloneNode(true);
+                    loginButton.parentNode.replaceChild(newLoginButton, loginButton);
+                    
+                    // Actualizar la referencia
+                    const updatedLoginButton = document.getElementById('login-button');
+                    
+                    updatedLoginButton.addEventListener('click', function(e) {
                         e.preventDefault();
-                        // Aquí podrías mostrar un menú desplegable con opciones de usuario
-                        // Por ahora, implementamos un cierre de sesión simple
-                        if (confirm('¿Deseas cerrar sesión?')) {
+                        e.stopPropagation();
+                        console.log('Click en botón de usuario logueado');
+                        
+                        // Mostrar confirm y manejar respuesta
+                        const shouldLogout = confirm('¿Deseas cerrar sesión?');
+                        console.log('Respuesta del confirm:', shouldLogout);
+                        
+                        if (shouldLogout) {
                             logout();
                         }
+                        // Si presiona "Cancelar", no hacer nada más
+                        // El e.preventDefault() y e.stopPropagation() evitan cualquier comportamiento adicional
                     });
                 }
                 
@@ -966,32 +1004,68 @@
             
             // Función para cerrar sesión
             function logout() {
-                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                console.log('Iniciando proceso de logout...');
+                
+                // Función para obtener token CSRF
+                function getCsrfToken() {
+                    const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+                    if (csrfInput) {
+                        return csrfInput.value;
+                    }
+                    
+                    // Fallback: buscar en las cookies
+                    const cookies = document.cookie.split(';');
+                    for (let cookie of cookies) {
+                        const [name, value] = cookie.trim().split('=');
+                        if (name === 'csrftoken') {
+                            return value;
+                        }
+                    }
+                    
+                    console.warn('Token CSRF no encontrado');
+                    return null;
+                }
+                
+                const csrftoken = getCsrfToken();
+                if (!csrftoken) {
+                    console.error('No se pudo obtener el token CSRF');
+                    // Intentar recarga de página como fallback
+                    window.location.reload();
+                    return;
+                }
                 
                 fetch('/api/logout/', {
                     method: 'POST',
                     headers: {
+                        'Content-Type': 'application/json',
                         'X-CSRFToken': csrftoken
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    console.log(`Respuesta logout: ${response.status}`);
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('Respuesta del servidor:', data);
+                    
                     if (data.success) {
-                        // Reiniciar la interfaz
-                        if (loginButton) {
-                            loginButton.innerHTML = `<i class="fas fa-user-circle" style="margin-right: 5px;"></i>Acceder`;
-                            
-                            // Restaurar el comportamiento original del botón
-                            loginButton.removeEventListener('click', null);
-                            loginButton.addEventListener('click', onLoginButtonClick);
-                        }
-                        
-                        // Opcional: recargar la página
+                        console.log('Logout exitoso, recargando página...');
+                        // Simplificar: solo recargar la página
+                        window.location.reload();
+                    } else {
+                        console.error('Error en logout:', data.error);
+                        // Mostrar error al usuario
+                        alert(`Error al cerrar sesión: ${data.error}`);
+                        // Intentar recargar página de todos modos
                         window.location.reload();
                     }
                 })
                 .catch(error => {
                     console.error('Error al cerrar sesión:', error);
+                    // Mostrar error al usuario
+                    alert('Error de conexión al cerrar sesión. Se recargará la página.');
+                    // Recargar página como fallback
+                    window.location.reload();
                 });
             }
             
@@ -1000,6 +1074,173 @@
                 e.preventDefault();
                 loginModal.classList.add('show');
                 document.body.style.overflow = 'hidden';
+            }
+            
+            // Funcionalidad para el enlace "Regístrate aquí"
+            const registerLink = document.getElementById('register-link');
+            if (registerLink) {
+                registerLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Cerrar el modal de login
+                    if (loginModal) {
+                        loginModal.classList.remove('show');
+                        document.body.style.overflow = '';
+                    }
+                    
+                    // Abrir el modal de newsletter usando la función existente
+                    // Primero verificar si el modal de newsletter existe
+                    const newsletterModal = document.getElementById('newsletterModal');
+                    if (newsletterModal) {
+                        // Usar la misma lógica que usan los botones open-newsletter-modal
+                        newsletterModal.style.display = 'flex';
+                        setTimeout(() => newsletterModal.classList.add('fade-in'), 10);
+                    } else {
+                        // Fallback: disparar el evento en cualquier botón con clase open-newsletter-modal
+                        const openNewsletterBtn = document.querySelector('.open-newsletter-modal');
+                        if (openNewsletterBtn) {
+                            openNewsletterBtn.click();
+                        } else {
+                            console.warn('Modal de newsletter no encontrado');
+                        }
+                    }
+                });
+            }
+            
+            // Funcionalidad para el modal de recuperación de contraseña
+            const forgotPasswordLink = document.getElementById('forgot-password-link');
+            const forgotPasswordModal = document.getElementById('forgot-password-modal');
+            const forgotPasswordModalClose = document.getElementById('forgot-password-modal-close');
+            const forgotPasswordForm = document.getElementById('forgot-password-form');
+            const forgotPasswordError = document.getElementById('forgot-password-error');
+            const forgotPasswordSuccess = document.getElementById('forgot-password-success');
+            const backToLoginLink = document.getElementById('back-to-login-link');
+            
+            if (forgotPasswordLink && forgotPasswordModal) {
+                // Abrir modal de recuperación de contraseña
+                forgotPasswordLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Cerrar el modal de login
+                    if (loginModal) {
+                        loginModal.classList.remove('show');
+                        document.body.style.overflow = '';
+                    }
+                    
+                    // Abrir modal de recuperación
+                    setTimeout(() => {
+                        forgotPasswordModal.classList.add('show');
+                        document.body.style.overflow = 'hidden';
+                    }, 300);
+                });
+                
+                // Cerrar modal de recuperación de contraseña
+                if (forgotPasswordModalClose) {
+                    forgotPasswordModalClose.addEventListener('click', function() {
+                        forgotPasswordModal.classList.remove('show');
+                        document.body.style.overflow = '';
+                    });
+                }
+                
+                // Cerrar modal al hacer clic fuera del contenido
+                forgotPasswordModal.addEventListener('click', function(e) {
+                    if (e.target === forgotPasswordModal) {
+                        forgotPasswordModal.classList.remove('show');
+                        document.body.style.overflow = '';
+                    }
+                });
+                
+                // Volver al modal de login
+                if (backToLoginLink) {
+                    backToLoginLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Cerrar modal de recuperación
+                        forgotPasswordModal.classList.remove('show');
+                        document.body.style.overflow = '';
+                        
+                        // Abrir modal de login
+                        setTimeout(() => {
+                            loginModal.classList.add('show');
+                            document.body.style.overflow = 'hidden';
+                        }, 300);
+                    });
+                }
+                
+                // Manejar el envío del formulario de recuperación de contraseña
+                if (forgotPasswordForm) {
+                    forgotPasswordForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        
+                        const email = document.getElementById('forgot-password-email').value;
+                        
+                        // Limpiar mensajes previos
+                        forgotPasswordError.style.display = 'none';
+                        forgotPasswordSuccess.style.display = 'none';
+                        
+                        // Validar email
+                        if (!email || !email.includes('@')) {
+                            forgotPasswordError.textContent = 'Por favor, ingresa un correo electrónico válido.';
+                            forgotPasswordError.style.display = 'block';
+                            return;
+                        }
+                        
+                        // Deshabilitar botón durante el envío
+                        const submitButton = document.getElementById('forgot-password-btn');
+                        const originalText = submitButton.textContent;
+                        submitButton.disabled = true;
+                        submitButton.textContent = 'Enviando...';
+                        
+                        // Obtener el token CSRF
+                        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                        
+                        // Enviar solicitud de recuperación de contraseña
+                        fetch('/api/forgot-password/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrftoken
+                            },
+                            body: JSON.stringify({
+                                email: email
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Rehabilitar botón
+                            submitButton.disabled = false;
+                            submitButton.textContent = originalText;
+                            
+                            if (data.success) {
+                                // Mostrar mensaje de éxito
+                                forgotPasswordSuccess.textContent = data.message || 'Se ha enviado un enlace de recuperación a tu correo electrónico.';
+                                forgotPasswordSuccess.style.display = 'block';
+                                
+                                // Limpiar formulario
+                                forgotPasswordForm.reset();
+                                
+                                // Opcional: cerrar modal después de unos segundos
+                                setTimeout(() => {
+                                    forgotPasswordModal.classList.remove('show');
+                                    document.body.style.overflow = '';
+                                }, 3000);
+                            } else {
+                                // Mostrar mensaje de error
+                                forgotPasswordError.textContent = data.error || 'Ocurrió un error. Por favor, intenta nuevamente.';
+                                forgotPasswordError.style.display = 'block';
+                            }
+                        })
+                        .catch(error => {
+                            // Rehabilitar botón
+                            submitButton.disabled = false;
+                            submitButton.textContent = originalText;
+                            
+                            console.error('Error:', error);
+                            forgotPasswordError.textContent = 'Ocurrió un error de conexión. Por favor, intenta nuevamente.';
+                            forgotPasswordError.style.display = 'block';
+                        });
+                    });
+                }
             }
         });
     </script>

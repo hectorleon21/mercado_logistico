@@ -40,6 +40,9 @@ urlpatterns = [
     path('api/login/', views.user_login, name='user_login'),
     path('api/logout/', views.user_logout, name='user_logout'),
     path('api/check-auth/', views.check_auth, name='check_auth'),
+    path('api/forgot-password/', views.forgot_password, name='forgot_password'),
+    path('reset-password/<str:uidb64>/<str:token>/', views.reset_password_confirm, name='reset_password_confirm'),
+    path('api/reset-password/', views.reset_password_submit, name='reset_password_submit'),
     
     # Ruta para formulario de contacto
     path('api/contact/', views.contact_submission, name='contact_submission'),

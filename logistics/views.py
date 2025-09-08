@@ -27,6 +27,11 @@ import traceback
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.template.loader import get_template
 
 def normalize(text):
     """
@@ -862,8 +867,8 @@ def directory(request):
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
-    # Obtener temas para filtro de temática (usando las opciones del modelo Course)
-    topics = [{'code': code, 'name': name} for code, name in Course.TOPICS]
+    # Obtener todos los servicios con flag_directorio activado
+    flagged_services = Service.objects.filter(flag_directorio=True)
 
     # Obtener la fecha actual
     today = now().date()
@@ -881,7 +886,7 @@ def directory(request):
         'page_obj': page_obj,
         'search_query': query,  # Pasa el término de búsqueda actual
         'selected_service': service,  # Añadimos el servicio seleccionado
-        'topics': topics,  # Pasar la lista de temas
+        'flagged_services': flagged_services,  # Pasa los servicios con flag activado
         'banners': active_banners,
     }
 
@@ -1426,14 +1431,35 @@ def user_login(request):
                 'error': 'No existe una cuenta con este correo electrónico'
             }, status=401)
 
+@api_view(['POST'])
+@csrf_protect
 def user_logout(request):
     """
     Vista para cerrar sesión
     """
-    logout(request)
-    return JsonResponse({
-        'success': True
-    })
+    try:
+        if request.user.is_authenticated:
+            user_email = request.user.email
+            print(f"Cerrando sesión para usuario: {user_email}")
+            logout(request)
+            print(f"Sesión cerrada exitosamente para: {user_email}")
+            return JsonResponse({
+                'success': True,
+                'message': 'Sesión cerrada exitosamente'
+            })
+        else:
+            print("Intento de logout sin usuario autenticado")
+            return JsonResponse({
+                'success': False,
+                'error': 'No hay una sesión activa para cerrar'
+            }, status=400)
+    except Exception as e:
+        print(f"Error durante logout: {e}")
+        traceback.print_exc()
+        return JsonResponse({
+            'success': False,
+            'error': 'Error interno al cerrar sesión'
+        }, status=500)
 
 def check_auth(request):
     """
@@ -1443,7 +1469,7 @@ def check_auth(request):
         return JsonResponse({
             'authenticated': True,
             'user': {
-                'name': request.user.get_full_name() or request.user.email,
+                'name': request.user.get_full_name() or request.user.username,
                 'email': request.user.email,
                 'is_staff': request.user.is_staff,
             }
@@ -1452,6 +1478,240 @@ def check_auth(request):
         return JsonResponse({
             'authenticated': False
         })
+
+@api_view(['POST'])
+@csrf_protect
+def forgot_password(request):
+    """
+    Vista para manejar la recuperación de contraseña
+    """
+    try:
+        print(f"Iniciando forgot_password para método: {request.method}")
+        print(f"Datos de la solicitud: {request.data}")
+        
+        # Con DRF, usar request.data en lugar de json.loads(request.body)
+        email = request.data.get('email', '').strip()
+        
+        print(f"Email extraído: {email}")
+        
+        # Validar que el email no esté vacío
+        if not email:
+            print("Email vacío - retornando error")
+            return JsonResponse({
+                'success': False,
+                'error': 'El correo electrónico es requerido.'
+            }, status=400)
+        
+        # Buscar usuario por email
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            # Por seguridad, no revelar si el email existe o no
+            return JsonResponse({
+                'success': True,
+                'message': 'Si tu correo electrónico está registrado, recibirás un enlace de recuperación.'
+            })
+        
+        # Generar token de recuperación
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        
+        # Crear enlace de recuperación
+        domain = request.get_host() if request.get_host() else 'localhost:8000'
+        protocol = 'https' if request.is_secure() else 'http'
+        reset_link = f"{protocol}://{domain}/reset-password/{uid}/{token}/"
+        
+        # Preparar contenido del correo
+        subject = 'Recuperación de contraseña - Mercado Logístico'
+        
+        # Plantilla HTML del correo
+        html_content = f"""
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Recuperación de contraseña</title>
+            <style>
+                body {{ font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }}
+                .container {{ max-width: 600px; margin: 0 auto; background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }}
+                .header {{ text-align: center; margin-bottom: 30px; }}
+                .logo {{ font-size: 24px; font-weight: bold; color: #0099cc; margin-bottom: 10px; }}
+                .content {{ color: #333; line-height: 1.6; }}
+                .btn {{ display: inline-block; background-color: #0099cc; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 20px 0; font-weight: bold; }}
+                .footer {{ margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 14px; text-align: center; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <div class="logo">Mercado Logístico</div>
+                    <h2>Recuperación de contraseña</h2>
+                </div>
+                <div class="content">
+                    <p>Hola {user.get_full_name() or user.username},</p>
+                    <p>Hemos recibido una solicitud para restablecer tu contraseña. Si no realizaste esta solicitud, puedes ignorar este correo.</p>
+                    <p>Para restablecer tu contraseña, haz clic en el siguiente enlace:</p>
+                    <p style="text-align: center;">
+                        <a href="{reset_link}" class="btn">Restablecer contraseña</a>
+                    </p>
+                    <p>Este enlace expirará en 1 hora por motivos de seguridad.</p>
+                    <p>Si el botón no funciona, copia y pega el siguiente enlace en tu navegador:</p>
+                    <p style="word-break: break-all; color: #0099cc;">{reset_link}</p>
+                </div>
+                <div class="footer">
+                    <p>© 2025 Mercado Logístico S.A.C. Todos los derechos reservados.</p>
+                    <p>Este es un mensaje automático, por favor no respondas a este correo.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        # Versión en texto plano
+        plain_content = f"""
+        Hola {user.get_full_name() or user.username},
+
+        Hemos recibido una solicitud para restablecer tu contraseña. Si no realizaste esta solicitud, puedes ignorar este correo.
+
+        Para restablecer tu contraseña, copia y pega el siguiente enlace en tu navegador:
+        {reset_link}
+
+        Este enlace expirará en 1 hora por motivos de seguridad.
+
+        © 2025 Mercado Logístico S.A.C.
+        Este es un mensaje automático, por favor no respondas a este correo.
+        """
+        
+        # Enviar correo
+        try:
+            send_mail(
+                subject=subject,
+                message=plain_content,
+                from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@mercadologistico.com'),
+                recipient_list=[email],
+                html_message=html_content,
+                fail_silently=False,
+            )
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Se ha enviado un enlace de recuperación a tu correo electrónico.'
+            })
+            
+        except Exception as email_error:
+            print(f"Error enviando correo de recuperación: {email_error}")
+            print(f"Tipo de error: {type(email_error).__name__}")
+            traceback.print_exc()
+            return JsonResponse({
+                'success': False,
+                'error': f'Error al enviar el correo: {str(email_error)}'
+            }, status=500)
+            
+    except Exception as e:
+        print(f"Error en forgot_password: {e}")
+        traceback.print_exc()
+        return JsonResponse({
+            'success': False,
+            'error': 'Ocurrió un error interno. Por favor, intenta más tarde.'
+        }, status=500)
+
+def reset_password_confirm(request, uidb64, token):
+    """
+    Vista para mostrar el formulario de restablecimiento de contraseña
+    """
+    try:
+        # Decodificar el ID del usuario
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+        
+        # Verificar que el token sea válido
+        if not default_token_generator.check_token(user, token):
+            return render(request, 'logistics/reset_password_invalid.html', {
+                'error': 'El enlace de recuperación ha expirado o es inválido.'
+            })
+        
+        # Si todo está bien, mostrar el formulario
+        return render(request, 'logistics/reset_password_form.html', {
+            'uidb64': uidb64,
+            'token': token,
+            'user': user
+        })
+        
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        return render(request, 'logistics/reset_password_invalid.html', {
+            'error': 'El enlace de recuperación es inválido.'
+        })
+
+@api_view(['POST'])
+@csrf_protect
+def reset_password_submit(request):
+    """
+    Vista para procesar el cambio de contraseña
+    """
+    try:
+        print(f"Datos recibidos para reset: {request.data}")
+        
+        uidb64 = request.data.get('uidb64')
+        token = request.data.get('token')
+        new_password = request.data.get('new_password')
+        confirm_password = request.data.get('confirm_password')
+        
+        # Validaciones básicas
+        if not all([uidb64, token, new_password, confirm_password]):
+            return JsonResponse({
+                'success': False,
+                'error': 'Todos los campos son requeridos.'
+            }, status=400)
+        
+        if new_password != confirm_password:
+            return JsonResponse({
+                'success': False,
+                'error': 'Las contraseñas no coinciden.'
+            }, status=400)
+        
+        if len(new_password) < 8:
+            return JsonResponse({
+                'success': False,
+                'error': 'La contraseña debe tener al menos 8 caracteres.'
+            }, status=400)
+        
+        try:
+            # Decodificar y obtener usuario
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+            
+            # Verificar token
+            if not default_token_generator.check_token(user, token):
+                return JsonResponse({
+                    'success': False,
+                    'error': 'El enlace de recuperación ha expirado o es inválido.'
+                }, status=400)
+            
+            # Cambiar la contraseña
+            user.set_password(new_password)
+            user.save()
+            
+            print(f"Contraseña actualizada para usuario: {user.username}")
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Tu contraseña ha sido actualizada correctamente.'
+            })
+            
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return JsonResponse({
+                'success': False,
+                'error': 'El enlace de recuperación es inválido.'
+            }, status=400)
+            
+    except Exception as e:
+        print(f"Error en reset_password_submit: {e}")
+        traceback.print_exc()
+        return JsonResponse({
+            'success': False,
+            'error': 'Ocurrió un error interno. Por favor, intenta más tarde.'
+        }, status=500)
 
 @api_view(['POST'])
 def contact_submission(request):
