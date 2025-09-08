@@ -1518,6 +1518,11 @@ def forgot_password(request):
         
         # Crear enlace de recuperación
         domain = request.get_host() if request.get_host() else 'localhost:8000'
+        
+        # Asegurar que el puerto 8443 esté incluido en producción
+        if 'mercadologistico.io' in domain and ':8443' not in domain:
+            domain = domain + ':8443'
+        
         protocol = 'https' if request.is_secure() else 'http'
         reset_link = f"{protocol}://{domain}/reset-password/{uid}/{token}/"
         
