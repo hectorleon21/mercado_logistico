@@ -17,6 +17,7 @@
     
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/newsletter_modal.css' %}">
     
     {% block extra_css %}{% endblock %}
     
@@ -1246,5 +1247,8 @@
     </script>
     
     {% block extra_js %}{% endblock %}
+    
+    <!-- Modal de Newsletter (incluido globalmente) -->
+    {% include 'logistics/includes/newsletter_modal.html' %}
 </body>
 </html> 

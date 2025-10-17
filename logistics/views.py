@@ -843,8 +843,14 @@ def directory(request):
     
     query = request.GET.get('q', '')  # Obtener el término de búsqueda
     service = request.GET.get('service', '')  # Obtener el servicio seleccionado
-    # providers = Provider.objects.all()  # Obtener todos los proveedores por defecto
-    providers = Provider.objects.filter(only_members=False)  # Ocultar proveedores solo para miembros
+    
+    # Filtrar proveedores según autenticación del usuario
+    if request.user.is_authenticated:
+        # Usuario autenticado: mostrar todos los proveedores
+        providers = Provider.objects.all()
+    else:
+        # Usuario no autenticado: ocultar proveedores solo para miembros
+        providers = Provider.objects.filter(only_members=False)
 
     # --- BÚSQUEDA INSENSIBLE A TILDES Y POR PALABRAS CLAVE ---
     if query:
